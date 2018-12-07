@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root>
+    <client>
+        <android default="1.0">
+            <entry>
+                <version>1.0</version>
+                <url>http://www.xxxx.com/upload/omengo_4.1.apk</url>
+                <message>1.0版本</message>
+                <level>INFO</level>
+            </entry>
+        </android>
+        <iphone default="4.0">
+            <entry>
+                <version>4.0</version>
+                <url>http://www.xxxx.com/upload/omengo_4.0.apk</url>
+                <message>1.0版本</message>
+                <level>INFO</level>
+            </entry>
+        </iphone>
+    </client>
+</root>

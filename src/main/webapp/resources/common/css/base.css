@@ -1,0 +1,64 @@
+.table-border {
+    border: 1px solid #f9f9f9;
+    border-collapse:separate;
+}
+
+.table-border thead{
+    background-color:#f9f9f9;
+}
+
+.avatar-container{
+    border-radius: 6px;
+    width:168px;
+    height:168px;
+    margin:0 auto;
+}
+
+
+
+.avatar-img{
+    margin:2px;
+    width:160px;
+    height:160px;
+    text-align:center;
+    align:center;
+    border-radius: 50%;
+    padding:3px;
+    border:3px solid #d2d6de;
+}
+
+.btn-camera{
+    border:1px solid gray;
+    background-color:#fff;
+    color:gray;
+}
+
+.btn-camera:hover{
+    background-color:gray;
+    color:#fff;
+}
+
+.navbar-fixed-middle {
+    position: fixed;
+    z-index: 1031;
+    bottom:30px;
+    right: 15px;
+    margin-bottom: 0;
+    border-width: 1px 0 0;
+}
+
+/*查询条件 日期*/
+
+.dataTables_filter .input-group{
+    padding-right: 0px!important;
+    padding-left:0px!important;
+}
+.dataTables_filter .input-group input{
+    margin-left:0px!important;
+    width: 120px!important;
+}
+
+/*解决图片预览位置问题*/
+#kvFileinputModal .file-preview-other{
+    line-height: 1!important;
+}

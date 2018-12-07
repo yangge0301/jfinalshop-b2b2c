@@ -1,0 +1,34 @@
+@charset "utf-8";
+
+/* ---------- Payment ---------- */
+
+.payment {
+	margin-bottom: 10px;
+}
+
+.payment .title {
+	height: 80px;
+	line-height: 80px;
+	text-align: center;
+	font-size: 16px;
+	font-family: "Microsoft YaHei";
+	border: solid 1px #e5e5ce;
+	background-color: #edffcc;
+}
+
+.payment .bottom {
+	height: 60px;
+	line-height: 60px;
+	text-align: center;
+	color: #888888;
+	border-left: solid 1px #e5e5ce;
+	border-right: solid 1px #e5e5ce;
+	border-bottom: solid 1px #e5e5ce;
+	background-color: #f9f9f9;
+}
+
+.payment .bottom a {
+	color: #0088cc;
+	font-size: 14px;
+	margin: 0px 10px;
+}

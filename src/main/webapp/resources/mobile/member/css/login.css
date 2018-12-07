@@ -1,0 +1,31 @@
+@charset "utf-8";
+
+/* ---------- Login ---------- */
+.login main {
+	padding: 10px;
+	margin-top: 40px;
+}
+
+.login main a {
+	line-height: 50px;
+}
+
+.login footer {
+	width: 100%;
+	position: fixed;
+	bottom: 20px;
+	left: 0px;
+	z-index: 100;
+}
+
+.login footer a {
+	margin-right: 50px;
+}
+
+.login footer a:last-child {
+	margin-right: 0px;
+}
+
+.login footer a img {
+	max-width: 40px;
+}

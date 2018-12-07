@@ -1,0 +1,52 @@
+
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+.taskBoxLinks {
+	float: left;
+	width: 225px;
+	height: 20px;
+	font-size: 0;
+	line-height: 0;
+	background: #f2f2f2;
+	border: 1px solid #dedede;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+	position: relative;
+	margin-top: 8px;
+	margin-right: 10px;
+	cursor: pointer;
+}
+
+.taskBoxLinks h3, .taskBoxLinks h4 {
+	position: absolute;
+	left: -1px;
+	top: -1px;
+	height: 20px;
+	font-size: 0;
+	line-height: 0;
+	width: 10%;
+	background: #a3d9f4;
+	border: 1px solid #187aab;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+	z-index: 99;
+	margin-top:0px;
+}
+
+.taskBoxLinks h4 {
+	border: 1px solid #91cdea;
+	background: #f5fafc;
+	z-index: 88;
+}
+
+.taskBox {
+	width: 360px;
+	margin: 40px auto;
+	color: #666;
+}

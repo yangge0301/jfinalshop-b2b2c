@@ -1,0 +1,11 @@
+@charset "utf-8";
+
+/* ---------- Register ---------- */
+.register main {
+	padding: 10px;
+	margin-top: 40px;
+}
+
+.register main a {
+	line-height: 50px;
+}
