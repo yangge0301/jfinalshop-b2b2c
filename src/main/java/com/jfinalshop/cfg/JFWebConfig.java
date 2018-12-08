@@ -68,7 +68,7 @@ public class JFWebConfig extends JFinalConfig {
 		constants.setDevMode(PropKit.getBoolean("devMode", false));
 		constants.setViewType(ViewType.FREE_MARKER);
 		constants.setI18nDefaultBaseName("i18n");
-		//constants.setI18nDefaultLocale("en_US");
+		constants.setI18nDefaultLocale("zh_CN");
 		constants.setViewExtension(".ftl");
 		constants.setError401View("/common/error/not_found.ftl");
 		constants.setError403View("/common/error/unauthorized.ftl");
