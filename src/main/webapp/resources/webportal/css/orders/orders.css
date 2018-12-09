@@ -1,0 +1,214 @@
+*{
+	margin:0;
+	padding: 0;	
+	font-family: "微软雅黑";
+}
+a{
+	text-decoration: none;
+}
+head,body{
+	width:100%;
+	height:100%;
+}
+body{
+	padding-bottom: 5rem;
+}
+.top-shop{
+	width:100%;
+	height:4rem;
+	font-size:1.6rem;
+	line-height: 1.4rem;
+	padding:1.2rem 2%;
+	background:#fff;
+}
+.bottom-menu{
+	width:100%;
+	height:5rem;
+	background:#fff;
+	position: fixed;
+	bottom: 0;
+	left:0;
+}
+.bottom-menu-box{
+	width: 96%;
+	margin: 0 auto;
+	display: flex;
+	flex-flow: row;
+	justify-content: center;
+	align-items: center;
+}
+.bottom-orange-menu-item{
+	width:25%;
+}
+.bottom-item-icon{
+
+	margin-top:0.6rem;
+}
+.bottom-item-icon,.bottom-item-name{
+	width:100%;
+	text-align: center;
+	color:#898989;
+	margin-bottom:0.1rem;
+	font-size: 1.4rem;
+}
+
+
+.shop-hot-sale{
+	width:96%;
+	margin:1rem auto;
+	height:4rem;
+	background: #fff;
+	text-align: center;
+	line-height: 4rem;
+	font-size:1.6rem;	
+}
+
+.shop-hot-sale-content{
+	width:96%;
+	margin:1.5rem  auto;
+	overflow: hidden;
+
+}
+
+.content-box-left{
+	width:49.5%;
+	float:left;
+	overflow: hidden;
+	margin-bottom: 1rem;
+	color:#000;
+
+}
+.content-box-right{
+	width:49.5%;
+	float:right;
+	overflow: hidden;
+	margin-bottom: 1rem;
+	color:#000;
+}
+.box-img{
+	width:100%;
+	line-height: 0
+}
+.box-content{
+	width:90%;
+	margin:0 auto;
+}
+.box-desc{
+	width:90%;
+	margin:0 auto;
+	line-height:2.2rem;
+}
+
+.box-money{
+	color:#ff4343;
+	font-weight: bold;
+	font-size:1.6rem;
+	line-height:2.4rem;
+}
+.box-paycount{
+	line-height:2.4rem;
+	color:#898989;
+	font-size:1.4rem;
+}
+
+.head-icon{
+	width:96%;height:8rem;margin:0 auto;border-top:1px solid #e8e8e8;box-shadow: #e9e9e9 0px 4px 0px ;
+}
+.head-u-icon{
+	width: 5rem;height:5rem;float: left;margin-top:1.5rem;
+}
+.scoredesc{
+	height:5rem;float: left;margin-top:1.5rem;margin-left:5px;font-size:1.6rem;
+}
+.scorecon{
+	height:2.5rem;line-height:2.5rem;
+}
+
+.usedesc{
+	float:right;height:4rem;display: flex;justify-content: right;;align-items: center;
+}
+.usebtn{
+	width:8rem;border-radius:5px;margin-top:4rem;height:2.6rem;color:#fff;background: #f60;text-align: center;line-height: 2.6rem;
+}
+.headtabs{
+	width:100%;background:#fff;height:5rem;margin:0 auto;border-top:1px solid #e8e8e8;border-bottom:1px solid #e8e8e8;position:relative;
+}
+.headtab{
+	width: 90%;height:5rem;margin:0 auto;display: flex;justify-content: center;align-items: center;;
+}
+.headtab-item{
+	width: 25%;height:5rem;line-height:4rem;text-align: center;line-height: 5rem;font-size:1.6rem;
+}
+
+.headtab-item-alive{
+	color:#f60;font-weight: bold;border-bottom: 2px solid #f60;color:#f60;
+}
+
+.shoppingcar-item-right-title{
+	height:8rem;vertical-align:top;padding: 0  0  0 5% ;display: flex;
+}
+.shoppingcar-item-right-bottom{
+	height:2rem;padding:0  0  0 5%;text-align: right;
+}
+
+
+
+.orders{
+	width:96%;margin:1rem auto;border-radius:1rem;
+}
+
+.orders-list{
+	width: 100%;border-radius: 1.5rem;overflow:hidden;margin-bottom: 1rem;background:#fff;
+}
+
+.order-item-business{
+	width:90%;margin:0 auto;height:4rem;line-height:4rem;font-size:1.6rem;border-bottom: 1px solid #efefef
+}
+.order-item-con{
+	width:90%;margin:0 auto;height:11rem;font-size:1.6rem;border-bottom: 1px solid #efefef
+}
+.order-item-con-bos{
+	width:100%;height:10rem;margin-top:1rem;display: flex;
+}
+
+.order-item-img{
+	width: 30%;height:10rem;
+}
+.order-name-box{
+	width: 70%;height:10rem;
+}
+
+.order-btns{
+	width: 60%;margin-left:35%;height:6rem;display: flex;font-size:1.6rem;
+}
+.order-btns-left{
+	width:48%;margin-right:4%;line-height:4rem;text-align:center;height:4rem;margin-top:1rem;color:#b9b9b9;border:1px solid #b9b9b9;border-radius: 1rem;
+}
+.order-btns-right{
+	width:48%;height:4rem;line-height:4rem;text-align:center;margin-top:1rem;background:#ff9000;color:#fff;border-radius: 1rem;
+}
+
+
+/**
+**placeorder默认样式修改
+**/
+input {
+    -webkit-user-select: text;
+    -user-select: text;
+    outline: none;
+}
+input::-webkit-input-placeholder {
+    color: #999;
+}
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color: #999;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color: #999;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color: #999;
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: #999;
+}
