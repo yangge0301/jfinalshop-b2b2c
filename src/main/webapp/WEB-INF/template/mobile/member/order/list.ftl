@@ -59,7 +59,7 @@
 		<%_.each(orders, function(order, i) {%>
 			<div class="panel panel-flat">
 				<div class="panel-heading">
-					<span class="small">${message("OrderItem.sn")}: <%-order.sn%></span>
+					<span class="small" style="font-size:1.8rem"> <%-order.store.name%>&#62;</span>
 					<%if (order.hasExpired) {%>
 						<em class="pull-right gray-darker">${message("member.order.hasExpired")}</em>
 					<%} else {%>
@@ -89,10 +89,19 @@
 											<strong class="small red">[<%-productType(order.type)%>]</strong>
 										<%}%>
 									</div>
+                                    <div class="media-body media-middle" style="text-align:right	">
+                                        <h4 class="media-heading">
+                                            <div>￥<%-orderItem.price%>元</div>
+                                            <div style="color:#d4cdcd">X<%-orderItem.quantity%>件</div>
+                                        </h4>
+                                    </div>
 								</div>
 							</div>
 						<%})%>
 					</div>
+				</div>
+				<div style="text-align:right;padding-right: 10px;" >
+					共<%-order.quantity%>件商品，实付款：<span style="font-size:1.6rem;font-weight:bold;">￥<%-order.price%></span>元
 				</div>
 				<div class="panel-footer text-right">
 					[#if isKuaidi100Enabled]
@@ -101,7 +110,8 @@
 							<button class="transit-step btn btn-sm btn-default" type="button" data-order-shipping-sn="<%-orderShipping.sn%>">${message("member.order.transitStep")}</button>
 						<%}%>
 					[/#if]
-					<a class="btn btn-sm btn-default" href="view?orderSn=<%-order.sn%>">${message("member.order.view")}</a>
+					<a class="btn btn-lg btn-default" href="view?orderSn=<%-order.sn%>">${message("member.order.view")}</a>
+                    <a class="btn btn-lg btn-default" id="receive" style="border:none;margin-left:10px; background: #f60;color:#fff;" href="receive?orderSn=<%-order.sn%>">确认收货</a>
 				</div>
 			</div>
 		<%})%>
@@ -122,13 +132,34 @@
 	</script>
 	<script type="text/javascript">
 	$().ready(function() {
-		
+
+        var $receive = $("#receive");
 		var $transitStepModal = $("#transitStepModal");
 		var $transitStepModalBody = $("#transitStepModal div.modal-body");
 		var $orderItems = $("#orderItems");
 		var orderTemplate = _.template($("#orderTemplate").html());
 		var transitStepTemplate = _.template($("#transitStepTemplate").html());
-		
+		var statuskey = getUrlParam('status')?getUrlParam('status'):'';
+		if(statuskey==''||statuskey==null){//全部
+			$('.headtab-item').eq(0).addClass('headtab-item-alive').siblings().removeClass('headtab-item-alive');
+		}
+        else if(statuskey=='shipped'){//待收货
+
+            $('.headtab-item').eq(3).addClass('headtab-item-alive').siblings().removeClass('headtab-item-alive');
+        }
+        else if(statuskey=='pendingPayment'){//待付款
+
+            $('.headtab-item').eq(1).addClass('headtab-item-alive').siblings().removeClass('headtab-item-alive');
+        }
+        else if(statuskey=='pendingShipment'){//代发货
+
+            $('.headtab-item').eq(2).addClass('headtab-item-alive').siblings().removeClass('headtab-item-alive');
+        }
+        else{
+
+            $('.headtab-item').eq(0).addClass('headtab-item-alive').siblings().removeClass('headtab-item-alive');
+		}
+
 		// 无限滚动加载
 		$orderItems.infiniteScroll({
 			url: function(pageNumber) {
@@ -166,9 +197,30 @@
 		});
 	
 	});
+
+    // 订单收货
+    $receive.click(function() {
+        if (confirm("${message("member.order.receiveConfirm")}")) {
+            $.ajax({
+                url: "receive?orderSn=${order.sn}",
+                type: "POST",
+                dataType: "json",
+                cache: false,
+                success: function() {
+                    location.reload(true);
+                }
+            });
+        }
+        return false;
+    });
+    function getUrlParam(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+        var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+        if (r != null) return unescape(r[2]); return null; //返回参数值
+    }
 	</script>
 </head>
-<body class="profile">
+<body class="profile" style="background:#eeeeee">
 	<div id="transitStepModal" class="transit-step-modal modal fade" tabindex="-1">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -189,9 +241,19 @@
 		</a>
 		${message("member.order.list")}
 	</header>
-	<main>
+    <!--顶部tab 开始-->
+    <div  class="headtabs">
+        <div class="headtab" >
+            <a href="${base}/member/order/list" class="headtab-item headtab-item-alive">全部</a>
+            <a  href="${base}/member/order/list?status=pendingPayment&hasExpired=false" class="headtab-item">待付款</a>
+            <a  href="${base}/member/order/list?status=pendingShipment&hasExpired=false" class="headtab-item">待发货</a>
+            <a  href="${base}/member/order/list?status=shipped" class="headtab-item">待收货</a>
+        </div>
+    </div>
+    <!--顶部tab 结束-->
+	<main style="width:96%;margin: 0 auto 40px;">
 		<div class="container-fluid">
-			<div id="orderItems"></div>
+			<div id="orderItems" style="background:#eeeeee"></div>
 		</div>
 	</main>
 </body>

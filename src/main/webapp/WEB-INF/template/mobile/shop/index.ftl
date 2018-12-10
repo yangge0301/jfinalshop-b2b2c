@@ -309,20 +309,28 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-xs-3 text-center active">
-                <span class="glyphicon glyphicon-home"></span>
-                <a href="${base}/">${message("shop.common.index")}</a>
+                <span class="glyphicon">
+                    <img src="${base}/resources/mobile/shop/images/home/home.png" alt=""  width="26%"/>
+                </span>
+                <a   style="display: block" href="${base}/">${message("shop.common.index")}</a>
             </div>
             <div class="col-xs-3 text-center">
-                <span class="glyphicon glyphicon-th-list"></span>
-                <a href="${base}/product_category">${message("shop.common.productCategory")}</a>
+                    <span class="glyphicon">
+						<img src="${base}/resources/mobile/shop/images/home/category.png" alt="" width="26%"/>
+					</span>
+                <a   style="display: block" href="${base}/product_category">${message("shop.common.productCategory")}</a>
             </div>
             <div class="col-xs-3 text-center">
-                <span class="glyphicon glyphicon-shopping-cart"></span>
-                <a href="${base}/cart/list">${message("shop.common.cart")}</a>
+                    <span class="glyphicon">
+						<img src="${base}/resources/mobile/shop/images/home/buycar.png" alt="" width="26%"/>
+					</span>
+                <a   style="display: block" href="${base}/cart/list">${message("shop.common.cart")}</a>
             </div>
             <div class="col-xs-3 text-center">
-                <span class="glyphicon glyphicon-user"></span>
-                <a href="${base}/member/index">${message("shop.common.member")}</a>
+                    <span class="glyphicon" >
+						<img src="${base}/resources/mobile/shop/images/home/mine.png" alt="" width="26%"/>
+					</span>
+                <a   style="display: block" href="${base}/member/index">${message("shop.common.member")}</a>
             </div>
         </div>
     </div>

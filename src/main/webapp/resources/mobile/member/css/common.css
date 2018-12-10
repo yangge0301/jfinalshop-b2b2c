@@ -283,8 +283,22 @@ h1, h2, h3, h4, h5, h6 {
 	background-color: #ffffff;
 }
 
+.headtabs{
+	width:100%;background:#fff;height:4rem;margin:3.4rem auto 10px;border-top:1px solid #e8e8e8;border-bottom:1px solid #e8e8e8;position:relative;
+}
+.headtab{
+	width: 90%;height:4rem;margin:0 auto;display: flex;justify-content: center;align-items: center;;
+}
+.headtab-item{
+	width: 25%;height:4rem;line-height:4rem;text-align: center;line-height: 5rem;font-size:1.6rem;display: block;text-decoration:none;color:#000;
+}
+
+.headtab-item-alive{
+	color:#f60;font-weight: bold;border-bottom: 2px solid #f60;color:#f60;
+}
 .footer-fixed .glyphicon {
 	color: #aaaaaa;
+	display: block;
 }
 
 .footer-fixed .pull-left {
@@ -418,7 +432,7 @@ h1, h2, h3, h4, h5, h6 {
 	-webkit-box-shadow: none;
 	-moz-box-shadow: none;
 	box-shadow: none;
-	border-radius: 0px;
+	border-radius:1rem;
 	border-right: none;
 	border-left: none;
 	border-color: #eeeeee;
@@ -506,7 +520,6 @@ img.captcha-image {
 	color: #cccccc;
 	font-size: 12px;
 	text-align: center;
-	background: url(data:image/gif;base64,R0lGODlh6AMBAPAAAO7u7gAAACH5BAEAAAEALAAAAADoAwEAAAInhI+py+0Po5y02ouz3rz7D4ZTQJbmiabqyrbuu4ryTNf2jef6znMFADs=) center center no-repeat #ffffff;
 }
 
 /* ---------- BackTop ---------- */

@@ -295,7 +295,7 @@
 	});
 	</script>
 </head>
-<body class="cart-list">
+<body class="cart-list" style="background:#eeeeee">
 	<header class="header-fixed">
 		<a class="pull-left" href="javascript: history.back();">
 			<span class="glyphicon glyphicon-menu-left"></span>
@@ -319,7 +319,7 @@
 							[#--</div>--]
 							[#list currentCart.getCartItems(store) as cartItem]
 								<div class="list-group-item" style="border:none; border-radius:10px;margin-top:1rem;">
-									<div class="media">
+									<div class="media" style="padding-right:10px;">
 										<div class="media-left media-middle" >
 											<div  style="display: flex;justify-content: center;align-items: center">
 
@@ -394,7 +394,7 @@
 		</div>
 	</main>
 
-	<footer class="footer-fixed" style="bottom:3.4rem">
+	<footer class="footer-fixed" style="bottom:5.6rem;padding:1.5rem 0">
 		<div class="container-fluid">
 			<div class="row">
                 <div class="col-xs-3  allselect" style="display: flex;justify-content: center;align-items: center;" u_select="true">
@@ -418,20 +418,28 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-xs-3 text-center active">
-                    <span class="glyphicon glyphicon-home"></span>
-                    <a href="${base}/">${message("shop.common.index")}</a>
+                    <span class="glyphicon">
+						<img src="${base}/resources/mobile/shop/images/home/home.png" alt=""  width="26%"/>
+					</span>
+                    <a style="display: block" href="${base}/">${message("shop.common.index")}</a>
                 </div>
                 <div class="col-xs-3 text-center">
-                    <span class="glyphicon glyphicon-th-list"></span>
-                    <a href="${base}/product_category">${message("shop.common.productCategory")}</a>
+                    <span class="glyphicon">
+						<img src="${base}/resources/mobile/shop/images/home/category.png" alt="" width="26%"/>
+					</span>
+                    <a  style="display: block" href="${base}/product_category">${message("shop.common.productCategory")}</a>
                 </div>
                 <div class="col-xs-3 text-center">
-                    <span class="glyphicon glyphicon-shopping-cart"></span>
-                    <a href="${base}/cart/list">${message("shop.common.cart")}</a>
+                    <span class="glyphicon">
+						<img src="${base}/resources/mobile/shop/images/home/buycar.png" alt="" width="26%"/>
+					</span>
+                    <a  style="display: block" href="${base}/cart/list">${message("shop.common.cart")}</a>
                 </div>
                 <div class="col-xs-3 text-center">
-                    <span class="glyphicon glyphicon-user"></span>
-                    <a href="${base}/member/index">${message("shop.common.member")}</a>
+                    <span class="glyphicon" >
+						<img src="${base}/resources/mobile/shop/images/home/mine.png" alt="" width="26%"/>
+					</span>
+                    <a  style="display: block" href="${base}/member/index">${message("shop.common.member")}</a>
                 </div>
             </div>
         </div>

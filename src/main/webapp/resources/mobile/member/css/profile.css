@@ -2,8 +2,9 @@
 
 /* ---------- Profile ---------- */
 .profile main {
-	margin: 40px 0px;
-	background-color: #fafafa;
+	width:96%;
+	margin: 0 auto 40px;
+	background-color: #eeeeee;
 }
 
 .profile main .media-left img {
