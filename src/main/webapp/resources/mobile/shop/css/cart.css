@@ -121,3 +121,10 @@
 .cart-list footer .clear {
 	display: none;
 }
+.btn_orange{
+
+	color: #ffffff;
+	border-color: #ff9000;
+	background-color: #ff9000;
+	border-radius:10px;
+}

@@ -62,18 +62,18 @@
 		
 		// 修改
 		$modify.click(function() {
-			var $(this)ment = $(this);
-			if ($(this)ment.hasClass("active")) {
-				$(this)ment.text("${message("shop.cart.modify")}");
+			var $element = $(this);
+			if ($element.hasClass("active")) {
+				$element.text("${message("shop.cart.modify")}");
 				$remove.add($clear).velocity("fadeOut");
 			} else {
-				$(this)ment.text("${message("shop.cart.complete")}");
+				$element.text("${message("shop.cart.complete")}");
 				$remove.velocity("fadeIn");
 				$clear.velocity("fadeIn", {
 					display: "block"
 				});
 			}
-			$(this)ment.toggleClass("active");
+			$element.toggleClass("active");
 		});
 		
 		// 数量
@@ -81,12 +81,10 @@
 			min: 1,
 			max: 10000
 		}).spinner("changing", function(e, newValue, oldValue) {
-		    console.log($(this).parent().parent().parent().find(".img_select"))
-            $(this).parent().parent().parent().find(".img_select").attr("u_quantity",newValue);
-			var $(this)ment = $(this);
-			var skuId = $(this)ment.data("sku-id");
-			var storeGift = $(this)ment.closest("div.list-group").siblings("div.gift");
-			var storePromotion = $(this)ment.closest("div.list-group").siblings("div.promotion");
+			var $element = $(this);
+			var skuId = $element.data("sku-id");
+			var storeGift = $element.closest("div.list-group").siblings("div.gift");
+			var storePromotion = $element.closest("div.list-group").siblings("div.promotion");
 			$.ajax({
 				url: "modify",
 				type: "POST",
@@ -100,7 +98,7 @@
 				},
 				success: function(data) {
 					if (!data.isLowStock) {
-						$(this)ment.closest("div.list-group-item").find("a.product-image strong").remove();
+						$element.closest("div.list-group-item").find("a.product-image strong").remove();
 					}
 					storeGift.html(giftTemplate({
 						giftNames: data.giftNames
@@ -112,7 +110,7 @@
 				},
 				error: function() {
 					if (newValue > oldValue) {
-						$(this)ment.val(oldValue);
+						$element.val(oldValue);
 					}
 				},
 				complete: function() {
@@ -124,10 +122,10 @@
 		// 移除
 		$remove.click(function() {
 			if (confirm("${message("shop.dialog.deleteConfirm")}")) {
-				var $(this)ment = $(this);
-				var skuId = $(this)ment.data("sku-id");
-				var storeGift = $(this)ment.closest("div.list-group").siblings("div.gift");
-				var storePromotion = $(this)ment.closest("div.list-group").siblings("div.promotion");
+				var $element = $(this);
+				var skuId = $element.data("sku-id");
+				var storeGift = $element.closest("div.list-group").siblings("div.gift");
+				var storePromotion = $element.closest("div.list-group").siblings("div.promotion");
 				$.ajax({
 					url: "remove",
 					type: "POST",
@@ -140,7 +138,7 @@
 					},
 					success: function(data) {
 						if (data.quantity > 0) {
-							$(this)ment.closest("div.list-group-item").velocity("slideUp");
+							$element.closest("div.list-group-item").velocity("slideUp");
 							storeGift.html(giftTemplate({
 								giftNames: data.giftNames
 							}));
@@ -158,44 +156,7 @@
 				});
 			}
 		});
-		function deleteItem(skuId,quantity){
-            $.ajax({
-                url: "remove",
-                type: "POST",
-                data: {
-                    skuId: skuId
-                },
-                dataType: "json",
-                beforeSend: function() {
-                },
-                success: function(data) {
-
-                },
-                complete: function() {
-
-                }
-            });
-		}
-		function addItem(skuId,quantity){
-            $.ajax({
-                url: "add",
-                type: "POST",
-                data: {
-                    skuId: skuId,
-                    quantity:quantity,
-                },
-                dataType: "json",
-                beforeSend: function() {
-
-                },
-                success: function(data) {
-
-                },
-                complete: function() {
-
-                }
-            });
-        }
+		
 		// 清空
 		$clear.click(function() {
 			if (confirm("${message("shop.dialog.clearConfirm")}")) {
@@ -214,66 +175,7 @@
 		$checkout.click(function() {
 			location.href = "${base}/order/checkout";
 		});
-
-		//单选按钮
-		$(".img_select").click(function(){
-		    var isSelect = $(this).attr('u_select');
-            var u_quantity = $(this).attr('u_quantity');
-            var u_skuid = $(this).attr('u_skuid');
-            console.log(isSelect)
-            console.log(u_quantity)
-            console.log(u_skuid)
-		    if(isSelect == "true"){
-                $(this).attr('u_select',"false");
-                $(this).find('.imgsrc').attr("src",'${base}/resources/mobile/shop/images/shoppingcar/noselect.png');
-                deleteItem(u_skuid,u_quantity);
-			}
-			else{
-                $(this).attr('u_select',"true");
-                $(this).find('.imgsrc').attr("src",'${base}/resources/mobile/shop/images/shoppingcar/select.png');
-                addItem(u_skuid,u_quantity);
-			}
-
-
-		});
-
-		$(".allselect").click(function(){
-		    var isSelect = $(this).attr("u_select");
-		    if(isSelect=="false"){
-                $(this).attr("u_select","true");
-                $(this).find('.allimgsrc').attr("src",'${base}/resources/mobile/shop/images/shoppingcar/select.png');
-
-                $(".img_select").each(function(index,ele){
-                    var u_quantity = $(this).attr('u_quantity');
-                    var u_skuid = $(this).attr('u_skuid');
-                    var u_select = $(this).attr('u_select');
-					console.log(u_quantity)
-                    console.log(u_skuid)
-                    console.log(u_select)
-                    if(u_select =="false"){
-                        addItem(u_skuid,u_quantity);
-                        $(this).attr('u_select',"true");
-                    }
-                    $(this).find('.allimgsrc').attr("src",'${base}/resources/mobile/shop/images/shoppingcar/select.png');
-                });
-			}
-			else{
-                $(this).attr("u_select","false");
-                $(this).find('.allimgsrc').attr("src",'${base}/resources/mobile/shop/images/shoppingcar/noselect.png');
-
-                $(".img_select").each(function(index,ele){
-                    var u_quantity = $(this).attr('u_quantity');
-                    var u_skuid = $(this).attr('u_skuid');
-                    var u_select = $(this).attr('u_select');
-					if(u_select =="true"){
-                        deleteItem(u_skuid,u_quantity);
-                        $(this).attr('u_select',"false");
-					}
-                    $(this).find('.imgsrc').attr("src",'${base}/resources/mobile/shop/images/shoppingcar/noselect.png');
-                });
-			}
-
-		});
+	
 	});
 	</script>
 </head>
@@ -293,31 +195,25 @@
 				[#list currentCart.stores as store]
 					<div class="list">
 						<div class="list-group list-group-flat">
-							[#--<div class="title list-group-item">--]
-								[#--[#if store.type == "self"]--]
-									[#--<em class="small">${message("shop.cart.self")}</em>--]
-								[#--[/#if]--]
-								[#--<a href="${base}${store.path}">${abbreviate(store.name, 50, "...")}</a>--]
-							[#--</div>--]
+							<div class="title list-group-item">
+								[#if store.type == "self"]
+									<em class="small">${message("shop.cart.self")}</em>
+								[/#if]
+								<a href="${base}${store.path}">${abbreviate(store.name, 50, "...")}</a>
+							</div>
 							[#list currentCart.getCartItems(store) as cartItem]
-								<div class="list-group-item" style="border:none; border-radius:10px;margin-top:1rem;">
+								<div class="list-group-item">
 									<div class="media">
-										<div class="media-left media-middle" >
-											<div  style="display: flex;justify-content: center;align-items: center">
-
-                                                <div class="media-left img_select" style="text-align:center;" u_select="true" u_skuid="${cartItem.sku.id}" u_quantity="${cartItem.quantity}">
-                                                    <img src="${base}/resources/mobile/shop/images/shoppingcar/select.png" class="imgsrc" alt="logo" width="80%"/>
-                                                </div>
-                                                <a class="product-image" href="${base}${cartItem.sku.path}" title="${cartItem.sku.name}">
-                                                    <img class="img-responsive center-block" src="${cartItem.sku.thumbnail!setting.defaultThumbnailProductImage}" alt="${cartItem.sku.name}">
+										<div class="media-left media-middle">
+											<a class="product-image" href="${base}${cartItem.sku.path}" title="${cartItem.sku.name}">
+												<img class="img-responsive center-block" src="${cartItem.sku.thumbnail!setting.defaultThumbnailProductImage}" alt="${cartItem.sku.name}">
 												[#if !cartItem.isMarketable]
 													<strong>${message("shop.cart.notMarketable")}</strong>
 												[/#if]
 												[#if cartItem.isLowStock]
 													<strong>${message("shop.cart.lowStock")}</strong>
 												[/#if]
-                                                </a>
-											</div>
+											</a>
 										</div>
 										<div class="media-body">
 											<h4 class="media-heading">
@@ -326,7 +222,7 @@
 											[#if cartItem.sku.specifications?has_content]
 												<span class="small gray-darker">${cartItem.sku.specifications?join(", ")}</span>
 											[/#if]
-											<div class="red" style="margin-top:33%;">${currency(cartItem.price, true)}</div>
+											<strong class="red">${currency(cartItem.price, true)}</strong>
 										</div>
 										<div class="media-right media-bottom text-right">
 											<button class="remove btn btn-sm btn-red" type="button" data-sku-id="${cartItem.sku.id}">${message("shop.cart.remove")}</button>
@@ -338,6 +234,11 @@
 										</div>
 									</div>
 								</div>
+								[#if !currentUser??]
+									<div class="list-group-item">
+										<a class="small orange" href="${base}/member/login">${message("shop.cart.promotionTips")}</a>
+									</div>
+								[/#if]
 							[/#list]
 						</div>
 						<div class="gift">
@@ -367,26 +268,19 @@
 					<a href="${base}/">${message("shop.cart.empty")}</a>
 				</p>
 			[/#if]
-
-			[#if !currentUser??]
-				<div class="list-group-item">
-					<a class="small orange" href="${base}/member/login">${message("shop.cart.promotionTips")}</a>
-				</div>
-			[/#if]
 		</div>
 	</main>
-
 	<footer class="footer-fixed">
 		<div class="container-fluid">
 			<div class="row">
-                <div class="col-xs-3  allselect" style="display: flex;justify-content: center;align-items: center;" u_select="true">
-                    <img src="${base}/resources/mobile/shop/images/shoppingcar/select.png" alt="logo" class="allimgsrc" width="20%"/>全选
-                </div>
 				<div class="col-xs-6 text-center">
 					[#if currentCart?? && currentCart.cartItems?has_content]
 						${message("shop.cart.effectivePrice")}:
 						<strong id="effectivePrice" class="red">${currency(currentCart.getEffectivePriceTotal(currentCart.stores), true, true)}</strong>
 					[/#if]
+				</div>
+				<div class="col-xs-3">
+					<button id="clear" class="clear btn btn-orange btn-flat btn-block" type="button">${message("shop.cart.clear")}</button>
 				</div>
 				<div class="col-xs-3">
 					<button id="checkout" class="btn btn-red btn-flat btn-block" type="button"[#if !currentCart?? || !currentCart.cartItems?has_content] disabled[/#if]>${message("shop.cart.checkout")}</button>

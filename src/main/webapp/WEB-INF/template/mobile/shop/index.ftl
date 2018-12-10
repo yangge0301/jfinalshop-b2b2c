@@ -2,10 +2,8 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="Iphone-content" content="375">
-    <meta name="format-detection" content="telephone=no">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, minimal-ui">
-    <title>商城首页</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="author" content="JFinalShop Team">
     <meta name="copyright" content="JFinalShop">
 	[@seo type = "index"]
@@ -19,319 +17,315 @@
     [/@seo]
     <link href="${base}/favicon.ico" rel="icon">
     <link href="${base}/resources/mobile/shop/css/bootstrap.css" rel="stylesheet">
-    <link href="${base}/resources/mobile/shop/css/home.css" rel="stylesheet" type="text/css">
+    <link href="${base}/resources/mobile/shop/css/font-awesome.css" rel="stylesheet">
+    <link href="${base}/resources/mobile/shop/css/animate.css" rel="stylesheet">
+    <link href="${base}/resources/mobile/shop/css/common.css" rel="stylesheet">
+    <link href="${base}/resources/mobile/shop/css/index.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <script src="${base}/resources/mobile/shop/js/html5shiv.js"></script>
+    <script src="${base}/resources/mobile/shop/js/respond.js"></script>
+    <![endif]-->
     <script src="${base}/resources/mobile/shop/js/jquery.js"></script>
+    <script src="${base}/resources/mobile/shop/js/jquery.lazyload.js"></script>
     <script src="${base}/resources/mobile/shop/js/bootstrap.js"></script>
-    <script>
-        $(function(){
-            $('#myCarousel').carousel({interval:3000});
+    <script src="${base}/resources/mobile/shop/js/velocity.js"></script>
+    <script src="${base}/resources/mobile/shop/js/velocity.ui.js"></script>
+    <script src="${base}/resources/mobile/shop/js/underscore.js"></script>
+    <script src="${base}/resources/mobile/shop/js/hammer.js"></script>
+    <script src="${base}/resources/mobile/shop/js/common.js"></script>
+    <script type="text/javascript">
+        $().ready(function() {
 
-            //手势右滑 回到上一个画面
-            $('#myCarousel').bind('swiperight swiperightup swiperightdown',function(){
-                $("#myCarousel").carousel('prev');
-            })
-            //手势左滑 进入下一个画面
-            $('#myCarousel').bind('swipeleft swipeleftup swipeleftdown',function(){
-                $("#myCarousel").carousel('next');
-            })
+            var $searchIcon = $("#searchIcon");
+            var $searchPlaceholder = $("#searchPlaceholder");
+            var $search = $("#search");
+            var $searchSlideUp = $("#searchSlideUp");
+            var $searchForm = $("#searchForm");
+            var $keyword = $("#keyword");
+            var $login = $("#login");
+            var $member = $("#member");
+            var $masthead = $("#masthead");
+            var $productImage = $("div.products img");
 
-            $(document).ready(function() {
-                setInterval('AutoScroll("#demo")', 2000)
+            // 登录/会员中心
+            if (getCookie("currentMemberUsername") != null) {
+                $member.show();
+            } else {
+                $login.show();
+            }
+
+            // 搜索
+            $searchIcon.add($searchPlaceholder).click(function() {
+                $search.velocity("transition.slideDownBigIn");
             });
 
+            // 搜索
+            $searchSlideUp.click(function() {
+                $search.velocity("transition.slideUpBigOut");
+            });
 
-        })
-        function AutoScroll(obj) {
-            $(obj).find("ul:first").animate({
-                        marginTop: "-4rem"
-                    },
-                    1500,
-                    function() {
-                        $(this).css({
-                            marginTop: "0px"
-                        }).find("li:first").appendTo(this);
-                    });
-        }
+            // 搜索
+            $searchForm.submit(function() {
+                if ($.trim($keyword.val()) == "") {
+                    return false;
+                }
+            });
+
+            // 广告
+            new Hammer($masthead.get(0)).on("swipeleft", function() {
+                $masthead.carousel("next");
+            }).on("swiperight", function() {
+                $masthead.carousel("prev");
+            });
+
+            // 商品图片
+            $productImage.lazyload({
+                threshold: 100,
+                effect: "fadeIn"
+            });
+
+        });
     </script>
 </head>
-<body >
-<!--顶部有返回空间导航栏 开始-->
-<div class="top-shop">
-    <img src="${base}/resources/mobile/shop/images/home/top_left_icon.png" alt="logo" width="2.6%"/> <span>诚信商城</span>
-</div>
-<!--顶部有返回空间导航栏 结束-->
-<!--中间橙色背景 开始-->
-<div class="top-orange-bg">
-    <div style="width:100%;position:relative;">
-        <img src="${base}/resources/mobile/shop/images/home/bga_02.png" alt="" width="100%;">
-        <div style="width:100%;position:absolute;top:0;left:0;">
-            <!--中间橙色背景——搜索框 开始-->
-            <div class="top-orange-bg-search">
-                <div class="search_icon">
-                    <img src="${base}/resources/mobile/shop/images/home/search_icon.png" alt="logo" width="60%" />
+<body class="index">
+<header>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-2 text-center">
+                <span id="searchIcon" class="glyphicon glyphicon-th-large"></span>
+            </div>
+            <div class="col-xs-8">
+                <div id="searchPlaceholder" class="search-placeholder">
+                ${message("shop.index.keyword")}<span class="glyphicon glyphicon-search"></span>
                 </div>
-                <input type="text" class="search_text" name="" value="" placeholder="请输入您想要的商品" />
-
             </div>
-            <!--中间橙色背景——搜索框 结束-->
-
-            <!--中间橙色背景——菜单栏 开始-->
-            <div class="top-orange-menu">
-                <a class="top-orange-menu-item" href="#">
-                    <div class="menu-item-icon">
-                        <img src="${base}/resources/mobile/shop/images/home/menu-jntc.png" alt="logo" width="60%" />
-                    </div>
-                    <div class="menu-item-name">
-                        江宁特产
-                    </div>
-                </a>
-
-                <a class="top-orange-menu-item" href="#">
-                    <div class="menu-item-icon">
-                        <img src="${base}/resources/mobile/shop/images/home/menu-axym.png" alt="logo" width="60%" />
-                    </div>
-                    <div class="menu-item-name">
-                        爱心义卖
-                    </div>
-                </a>
-
-                <a class="top-orange-menu-item" href="#">
-                    <div class="menu-item-icon">
-                        <img src="${base}/resources/mobile/shop/images/home/menu-yhjx.png" alt="logo" width="60%" />
-                    </div>
-                    <div class="menu-item-name">
-                        优惠巨献
-                    </div>
-                </a>
-
-                <a class="top-orange-menu-item" href="#">
-                    <div class="menu-item-icon">
-                        <img src="${base}/resources/mobile/shop/images/home/menu-jfsc.png" alt="logo" width="60%" />
-                    </div>
-                    <div class="menu-item-name">
-                        积分商城
-                    </div>
+            <div class="col-xs-2 text-center">
+                <a id="login" class="login" href="${base}/member/login">${message("shop.index.login")}</a>
+                <a id="member" class="member" href="${base}/member/index">
+                    <span class="fa fa-user-o"></span>
                 </a>
             </div>
-            <!--中间橙色背景——菜单栏 结束-->
-            <!--中间橙色背景——轮播图 开始-->
-            <div class="top-orange-bg-banner">
-                <div id="myCarousel" class="carousel slide">
-                    <!-- 轮播（Carousel）指标 -->
-                    <ol class="carousel-indicators">
-                        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-                        <li data-target="#myCarousel" data-slide-to="1"></li>
-                        <li data-target="#myCarousel" data-slide-to="2"></li>
-                    </ol>
-                    <!-- 轮播（Carousel）项目 -->
-                    <div class="carousel-inner">
-                        <div class="item active">
-                            <img src="${base}/resources/mobile/shop/images/home/banner_01.png" alt="First slide">
-                        </div>
-                        <div class="item">
-                            <img src="${base}/resources/mobile/shop/images/home/banner_01.png" alt="Second slide">
-                        </div>
-                        <div class="item">
-                            <img src="${base}/resources/mobile/shop/images/home/banner_01.png" alt="Third slide">
-                        </div>
-                    </div>
-
-                    <!-- 轮播（Carousel）导航
-                        <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
-                            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                        <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
-                            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    -->
+        </div>
+        <div id="search" class="search">
+            <div class="row">
+                <div class="col-xs-1 text-center">
+                    <span id="searchSlideUp" class="glyphicon glyphicon-menu-up"></span>
                 </div>
-
+                <div class="col-xs-11">
+                    <form id="searchForm" action="${base}/product/search" method="get">
+                        <div class="input-group">
+                            <input id="keyword" name="keyword" class="form-control" type="text" placeholder="${message("shop.index.keyword")}">
+                            <span class="input-group-btn">
+									<button class="btn btn-default" type="submit">
+										<span class="glyphicon glyphicon-search"></span>
+									</button>
+								</span>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <!--中间橙色背景——轮播图 结束-->
+				[#if setting.hotSearches?has_content]
+					<dl class="hot-search">
+                        <dt>
+                            <span class="glyphicon glyphicon-star-empty"></span>${message("shop.index.hotSearch")}
+                        </dt>
+						[#list setting.hotSearches as hotSearch]
+							<dd>
+                                <a href="${base}/product/search?keyword=${hotSearch?url}">${hotSearch}</a>
+                            </dd>
+                        [/#list]
+                    </dl>
+                [/#if]
         </div>
     </div>
-
-
-
-
-
-
-
-
-
-</div>
-<!--中间橙色背景 结束-->
-
-<!--中间商城头条 开始-->
-<div class="shop-news">
-    <div class="shop-news-left">
-        <img src="${base}/resources/mobile/shop/images/home/news_left.png" alt="logo" width="70%" />
-    </div>
-    <div class="shop-news-right">
-        <div id="demo" class="right-content">
-            <ul class="mingdan" id="holder" style="margin-top: 0px;">
-                <li><a href="#" target="_blank">eeeeee</a></li>
-                <li><a href="#" target="_blank">aaaaaa</a></li>
-                <li><a href="#" target="_blank">bbbbbb</a></li>
-                <li><a href="#" target="_blank">cccccc</a></li>
-                <li><a href="#" target="_blank">dddddd</a></li>
+</header>
+<main>
+    <div class="container-fluid">
+        <div id="masthead" class="masthead carousel slide" data-ride="carousel">
+            <ol class="carousel-indicators">
+                <li class="active" data-target="#masthead" data-slide-to="0"></li>
+                <li data-target="#masthead" data-slide-to="1"></li>
+                <li data-target="#masthead" data-slide-to="2"></li>
+            </ol>
+            <ul class="carousel-inner">
+                <li class="item active">
+                    <a href="#">
+                        <img src="${base}/upload/image/index_slider1.jpg" alt="荣耀8">
+                    </a>
+                </li>
+                <li class="item">
+                    <a href="#">
+                        <img src="${base}/upload/image/index_slider2.jpg" alt="百万豪礼">
+                    </a>
+                </li>
+                <li class="item">
+                    <a href="#">
+                        <img src="${base}/upload/image/index_slider3.jpg" alt="百万豪礼">
+                    </a>
+                </li>
             </ul>
         </div>
-    </div>
-</div>
-<!--中间商城头条 结束-->
-
-<!--中间商城左右结构入口 开始-->
-<div class="shop-allright">
-    <a class="allright allright-left" href="#">
-
-        <img src="${base}/resources/mobile/shop/images/home/allright-left.png" alt="logo" width="100%" />
-    </a>
-    <a class="allright allright-right" href="#">
-        <img src="${base}/resources/mobile/shop/images/home/allright-right.png" alt="logo" width="100%" />
-    </a>
-</div>
-<!--中间商城左右结构入口 结束-->
-
-
-<!--中间热卖推荐 开始-->
-<div class="shop-hot-sale">
-    <img src="${base}/resources/mobile/shop/images/home/hot-sale-icon.png" alt="logo" width="6%" /> 热卖推荐
-</div>
-<!--中间热卖推荐 结束-->
-
-<!--中间热卖推荐content 开始-->
-<div class="shop-hot-sale-content">
-    <div class="content-box-left">
-        <div class="box-img">
-            <img src="${base}/resources/mobile/shop/images/home/hot-sale-1.png" alt="logo" width="100%" />
-        </div>
-        <div class="box-content">爱心义卖 聋哑人十字绣作品纯 手工 十字绣</div>
-        <div class="box-desc">
-            <span class="box-money">￥220</span> <span  class="box-paycount">22人付款</span>
-        </div>
-    </div>
-    <div class="content-box-right">
-        <div class="box-img">
-            <img src="${base}/resources/mobile/shop/images/home/hot-sale-2.png" alt="logo" width="100%" />
-        </div>
-        <div class="box-content">爱心义卖 聋哑人十字绣作品纯 手工 十字绣</div>
-        <div class="box-desc">
-            <span class="box-money">￥220</span> <span  class="box-paycount">22人付款</span>
-        </div>
-    </div>
-    <div class="content-box-left">
-        <div class="box-img">
-            <img src="${base}/resources/mobile/shop/images/home/hot-sale-3.png" alt="logo" width="100%" />
-        </div>
-        <div class="box-content">爱心义卖 聋哑人十字绣作品纯 手工 十字绣</div>
-        <div class="box-desc">
-            <span class="box-money">￥220</span> <span  class="box-paycount">22人付款</span>
-        </div>
-    </div>
-    <div class="content-box-right">
-        <div class="box-img">
-            <img src="${base}/resources/mobile/shop/images/home/hot-sale-4.png" alt="logo" width="100%" />
-        </div>
-        <div class="box-content">爱心义卖 聋哑人十字绣作品纯 手工 十字绣</div>
-        <div class="box-desc">
-            <span class="box-money">￥220</span> <span  class="box-paycount">22人付款</span>
-        </div>
-    </div>
-</div>
-<!--中间热卖推荐content 结束-->
-
-
-
-<!--中间猜你喜欢 开始-->
-<div class="shop-hot-sale">
-    <img src="${base}/resources/mobile/shop/images/home/guss-u-icon.png" alt="logo" width="6%" /> 猜你喜欢
-</div>
-<!--中间猜你喜欢 结束-->
-
-<!--中间猜你喜欢content 开始-->
-<div class="shop-hot-sale-content">
-    <div class="content-box-left">
-        <div class="box-img">
-            <img src="${base}/resources/mobile/shop/images/home/guss-u-1.png" alt="logo" width="100%" />
-        </div>
-        <div class="box-content">爱心义卖 聋哑人十字绣作品纯 手工 十字绣</div>
-        <div class="box-desc">
-            <span class="box-money">￥220</span> <span  class="box-paycount">22人付款</span>
-        </div>
-    </div>
-    <div class="content-box-right">
-        <div class="box-img">
-            <img src="${base}/resources/mobile/shop/images/home/guss-u-2.png" alt="logo" width="100%" />
-        </div>
-        <div class="box-content">爱心义卖 聋哑人十字绣作品纯 手工 十字绣</div>
-        <div class="box-desc">
-            <span class="box-money">￥220</span> <span  class="box-paycount">22人付款</span>
-        </div>
-    </div>
-    <div class="content-box-left">
-        <div class="box-img">
-            <img src="${base}/resources/mobile/shop/images/home/guss-u-3.png" alt="logo" width="100%" />
-        </div>
-        <div class="box-content">爱心义卖 聋哑人十字绣作品纯 手工 十字绣</div>
-        <div class="box-desc">
-            <span class="box-money">￥220</span> <span  class="box-paycount">22人付款</span>
-        </div>
-    </div>
-    <div class="content-box-right">
-        <div class="box-img">
-            <img src="${base}/resources/mobile/shop/images/home/guss-u-4.png" alt="logo" width="100%" />
-        </div>
-        <div class="box-content">爱心义卖 聋哑人十字绣作品纯 手工 十字绣</div>
-        <div class="box-desc">
-            <span class="box-money">￥220</span> <span  class="box-paycount">22人付款</span>
-        </div>
-    </div>
-</div>
-<!--中间猜你喜欢content 结束-->
-<!--底部菜单栏开始-->
-<div class="bottom-menu">
-    <div class="bottom-menu-box">
-        <a class="bottom-orange-menu-item" href="#">
-            <div class="bottom-item-icon">
-                <img src="${base}/resources/mobile/shop/images/home/home.png" alt="logo" width="30%" />
+        <nav>
+            <div class="row">
+                <div class="col-xs-3 text-center">
+                    <a href="${base}/product/list/1">
+                        <img src="${base}/upload/image/index_nav_1.png" alt="积分乐园">
+                        积分乐园
+                    </a>
+                </div>
+                <div class="col-xs-3 text-center">
+                    <a href="${base}/product/list/1">
+                        <img src="${base}/upload/image/index_nav_2.png" alt="充值中心">
+                        充值中心
+                    </a>
+                </div>
+                <div class="col-xs-3 text-center">
+                    <a href="${base}/product/list/1">
+                        <img src="${base}/upload/image/index_nav_3.png" alt="办公电器">
+                        办公电器
+                    </a>
+                </div>
+                <div class="col-xs-3 text-center">
+                    <a href="${base}/product/list/1">
+                        <img src="${base}/upload/image/index_nav_4.png" alt="平板来袭">
+                        平板来袭
+                    </a>
+                </div>
+                <div class="col-xs-3 text-center">
+                    <a href="${base}/product/list/1">
+                        <img src="${base}/upload/image/index_nav_5.png" alt="手机专场">
+                        手机专场
+                    </a>
+                </div>
+                <div class="col-xs-3 text-center">
+                    <a href="${base}/product/list/1">
+                        <img src="${base}/upload/image/index_nav_6.png" alt="心随乐动">
+                        心随乐动
+                    </a>
+                </div>
+                <div class="col-xs-3 text-center">
+                    <a href="${base}/product/list/1">
+                        <img src="${base}/upload/image/index_nav_7.png" alt="发现好货">
+                        发现好货
+                    </a>
+                </div>
+                <div class="col-xs-3 text-center">
+                    <a href="${base}/product/list/1">
+                        <img src="${base}/upload/image/index_nav_8.png" alt="乐享视界">
+                        乐享视界
+                    </a>
+                </div>
             </div>
-            <div class="bottom-item-name">
-                首页
+        </nav>
+        <div class="promotion">
+            <div class="row">
+                <div class="col-xs-2 text-center">
+                    <span class="glyphicon glyphicon-gift red-dark"></span>
+                </div>
+                <div class="col-xs-10">
+                    <div class="carousel" data-ride="carousel">
+                        <ul class="carousel-inner">
+                            <li class="item active">
+                                <a href="${base}/product/list/1">
+                                    <em class="blue-dark">苹果产品促销专场，全部最低价</em>
+                                    以旧换新最高可抵2000元
+                                </a>
+                            </li>
+                            <li class="item">
+                                <a href="${base}/product/list/1">
+                                    <em class="blue-dark">Color Cube立体声蓝牙音箱</em>
+                                    精致生活，声色享受
+                                </a>
+                            </li>
+                            <li class="item">
+                                <a href="${base}/product/list/1">
+                                    <em class="blue-dark">四款让人任性的数码产品，达人分享</em>
+                                    忙碌1年，任性1把
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-        </a>
-
-        <a class="bottom-orange-menu-item" href="#">
-            <div class="bottom-item-icon">
-                <img src="${base}/resources/mobile/shop/images/home/category.png" alt="logo" width="30%" />
-            </div>
-            <div class="bottom-item-name">
-                分类
-            </div>
-        </a>
-
-        <a class="bottom-orange-menu-item" href="#">
-            <div class="bottom-item-icon">
-                <img src="${base}/resources/mobile/shop/images/home/buycar.png" alt="logo" width="30%" />
-            </div>
-            <div class="bottom-item-name">
-                购物车
-            </div>
-        </a>
-
-        <a class="bottom-orange-menu-item" href="#">
-            <div class="bottom-item-icon">
-                <img src="${base}/resources/mobile/shop/images/home/mine.png" alt="logo" width="30%" />
-            </div>
-            <div class="bottom-item-name">
-                我的
-            </div>
-        </a>
+        </div>
+        <div class="ad">
+            <ul>
+                <li>
+                    <a href="${base}/product/list/1">
+                        <img src="${base}/upload/image/row3_slider_1.jpg" alt="音响">
+                    </a>
+                </li>
+                <li>
+                    <a href="${base}/product/list/1">
+                        <img src="${base}/upload/image/row3_slider_2.jpg" alt="音响">
+                    </a>
+                </li>
+                <li>
+                    <a href="${base}/product/list/1">
+                        <img src="${base}/upload/image/row3_slider_3.jpg" alt="音响">
+                    </a>
+                </li>
+                <li>
+                    <a href="${base}/product/list/1">
+                        <img src="${base}/upload/image/row3_slider_4.jpg" alt="音响">
+                    </a>
+                </li>
+            </ul>
+        </div>
+			[@product_category_root_list count = 3]
+                [#list productCategories as productCategory]
+					<div class="products panel panel-flat panel-condensed">
+                        <div class="panel-heading orange">${productCategory.name}</div>
+                        <div class="panel-body">
+                            <div class="row">
+								[@product_list product_category_id = productCategory.id count = 6]
+									[#list products as product]
+                                        [#assign defaultSku = product.defaultSku /]
+										<div class="col-xs-4">
+                                            <div class="thumbnail thumbnail-flat thumbnail-condensed">
+                                                <a href="${base}${product.path}">
+                                                    <img class="img-responsive center-block" src="${base}/upload/image/blank.gif" alt="${product.name}" data-original="${product.image!setting.defaultThumbnailProductImage}">
+                                                    <h4 class="text-overflow">${product.name}</h4>
+                                                    <p class="text-overflow text-muted small">${product.caption}</p>
+                                                </a>
+												[#if product.typeName == "general"]
+													<strong class="red">${currency(defaultSku.price, true)}</strong>
+                                                [#elseif product.typeName == "exchange"]
+													<span class="small">${message("Sku.exchangePoint")}:</span>
+													<strong class="red">${defaultSku.exchangePoint}</strong>
+                                                [/#if]
+                                            </div>
+                                        </div>
+                                    [/#list]
+                                [/@product_list]
+                            </div>
+                        </div>
+                    </div>
+                [/#list]
+            [/@product_category_root_list]
     </div>
-</div>
-
-<!--底部菜单栏结束-->
+</main>
+<footer class="footer-fixed">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-3 text-center active">
+                <span class="glyphicon glyphicon-home"></span>
+                <a href="${base}/">${message("shop.common.index")}</a>
+            </div>
+            <div class="col-xs-3 text-center">
+                <span class="glyphicon glyphicon-th-list"></span>
+                <a href="${base}/product_category">${message("shop.common.productCategory")}</a>
+            </div>
+            <div class="col-xs-3 text-center">
+                <span class="glyphicon glyphicon-shopping-cart"></span>
+                <a href="${base}/cart/list">${message("shop.common.cart")}</a>
+            </div>
+            <div class="col-xs-3 text-center">
+                <span class="glyphicon glyphicon-user"></span>
+                <a href="${base}/member/index">${message("shop.common.member")}</a>
+            </div>
+        </div>
+    </div>
+</footer>
 </body>
 </html>
