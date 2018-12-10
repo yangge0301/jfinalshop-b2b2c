@@ -59,106 +59,104 @@
 		[#if flashMessage?has_content]
 			$.alert("${flashMessage}");
 		[/#if]
-		
-		// 修改
-		$modify.click(function() {
-			var $(this)ment = $(this);
-			if ($(this)ment.hasClass("active")) {
-				$(this)ment.text("${message("shop.cart.modify")}");
-				$remove.add($clear).velocity("fadeOut");
-			} else {
-				$(this)ment.text("${message("shop.cart.complete")}");
-				$remove.velocity("fadeIn");
-				$clear.velocity("fadeIn", {
-					display: "block"
-				});
-			}
-			$(this)ment.toggleClass("active");
-		});
-		
-		// 数量
-		$spinner.spinner({
-			min: 1,
-			max: 10000
-		}).spinner("changing", function(e, newValue, oldValue) {
-		    console.log($(this).parent().parent().parent().find(".img_select"))
-            $(this).parent().parent().parent().find(".img_select").attr("u_quantity",newValue);
-			var $(this)ment = $(this);
-			var skuId = $(this)ment.data("sku-id");
-			var storeGift = $(this)ment.closest("div.list-group").siblings("div.gift");
-			var storePromotion = $(this)ment.closest("div.list-group").siblings("div.promotion");
-			$.ajax({
-				url: "modify",
-				type: "POST",
-				data: {
-					skuId: skuId,
-					quantity: newValue
-				},
-				dataType: "json",
-				beforeSend: function() {
-					$checkout.prop("disabled", true);
-				},
-				success: function(data) {
-					if (!data.isLowStock) {
-						$(this)ment.closest("div.list-group-item").find("a.product-image strong").remove();
-					}
-					storeGift.html(giftTemplate({
-						giftNames: data.giftNames
-					}));
-					storePromotion.html(promotionTemplate({
-						promotionNames: data.promotionNames
-					}));
-					$effectivePrice.text(currency(data.effectivePrice, true, true));
-				},
-				error: function() {
-					if (newValue > oldValue) {
-						$(this)ment.val(oldValue);
-					}
-				},
-				complete: function() {
-					$checkout.prop("disabled", false);
-				}
-			});
-		});
-		
-		// 移除
-		$remove.click(function() {
-			if (confirm("${message("shop.dialog.deleteConfirm")}")) {
-				var $(this)ment = $(this);
-				var skuId = $(this)ment.data("sku-id");
-				var storeGift = $(this)ment.closest("div.list-group").siblings("div.gift");
-				var storePromotion = $(this)ment.closest("div.list-group").siblings("div.promotion");
-				$.ajax({
-					url: "remove",
-					type: "POST",
-					data: {
-						skuId: skuId
-					},
-					dataType: "json",
-					beforeSend: function() {
-						$checkout.prop("disabled", true);
-					},
-					success: function(data) {
-						if (data.quantity > 0) {
-							$(this)ment.closest("div.list-group-item").velocity("slideUp");
-							storeGift.html(giftTemplate({
-								giftNames: data.giftNames
-							}));
-							storePromotion.html(promotionTemplate({
-								promotionNames: data.promotionNames
-							}));
-							$effectivePrice.text(currency(data.effectivePrice, true, true));
-						} else {
-							location.reload(true);
-						}
-					},
-					complete: function() {
-						$checkout.prop("disabled", false);
-					}
-				});
-			}
-		});
-		function deleteItem(skuId,quantity){
+
+        // 修改
+        $modify.click(function() {
+            var $element = $(this);
+            if ($element.hasClass("active")) {
+                $element.text("${message("shop.cart.modify")}");
+                $remove.add($clear).velocity("fadeOut");
+            } else {
+                $element.text("${message("shop.cart.complete")}");
+                $remove.velocity("fadeIn");
+                $clear.velocity("fadeIn", {
+                    display: "block"
+                });
+            }
+            $element.toggleClass("active");
+        });
+
+        // 数量
+        $spinner.spinner({
+            min: 1,
+            max: 10000
+        }).spinner("changing", function(e, newValue, oldValue) {
+            var $element = $(this);
+            var skuId = $element.data("sku-id");
+            var storeGift = $element.closest("div.list-group").siblings("div.gift");
+            var storePromotion = $element.closest("div.list-group").siblings("div.promotion");
+            $.ajax({
+                url: "modify",
+                type: "POST",
+                data: {
+                    skuId: skuId,
+                    quantity: newValue
+                },
+                dataType: "json",
+                beforeSend: function() {
+                    $checkout.prop("disabled", true);
+                },
+                success: function(data) {
+                    if (!data.isLowStock) {
+                        $element.closest("div.list-group-item").find("a.product-image strong").remove();
+                    }
+                    storeGift.html(giftTemplate({
+                        giftNames: data.giftNames
+                    }));
+                    storePromotion.html(promotionTemplate({
+                        promotionNames: data.promotionNames
+                    }));
+                    $effectivePrice.text(currency(data.effectivePrice, true, true));
+                },
+                error: function() {
+                    if (newValue > oldValue) {
+                        $element.val(oldValue);
+                    }
+                },
+                complete: function() {
+                    $checkout.prop("disabled", false);
+                }
+            });
+        });
+
+        // 移除
+        $remove.click(function() {
+            if (confirm("${message("shop.dialog.deleteConfirm")}")) {
+                var $element = $(this);
+                var skuId = $element.data("sku-id");
+                var storeGift = $element.closest("div.list-group").siblings("div.gift");
+                var storePromotion = $element.closest("div.list-group").siblings("div.promotion");
+                $.ajax({
+                    url: "remove",
+                    type: "POST",
+                    data: {
+                        skuId: skuId
+                    },
+                    dataType: "json",
+                    beforeSend: function() {
+                        $checkout.prop("disabled", true);
+                    },
+                    success: function(data) {
+                        if (data.quantity >= 0) {
+                            $element.closest("div.list-group-item").velocity("slideUp");
+                            storeGift.html(giftTemplate({
+                                giftNames: data.giftNames
+                            }));
+                            storePromotion.html(promotionTemplate({
+                                promotionNames: data.promotionNames
+                            }));
+                            $effectivePrice.text(currency(data.effectivePrice, true, true));
+                        } else {
+                            location.reload(true);
+                        }
+                    },
+                    complete: function() {
+                        $checkout.prop("disabled", false);
+                    }
+                });
+            }
+        });
+		function deleteItem(skuId,quantity,element){
             $.ajax({
                 url: "remove",
                 type: "POST",
@@ -167,11 +165,17 @@
                 },
                 dataType: "json",
                 beforeSend: function() {
+                    $checkout.prop("disabled", true);
                 },
                 success: function(data) {
-
+                    if (data.quantity >= 0) {
+                        $effectivePrice.text(currency(data.effectivePrice, true, true));
+                    } else {
+                        location.reload(true);
+                    }
                 },
                 complete: function() {
+                    $checkout.prop("disabled", false);
 
                 }
             });
@@ -189,6 +193,8 @@
 
                 },
                 success: function(data) {
+					var res = data.message.split('￥')[1].split('<')[0];
+                    $effectivePrice.text(currency(res, true, true));
 
                 },
                 complete: function() {
@@ -220,18 +226,32 @@
 		    var isSelect = $(this).attr('u_select');
             var u_quantity = $(this).attr('u_quantity');
             var u_skuid = $(this).attr('u_skuid');
-            console.log(isSelect)
-            console.log(u_quantity)
-            console.log(u_skuid)
 		    if(isSelect == "true"){
                 $(this).attr('u_select',"false");
                 $(this).find('.imgsrc').attr("src",'${base}/resources/mobile/shop/images/shoppingcar/noselect.png');
                 deleteItem(u_skuid,u_quantity);
+
+                $(".allselect").find('.allimgsrc').attr("src",'${base}/resources/mobile/shop/images/shoppingcar/noselect.png');
+                $(".allselect").attr("u_select","false");
 			}
 			else{
                 $(this).attr('u_select',"true");
                 $(this).find('.imgsrc').attr("src",'${base}/resources/mobile/shop/images/shoppingcar/select.png');
                 addItem(u_skuid,u_quantity);
+                var flag = true;
+                $(".img_select").each(function(){
+                    if($(this).attr('u_select')=="false"){
+                        flag=false;
+					}
+				});
+                if(flag){
+                    $(".allselect").find('.allimgsrc').attr("src",'${base}/resources/mobile/shop/images/shoppingcar/select.png');
+                    $(".allselect").attr("u_select","true");
+				}
+				else{
+                    $(".allselect").find('.allimgsrc').attr("src",'${base}/resources/mobile/shop/images/shoppingcar/noselect.png');
+                    $(".allselect").attr("u_select","false");
+				}
 			}
 
 
@@ -247,14 +267,12 @@
                     var u_quantity = $(this).attr('u_quantity');
                     var u_skuid = $(this).attr('u_skuid');
                     var u_select = $(this).attr('u_select');
-					console.log(u_quantity)
-                    console.log(u_skuid)
-                    console.log(u_select)
                     if(u_select =="false"){
+
                         addItem(u_skuid,u_quantity);
                         $(this).attr('u_select',"true");
                     }
-                    $(this).find('.allimgsrc').attr("src",'${base}/resources/mobile/shop/images/shoppingcar/select.png');
+                    $(this).find('.imgsrc').attr("src",'${base}/resources/mobile/shop/images/shoppingcar/select.png');
                 });
 			}
 			else{
@@ -376,7 +394,7 @@
 		</div>
 	</main>
 
-	<footer class="footer-fixed">
+	<footer class="footer-fixed" style="bottom:3.4rem">
 		<div class="container-fluid">
 			<div class="row">
                 <div class="col-xs-3  allselect" style="display: flex;justify-content: center;align-items: center;" u_select="true">
@@ -389,10 +407,34 @@
 					[/#if]
 				</div>
 				<div class="col-xs-3">
-					<button id="checkout" class="btn btn-red btn-flat btn-block" type="button"[#if !currentCart?? || !currentCart.cartItems?has_content] disabled[/#if]>${message("shop.cart.checkout")}</button>
+					<button id="checkout" style="border:none;background:#f60;border-radius:1rem;" class="btn btn-red btn-flat btn-block" type="button"[#if !currentCart?? || !currentCart.cartItems?has_content] disabled[/#if]>${message("shop.cart.checkout")}</button>
 				</div>
 			</div>
 		</div>
 	</footer>
+
+
+    <footer class="footer-fixed">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-3 text-center active">
+                    <span class="glyphicon glyphicon-home"></span>
+                    <a href="${base}/">${message("shop.common.index")}</a>
+                </div>
+                <div class="col-xs-3 text-center">
+                    <span class="glyphicon glyphicon-th-list"></span>
+                    <a href="${base}/product_category">${message("shop.common.productCategory")}</a>
+                </div>
+                <div class="col-xs-3 text-center">
+                    <span class="glyphicon glyphicon-shopping-cart"></span>
+                    <a href="${base}/cart/list">${message("shop.common.cart")}</a>
+                </div>
+                <div class="col-xs-3 text-center">
+                    <span class="glyphicon glyphicon-user"></span>
+                    <a href="${base}/member/index">${message("shop.common.member")}</a>
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
