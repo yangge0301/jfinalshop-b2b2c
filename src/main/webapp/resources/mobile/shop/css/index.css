@@ -5,7 +5,6 @@
 	width: 100%;
 	line-height: 30px;
 	padding: 5px 0px;
-	position: fixed;
 	top: 0px;
 	z-index: 100;
 	background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
@@ -14,7 +13,6 @@
 	background: -o-linear-gradient(top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
 	background: linear-gradient(top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
 }
-
 .index header .glyphicon-th-large {
 	line-height: 26px;
 	color: #ffffff;
@@ -181,11 +179,9 @@
 }
 
 .index .products .thumbnail {
-	height: 200px;
 }
 
 .index .products .thumbnail img {
-	max-height: 120px;
 }
 
 .index .products .thumbnail h4 {

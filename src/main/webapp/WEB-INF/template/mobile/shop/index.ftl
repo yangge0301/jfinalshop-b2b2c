@@ -21,6 +21,7 @@
     <link href="${base}/resources/mobile/shop/css/animate.css" rel="stylesheet">
     <link href="${base}/resources/mobile/shop/css/common.css" rel="stylesheet">
     <link href="${base}/resources/mobile/shop/css/index.css" rel="stylesheet">
+    <link href="${base}/resources/mobile/shop/css/home.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 9]>
     <script src="${base}/resources/mobile/shop/js/html5shiv.js"></script>
     <script src="${base}/resources/mobile/shop/js/respond.js"></script>
@@ -88,42 +89,55 @@
     </script>
 </head>
 <body class="index">
-<header>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-xs-2 text-center">
-                <span id="searchIcon" class="glyphicon glyphicon-th-large"></span>
-            </div>
-            <div class="col-xs-8">
-                <div id="searchPlaceholder" class="search-placeholder">
-                ${message("shop.index.keyword")}<span class="glyphicon glyphicon-search"></span>
-                </div>
-            </div>
-            <div class="col-xs-2 text-center">
-                <a id="login" class="login" href="${base}/member/login">${message("shop.index.login")}</a>
-                <a id="member" class="member" href="${base}/member/index">
-                    <span class="fa fa-user-o"></span>
-                </a>
-            </div>
-        </div>
-        <div id="search" class="search">
-            <div class="row">
-                <div class="col-xs-1 text-center">
-                    <span id="searchSlideUp" class="glyphicon glyphicon-menu-up"></span>
-                </div>
-                <div class="col-xs-11">
-                    <form id="searchForm" action="${base}/product/search" method="get">
-                        <div class="input-group">
-                            <input id="keyword" name="keyword" class="form-control" type="text" placeholder="${message("shop.index.keyword")}">
-                            <span class="input-group-btn">
+
+<header class="header-fixed"  style="background:#fff;opacity:1;z-index:999999">
+    <a class="pull-left" href="javascript: history.back();">
+        <span class="glyphicon glyphicon-menu-left"></span>
+    </a>
+首页
+</header>
+
+<!--中间橙色背景 开始-->
+<div class="top-orange-bg">
+    <div style="width:100%;position:relative;padding-bottom:3rem;">
+        <img src="${base}/resources/mobile/shop/images/home/bga_02.png" alt="" width="100%;">
+        <div style="width:100%;position:absolute;top:5rem;;left:0;">
+
+            <header style="margin-top:5rem:position:none;opacity:1;background: none;">
+                <div class="container-fluid">
+                    <div class="row" style="height:4rem;">
+                        <div class="col-xs-2 text-center" style="width:2%;">
+                        </div>
+                        <div class="col-xs-8" style="width:96%;height:4rem;">
+                            <div id="searchPlaceholder" class="search-placeholder" style="height:4rem;line-height:4rem;">
+                            ${message("shop.index.keyword")}<span class="glyphicon glyphicon-search"></span>
+                            </div>
+                        </div>
+                        <div class="col-xs-2 text-center"  style="width:2%;">
+                        [#--<a id="login" class="login" href="${base}/member/login">${message("shop.index.login")}</a>--]
+                        [#--<a id="member" class="member" href="${base}/member/index">--]
+                        [#--<span class="fa fa-user-o"></span>--]
+                        [#--</a>--]
+                        </div>
+                    </div>
+                    <div id="search" class="search" style="position:absolute">
+                        <div class="row">
+                            <div class="col-xs-1 text-center">
+                                <span id="searchSlideUp" class="glyphicon glyphicon-menu-up"></span>
+                            </div>
+                            <div class="col-xs-11">
+                                <form id="searchForm" action="${base}/product/search" method="get">
+                                    <div class="input-group">
+                                        <input id="keyword" name="keyword" class="form-control" type="text" placeholder="${message("shop.index.keyword")}">
+                                        <span class="input-group-btn">
 									<button class="btn btn-default" type="submit">
 										<span class="glyphicon glyphicon-search"></span>
 									</button>
 								</span>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                    </form>
-                </div>
-            </div>
 				[#if setting.hotSearches?has_content]
 					<dl class="hot-search">
                         <dt>
@@ -136,91 +150,108 @@
                         [/#list]
                     </dl>
                 [/#if]
+                    </div>
+                </div>
+            </header>
+            <nav>
+                <div class="row">
+                    <div class="col-xs-3 text-center"  style="color:#fff">
+                        <a href="${base}/product/list/1"  style="color:#fff;font-size:1.4rem">
+                            <img src="${base}/resources/mobile/shop/images/home/menu-jntc.png" alt="江宁特产">
+                            江宁特产
+                        </a>
+                    </div>
+                    <div class="col-xs-3 text-center" style="color:#fff">
+                        <a href="${base}/product/list/1"  style="color:#fff;font-size:1.4rem">
+                            <img src="${base}/resources/mobile/shop/images/home/menu-axym.png" alt="爱心义买">
+                            爱心义买
+                        </a>
+                    </div>
+                    <div class="col-xs-3 text-center"  style="color:#fff">
+                        <a href="${base}/product/list/1"  style="color:#fff;font-size:1.4rem">
+                            <img src="${base}/resources/mobile/shop/images/home/menu-yhjx.png" alt="优惠巨献">
+                            优惠巨献
+                        </a>
+                    </div>
+                    <div class="col-xs-3 text-center"  style="color:#fff">
+                        <a href="${base}/product/list/1"  style="color:#fff;font-size:1.4rem">
+                            <img src="${base}/resources/mobile/shop/images/home/menu-jfsc.png" alt="积分商城">
+                            平板来袭
+                        </a>
+                    </div>
+                    [#--<div class="col-xs-3 text-center">--]
+                        [#--<a href="${base}/product/list/1">--]
+                            [#--<img src="${base}/upload/image/index_nav_5.png" alt="手机专场">--]
+                            [#--手机专场--]
+                        [#--</a>--]
+                    [#--</div>--]
+                    [#--<div class="col-xs-3 text-center">--]
+                        [#--<a href="${base}/product/list/1">--]
+                            [#--<img src="${base}/upload/image/index_nav_6.png" alt="心随乐动">--]
+                            [#--心随乐动--]
+                        [#--</a>--]
+                    [#--</div>--]
+                    [#--<div class="col-xs-3 text-center">--]
+                        [#--<a href="${base}/product/list/1">--]
+                            [#--<img src="${base}/upload/image/index_nav_7.png" alt="发现好货">--]
+                            [#--发现好货--]
+                        [#--</a>--]
+                    [#--</div>--]
+                    [#--<div class="col-xs-3 text-center">--]
+                        [#--<a href="${base}/product/list/1">--]
+                            [#--<img src="${base}/upload/image/index_nav_8.png" alt="乐享视界">--]
+                            [#--乐享视界--]
+                        [#--</a>--]
+                    [#--</div>--]
+                </div>
+            </nav>
+            <div id="masthead" class="masthead carousel slide" data-ride="carousel" style="width:96%;margin: 0 auto">
+                <ol class="carousel-indicators">
+                    <li class="active" data-target="#masthead" data-slide-to="0"></li>
+                    <li data-target="#masthead" data-slide-to="1"></li>
+                    <li data-target="#masthead" data-slide-to="2"></li>
+                </ol>
+                <ul class="carousel-inner" style="border-radius:0.5rem">
+                    <li class="item active">
+                        <a href="#">
+                            <img src="${base}/upload/image/index_slider1.jpg" alt="荣耀8">
+                        </a>
+                    </li>
+                    <li class="item">
+                        <a href="#">
+                            <img src="${base}/upload/image/index_slider2.jpg" alt="百万豪礼">
+                        </a>
+                    </li>
+                    <li class="item">
+                        <a href="#">
+                            <img src="${base}/upload/image/index_slider3.jpg" alt="百万豪礼">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+
+
+
+
         </div>
     </div>
-</header>
+</div>
+<!--中间橙色背景 结束-->
+
+
+
+
 <main>
     <div class="container-fluid">
-        <div id="masthead" class="masthead carousel slide" data-ride="carousel">
-            <ol class="carousel-indicators">
-                <li class="active" data-target="#masthead" data-slide-to="0"></li>
-                <li data-target="#masthead" data-slide-to="1"></li>
-                <li data-target="#masthead" data-slide-to="2"></li>
-            </ol>
-            <ul class="carousel-inner">
-                <li class="item active">
-                    <a href="#">
-                        <img src="${base}/upload/image/index_slider1.jpg" alt="荣耀8">
-                    </a>
-                </li>
-                <li class="item">
-                    <a href="#">
-                        <img src="${base}/upload/image/index_slider2.jpg" alt="百万豪礼">
-                    </a>
-                </li>
-                <li class="item">
-                    <a href="#">
-                        <img src="${base}/upload/image/index_slider3.jpg" alt="百万豪礼">
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <nav>
-            <div class="row">
-                <div class="col-xs-3 text-center">
-                    <a href="${base}/product/list/1">
-                        <img src="${base}/upload/image/index_nav_1.png" alt="积分乐园">
-                        积分乐园
-                    </a>
-                </div>
-                <div class="col-xs-3 text-center">
-                    <a href="${base}/product/list/1">
-                        <img src="${base}/upload/image/index_nav_2.png" alt="充值中心">
-                        充值中心
-                    </a>
-                </div>
-                <div class="col-xs-3 text-center">
-                    <a href="${base}/product/list/1">
-                        <img src="${base}/upload/image/index_nav_3.png" alt="办公电器">
-                        办公电器
-                    </a>
-                </div>
-                <div class="col-xs-3 text-center">
-                    <a href="${base}/product/list/1">
-                        <img src="${base}/upload/image/index_nav_4.png" alt="平板来袭">
-                        平板来袭
-                    </a>
-                </div>
-                <div class="col-xs-3 text-center">
-                    <a href="${base}/product/list/1">
-                        <img src="${base}/upload/image/index_nav_5.png" alt="手机专场">
-                        手机专场
-                    </a>
-                </div>
-                <div class="col-xs-3 text-center">
-                    <a href="${base}/product/list/1">
-                        <img src="${base}/upload/image/index_nav_6.png" alt="心随乐动">
-                        心随乐动
-                    </a>
-                </div>
-                <div class="col-xs-3 text-center">
-                    <a href="${base}/product/list/1">
-                        <img src="${base}/upload/image/index_nav_7.png" alt="发现好货">
-                        发现好货
-                    </a>
-                </div>
-                <div class="col-xs-3 text-center">
-                    <a href="${base}/product/list/1">
-                        <img src="${base}/upload/image/index_nav_8.png" alt="乐享视界">
-                        乐享视界
-                    </a>
-                </div>
-            </div>
-        </nav>
+
+
         <div class="promotion">
             <div class="row">
                 <div class="col-xs-2 text-center">
-                    <span class="glyphicon glyphicon-gift red-dark"></span>
+                    <span class="glyphicon red-dark">
+			            <img src="${base}/resources/mobile/shop/images/home/news_left.png" alt="logo" width="70%" />
+                    </span>
                 </div>
                 <div class="col-xs-10">
                     <div class="carousel" data-ride="carousel">
@@ -248,45 +279,65 @@
                 </div>
             </div>
         </div>
-        <div class="ad">
-            <ul>
-                <li>
-                    <a href="${base}/product/list/1">
-                        <img src="${base}/upload/image/row3_slider_1.jpg" alt="音响">
-                    </a>
-                </li>
-                <li>
-                    <a href="${base}/product/list/1">
-                        <img src="${base}/upload/image/row3_slider_2.jpg" alt="音响">
-                    </a>
-                </li>
-                <li>
-                    <a href="${base}/product/list/1">
-                        <img src="${base}/upload/image/row3_slider_3.jpg" alt="音响">
-                    </a>
-                </li>
-                <li>
-                    <a href="${base}/product/list/1">
-                        <img src="${base}/upload/image/row3_slider_4.jpg" alt="音响">
-                    </a>
-                </li>
-            </ul>
+
+        <!--中间商城左右结构入口 开始-->
+        <div class="shop-allright">
+            <a class="allright allright-left" href="${base}/product/list/1">
+
+                <img src="${base}/resources/mobile/shop/images/home/allright-left.png" alt="logo" width="100%" />
+            </a>
+            <a class="allright allright-right" href="${base}/product/list/1">
+                <img src="${base}/resources/mobile/shop/images/home/allright-right.png" alt="logo" width="100%" />
+            </a>
         </div>
+        <!--中间商城左右结构入口 结束-->
+        [#--<div class="ad">--]
+            [#--<ul>--]
+                [#--<li>--]
+                    [#--<a href="${base}/product/list/1">--]
+                        [#--<img src="${base}/upload/image/row3_slider_1.jpg" alt="音响">--]
+                    [#--</a>--]
+                [#--</li>--]
+                [#--<li>--]
+                    [#--<a href="${base}/product/list/1">--]
+                        [#--<img src="${base}/upload/image/row3_slider_2.jpg" alt="音响">--]
+                    [#--</a>--]
+                [#--</li>--]
+                [#--<li>--]
+                    [#--<a href="${base}/product/list/1">--]
+                        [#--<img src="${base}/upload/image/row3_slider_3.jpg" alt="音响">--]
+                    [#--</a>--]
+                [#--</li>--]
+                [#--<li>--]
+                    [#--<a href="${base}/product/list/1">--]
+                        [#--<img src="${base}/upload/image/row3_slider_4.jpg" alt="音响">--]
+                    [#--</a>--]
+                [#--</li>--]
+            [#--</ul>--]
+        [#--</div>--]
 			[@product_category_root_list count = 3]
                 [#list productCategories as productCategory]
 					<div class="products panel panel-flat panel-condensed">
-                        <div class="panel-heading orange">${productCategory.name}</div>
+
+                        <div class="panel-heading orange" style="background: #fff">
+                            <div class="shop-hot-sale">
+                                <img src="${base}/resources/mobile/shop/images/home/hot-sale-icon.png" alt="logo" width="6%" /> ${productCategory.name}
+                            </div>
+                        </div>
                         <div class="panel-body">
                             <div class="row">
 								[@product_list product_category_id = productCategory.id count = 6]
 									[#list products as product]
                                         [#assign defaultSku = product.defaultSku /]
-										<div class="col-xs-4">
+										<div class="col-xs-4" style="margin-left:1.33%;width:48%;">
                                             <div class="thumbnail thumbnail-flat thumbnail-condensed">
                                                 <a href="${base}${product.path}">
-                                                    <img class="img-responsive center-block" src="${base}/upload/image/blank.gif" alt="${product.name}" data-original="${product.image!setting.defaultThumbnailProductImage}">
+                                                    <div style="width:100%;">
+                                                        <img class="img-responsive center-block" src="/b2b2c/5.0/201601/e44bc02b-e142-4fce-b88e-02b4ee8f392e-thumbnail.jpg" alt="${product.name}" data-original="${product.image!setting.defaultThumbnailProductImage}">
+
+                                                    </div>
                                                     <h4 class="text-overflow">${product.name}</h4>
-                                                    <p class="text-overflow text-muted small">${product.caption}</p>
+                                                    <p class="text-overflow text-muted small">${product.caption}&nbsp;</p>
                                                 </a>
 												[#if product.typeName == "general"]
 													<strong class="red">${currency(defaultSku.price, true)}</strong>
