@@ -187,9 +187,9 @@ $().ready(function() {
 		<div class="row">
 			<div class="span12">
 				<dl class="mainNav">
-					<dt>
-						<a href="${base}/product_category">${message("shop.header.allProductCategory")}</a>
-					</dt>
+					[#--<dt>--]
+						[#--<a href="${base}/product_category">${message("shop.header.allProductCategory")}</a>--]
+					[#--</dt>--]
 					<!-- middle -->
 					[@navigation_list position = 1]
 						[#list navigations as navigation]

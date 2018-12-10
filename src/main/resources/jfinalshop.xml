@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jfinalshop>
-	<setting name="siteName" value="jfinalshop" />
+	<setting name="siteName" value="江宁广电" />
 	<setting name="siteUrl" value="http://localhost:8080" />
 	<setting name="siteImageUrl" value="http://localhost:8080" />
 	<setting name="logo" value="/upload/image/logo.gif" />
@@ -11,7 +11,7 @@
 	<setting name="phone" value="800-8888888" />
 	<setting name="zipCode" value="400000" />
 	<setting name="email" value="service@jfinalshop.net" />
-	<setting name="certtext" value="深ICP备10000000号" />
+	<setting name="certtext" value="苏ICP备8888888号" />
 	<setting name="largeProductImageWidth" value="700" />
 	<setting name="largeProductImageHeight" value="700" />
 	<setting name="mediumProductImageWidth" value="300" />

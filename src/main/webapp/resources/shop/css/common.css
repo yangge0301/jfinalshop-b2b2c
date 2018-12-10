@@ -1071,7 +1071,9 @@ span.loadingBar {
 	line-height: 38px;
 	font-weight: bold;
 }
-
+.mainNav  dt:nth-child(1){
+	display: none;
+}
 .header .mainNav dt {
 	margin-right: 20px;
 }

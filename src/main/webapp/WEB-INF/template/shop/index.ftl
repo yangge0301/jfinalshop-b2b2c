@@ -3,10 +3,10 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="author" content="JFinalShop Team" />
-<meta name="copyright" content="JFinalShop" />
+<meta name="author" content="江宁广电" />
+<meta name="copyright" content="江宁广电" />
 [@seo type = "index"]
-	<title>${seo.resolveTitle()}[#if showPowered] - Powered By JFinalShop[/#if]</title>
+	<title>江宁广电</title>
 	[#if seo.resolveKeywords()?has_content]
 		<meta name="keywords" content="${seo.resolveKeywords()}" />
 	[/#if]
@@ -72,8 +72,8 @@ $().ready(function() {
 		<div class="row">
 			<div class="span2">
 				[@product_category_root_list count = 6]
-					<div id="productCategoryMenu" class="productCategoryMenu">
-						<ul>
+					<div id="productCategoryMenu" class="productCategoryMenu" style="height: 365px;opacity: 0">
+						<ul style="display: none">
 							[#list productCategories as productCategory]
 								<li>
 									[@product_category_children_list product_category_id = productCategory.id recursive = false count = 3]
