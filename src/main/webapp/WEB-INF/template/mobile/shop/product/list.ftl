@@ -44,9 +44,13 @@
 			<div class="col-xs-6">
 				<div class="thumbnail thumbnail-flat thumbnail-condensed">
 					<a href="${base}<%-product.path%>">
-						<img class="img-responsive center-block" src="<%-product.thumbnail != null ? product.thumbnail : "${setting.defaultThumbnailProductImage}"%>" alt="<%-product.name%>">
-						<h4 class="text-overflow"><%-product.name%></h4>
-						<p class="text-overflow text-muted small"><%-product.caption%></p>
+
+                        <div style="width:100%;">
+
+                            <img class="img-responsive center-block" src="<%-product.thumbnail != null ? product.thumbnail : "${setting.defaultThumbnailProductImage}"%>" alt="<%-product.name%>">
+                        </div>
+						<h4 class="text-overflow"><%-product.name%>&nbsp;</h4>
+						<p class="text-overflow text-muted small"><%-product.caption%>&nbsp;</p>
 					</a>
 					<%if (product.type == "general") {%>
 						<strong class="red"><%-currency(product.price, true)%></strong>
@@ -333,5 +337,36 @@
 			</div>
 		</div>
 	</main>
+
+<footer class="footer-fixed">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-3 text-center active">
+                <span class="glyphicon">
+                    <img src="${base}/resources/mobile/shop/images/home/home.png" alt=""  width="26%"/>
+                </span>
+                <a   style="display: block" href="${base}/">${message("shop.common.index")}</a>
+            </div>
+            <div class="col-xs-3 text-center">
+                    <span class="glyphicon">
+						<img src="${base}/resources/mobile/shop/images/home/category.png" alt="" width="26%"/>
+					</span>
+                <a   style="display: block" href="${base}/product_category">${message("shop.common.productCategory")}</a>
+            </div>
+            <div class="col-xs-3 text-center">
+                    <span class="glyphicon">
+						<img src="${base}/resources/mobile/shop/images/home/buycar.png" alt="" width="26%"/>
+					</span>
+                <a   style="display: block" href="${base}/cart/list">${message("shop.common.cart")}</a>
+            </div>
+            <div class="col-xs-3 text-center">
+                    <span class="glyphicon" >
+						<img src="${base}/resources/mobile/shop/images/home/mine.png" alt="" width="26%"/>
+					</span>
+                <a   style="display: block" href="${base}/member/index">${message("shop.common.member")}</a>
+            </div>
+        </div>
+    </div>
+</footer>
 </body>
 </html>

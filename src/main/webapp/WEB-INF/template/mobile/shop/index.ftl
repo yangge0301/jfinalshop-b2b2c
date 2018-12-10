@@ -176,7 +176,7 @@
                     <div class="col-xs-3 text-center"  style="color:#fff">
                         <a href="${base}/product/list/1"  style="color:#fff;font-size:1.4rem">
                             <img src="${base}/resources/mobile/shop/images/home/menu-jfsc.png" alt="积分商城">
-                            平板来袭
+                            积分商城
                         </a>
                     </div>
                     [#--<div class="col-xs-3 text-center">--]

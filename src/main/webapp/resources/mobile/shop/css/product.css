@@ -554,14 +554,15 @@
 .product-list .list {
 	padding-top: 73px;
 	overflow: hidden;
+	margin:0 auto;
+	width:96%;
+	padding-bottom: 4rem;
 }
 
 .product-list .list .thumbnail {
-	height: 280px;
 }
 
 .product-list .list .thumbnail img {
-	max-height: 170px;
 }
 
 .product-list .list .thumbnail h4 {
