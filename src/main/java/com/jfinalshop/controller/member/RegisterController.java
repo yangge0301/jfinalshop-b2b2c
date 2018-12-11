@@ -1,9 +1,11 @@
 package com.jfinalshop.controller.member;
 
+import java.io.BufferedReader;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.util.*;
 
 import com.alibaba.fastjson.JSONObject;
+import com.jfinalshop.model.*;
 import net.hasor.core.Inject;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -15,11 +17,6 @@ import com.jfinal.ext.route.ControllerBind;
 import com.jfinalshop.Results;
 import com.jfinalshop.Setting;
 import com.jfinalshop.interceptor.MobileInterceptor;
-import com.jfinalshop.model.Member;
-import com.jfinalshop.model.MemberAttribute;
-import com.jfinalshop.model.MemberRank;
-import com.jfinalshop.model.PointLog;
-import com.jfinalshop.model.SocialUser;
 import com.jfinalshop.service.MemberAttributeService;
 import com.jfinalshop.service.MemberRankService;
 import com.jfinalshop.service.MemberService;
@@ -30,6 +27,8 @@ import com.jfinalshop.shiro.hasher.HasherInfo;
 import com.jfinalshop.shiro.hasher.HasherKit;
 import com.jfinalshop.util.IpUtil;
 import com.jfinalshop.util.SystemUtils;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Controller - 会员注册
@@ -95,14 +94,136 @@ public class RegisterController extends BaseController {
 		render("/member/register/index.ftl");
 	}
 
-	public Object registerUser(String account,String password){
-		System.out.println("11111");
-		JSONObject obj = new JSONObject();
-		obj.put("resultCode","1");
-		obj.put("account",account);
-		obj.put("password",password);
+//	public void info(HttpServletRequest request){
+//		try{
+//
+//			String account = request.getParameter("account");
+//			String password = request.getParameter("password");
+//
+//			Member member = new Member();
+//			Setting setting = SystemUtils.getSetting();
+//			if (memberService.usernameExists(account)) {
+//				JSONObject obj = new JSONObject();
+//				obj.put("resultCode","2");
+//				obj.put("resultMsg","usernameExist");
+//				renderJson(obj);
+//				return;
+//			}
+//
+//			System.out.println(44);
+//			member.removeAttributeValue();
+//
+//			for (MemberAttribute memberAttribute : memberAttributeService.findList(true, true)) {
+//				String[] values = getParaValues("memberAttribute_" + memberAttribute.getId());
+//				if (!memberAttributeService.isValid(memberAttribute, values)) {
+//					Results.unprocessableEntity(getResponse(), Results.DEFAULT_UNPROCESSABLE_ENTITY_MESSAGE);
+//				}
+//				Object memberAttributeValue = memberAttributeService.toMemberAttributeValue(memberAttribute, values);
+//				member.setAttributeValue(memberAttribute, memberAttributeValue);
+//			}
+//
+//			System.out.println(55);
+//			member.setUsername(StringUtils.lowerCase(account));
+//			member.setEmail(StringUtils.lowerCase(member.getEmail()));
+//			member.setMobile(StringUtils.lowerCase(member.getMobile()));
+//			HasherInfo hasherInfo = HasherKit.hash(password, Hasher.DEFAULT);
+//			member.setPassword(hasherInfo.getHashResult());
+//			member.setHasher(hasherInfo.getHasher().value());
+//			member.setSalt(hasherInfo.getSalt());
+//
+//			System.out.println(66);
+//			member.setPoint(0L);
+//			member.setBalance(BigDecimal.ZERO);
+//			member.setAmount(BigDecimal.ZERO);
+//			member.setIsEnabled(true);
+//			member.setIsLocked(false);
+//			member.setLockDate(null);
+//			member.setLastLoginIp(IpUtil.getIpAddr(getRequest()));
+//			member.setLastLoginDate(new Date());
+//			MemberRank memberRank = memberRankService.findDefault();
+//			if (memberRank != null) {
+//				member.setMemberRankId(memberRank.getId());
+//			}
+//			memberService.save(member);
+//			// 用户注册事件
+//			if (setting.getRegisterPoint() > 0) {
+//				memberService.addPoint(member, setting.getRegisterPoint(), PointLog.Type.reward, null);
+//			}
+//			System.out.println(22);
+//			JSONObject obj = new JSONObject();
+//			obj.put("resultCode","0");
+//			obj.put("resultMsg","成功");
+//			renderJson(obj);
+//		}
+//		catch (Exception e){
+//			e.printStackTrace();
+//			JSONObject obj = new JSONObject();
+//			obj.put("resultCode","3");
+//			obj.put("resultMsg","失败");
+//			renderJson(obj);
+//		}
+//	}
 
-		return  obj;
+	public void info() {
+
+		String account = getPara("account");
+		String password = getPara("password");
+		Map<String, Object> data = new HashMap<>();
+		Setting setting = SystemUtils.getSetting();
+		try{
+
+
+			Member member = new Member();
+			if (memberService.usernameExists(account)) {
+				JSONObject obj = new JSONObject();
+				obj.put("resultCode","2");
+				obj.put("resultMsg","usernameExist");
+				renderJson(obj);
+				return;
+			}
+
+			member.removeAttributeValue();
+
+			System.out.println(55);
+			member.setUsername(StringUtils.lowerCase(account));
+			member.setEmail(StringUtils.lowerCase("1@1.com"));
+			member.setMobile(StringUtils.lowerCase(member.getMobile()));
+			HasherInfo hasherInfo = HasherKit.hash(password, Hasher.DEFAULT);
+			member.setPassword(hasherInfo.getHashResult());
+			member.setHasher(hasherInfo.getHasher().value());
+			member.setSalt(hasherInfo.getSalt());
+
+			System.out.println(66);
+			member.setPoint(0L);
+			member.setBalance(BigDecimal.ZERO);
+			member.setAmount(BigDecimal.ZERO);
+			member.setIsEnabled(true);
+			member.setIsLocked(false);
+			member.setLockDate(null);
+			member.setLastLoginIp(IpUtil.getIpAddr(getRequest()));
+			member.setLastLoginDate(new Date());
+			MemberRank memberRank = memberRankService.findDefault();
+			if (memberRank != null) {
+				member.setMemberRankId(memberRank.getId());
+			}
+			memberService.save(member);
+			// 用户注册事件
+			if (setting.getRegisterPoint() > 0) {
+				memberService.addPoint(member, setting.getRegisterPoint(), PointLog.Type.reward, null);
+			}
+			System.out.println(22);
+			JSONObject obj = new JSONObject();
+			obj.put("resultCode","0");
+			obj.put("resultMsg","成功");
+			renderJson(obj);
+		}
+		catch (Exception e){
+			e.printStackTrace();
+			JSONObject obj = new JSONObject();
+			obj.put("resultCode","3");
+			obj.put("resultMsg","失败");
+			renderJson(obj);
+		}
 	}
 	/**
 	 * 注册提交
