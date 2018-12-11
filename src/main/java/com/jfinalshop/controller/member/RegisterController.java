@@ -5,9 +5,14 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import com.alibaba.fastjson.JSONObject;
+import com.jfinal.kit.Kv;
+import com.jfinal.kit.StrKit;
 import com.jfinalshop.model.*;
+import com.jfinalshop.service.*;
+import com.jfinalshop.util.WebUtils;
 import net.hasor.core.Inject;
 
+import net.hasor.core.InjectSettings;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -17,10 +22,6 @@ import com.jfinal.ext.route.ControllerBind;
 import com.jfinalshop.Results;
 import com.jfinalshop.Setting;
 import com.jfinalshop.interceptor.MobileInterceptor;
-import com.jfinalshop.service.MemberAttributeService;
-import com.jfinalshop.service.MemberRankService;
-import com.jfinalshop.service.MemberService;
-import com.jfinalshop.service.SocialUserService;
 import com.jfinalshop.shiro.core.SubjectKit;
 import com.jfinalshop.shiro.hasher.Hasher;
 import com.jfinalshop.shiro.hasher.HasherInfo;
@@ -164,6 +165,59 @@ public class RegisterController extends BaseController {
 //		}
 //	}
 
+	/**
+	 * "重定向令牌"Cookie名称
+	 */
+	private static final String REDIRECT_TOKEN_COOKIE_NAME = "redirectToken";
+
+
+	@Inject
+	private PluginService pluginService;
+	@InjectSettings("${mobile_login_view}")
+	private String memberIndex;
+	@InjectSettings("${member_login_view}")
+	private String memberLoginView;
+	/**
+	 * 消息名称
+	 */
+	public static final String MESSAGE = "message";
+	public void login() {
+		String account = getPara("account");
+		String password = getPara("password");
+		Map<String, Object> data = new HashMap<>();
+		if (StrKit.notBlank(account) || StrKit.notBlank(password)) {
+			Member member = memberService.findByUsername(account);
+			if (member == null) {
+				renderJson(Kv.by(MESSAGE, "用户不存在!"));
+				return;
+			}
+			if (!member.getIsEnabled()) {
+				renderJson(Kv.by(MESSAGE, "用户禁用中!"));
+				return;
+			}
+			if (member.getIsLocked()) {
+				renderJson(Kv.by(MESSAGE, "用户锁定中!"));
+				return;
+			}
+			if (SubjectKit.login(account, password, SubjectKit.UserType.MEMBER)) {
+				member.setLastLoginIp(IpUtil.getIpAddr(getRequest()));
+				member.setLastLoginDate(new Date());
+				member.update();
+			} else {
+				renderJson(Kv.by(MESSAGE, "用户名或密码错误!"));
+				return;
+			}
+		}
+
+		setAttr("loginPlugins", pluginService.getActiveLoginPlugins(getRequest()));
+
+		if (memberService.isAuthenticated() && memberService.getCurrentUser() != null) {
+			render(memberIndex);
+		} else {
+			render(memberIndex);
+		}
+
+	}
 	public void info() {
 
 		String account = getPara("account");
