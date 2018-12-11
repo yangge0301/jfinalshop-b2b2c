@@ -111,7 +111,7 @@
 						<%}%>
 					[/#if]
 					<a class="btn btn-lg btn-default" href="view?orderSn=<%-order.sn%>">${message("member.order.view")}</a>
-                    <a class="btn btn-lg btn-default" id="receive" style="border:none;margin-left:10px; background: #f60;color:#fff;" href="receive?orderSn=<%-order.sn%>">确认收货</a>
+
 				</div>
 			</div>
 		<%})%>
@@ -133,7 +133,7 @@
 	<script type="text/javascript">
 	$().ready(function() {
 
-        var $receive = $("#receive");
+        // var $receive = $(".receive");
 		var $transitStepModal = $("#transitStepModal");
 		var $transitStepModalBody = $("#transitStepModal div.modal-body");
 		var $orderItems = $("#orderItems");
@@ -199,10 +199,24 @@
 	});
 
     // 订单收货
-    $receive.click(function() {
+    [#--$receive.click(function() {--]
+        [#--if (confirm("${message("member.order.receiveConfirm")}")) {--]
+            [#--$.ajax({--]
+                [#--url: "receive?orderSn=${order.sn}",--]
+                [#--type: "POST",--]
+                [#--dataType: "json",--]
+                [#--cache: false,--]
+                [#--success: function() {--]
+                    [#--location.reload(true);--]
+                [#--}--]
+            [#--});--]
+        [#--}--]
+        [#--return false;--]
+    [#--});--]
+    function doReceive(sn){
         if (confirm("${message("member.order.receiveConfirm")}")) {
             $.ajax({
-                url: "receive?orderSn=${order.sn}",
+                url: "receive?orderSn=sn",
                 type: "POST",
                 dataType: "json",
                 cache: false,
@@ -212,7 +226,9 @@
             });
         }
         return false;
-    });
+
+
+	}
     function getUrlParam(name) {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
         var r = window.location.search.substr(1).match(reg);  //匹配目标参数
