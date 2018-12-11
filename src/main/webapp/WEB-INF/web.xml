@@ -27,22 +27,7 @@
 			<param-value>com.jfinalshop.cfg.JFWebConfig</param-value>
 		</init-param>
 	</filter>
-	<servlet>
-	<servlet-name>apipotal</servlet-name>
-	<servlet-class>com.jfinalshop.controller.api.apiPortal</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>apipotal</servlet-name>
-		<url-pattern>/apipotal</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>loginUser</servlet-name>
-		<servlet-class>com.jfinalshop.controller.api.loginUser</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>loginUser</servlet-name>
-		<url-pattern>/loginUser</url-pattern>
-	</servlet-mapping>
+	
 	<filter-mapping>
 		<filter-name>JFinalFilter</filter-name>
 		<url-pattern>/*</url-pattern>
