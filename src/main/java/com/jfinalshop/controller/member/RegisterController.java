@@ -3,6 +3,7 @@ package com.jfinalshop.controller.member;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.alibaba.fastjson.JSONObject;
 import net.hasor.core.Inject;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -94,6 +95,15 @@ public class RegisterController extends BaseController {
 		render("/member/register/index.ftl");
 	}
 
+	public Object registerUser(String account,String password){
+		System.out.println("11111");
+		JSONObject obj = new JSONObject();
+		obj.put("resultCode","1");
+		obj.put("account",account);
+		obj.put("password",password);
+
+		return  obj;
+	}
 	/**
 	 * 注册提交
 	 */

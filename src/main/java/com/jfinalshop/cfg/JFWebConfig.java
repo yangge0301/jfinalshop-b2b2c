@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.jfinal.config.*;
 import com.jfinal.core.Controller;
 import com.jfinal.core.JFinal;
+import com.jfinal.ext.handler.UrlSkipHandler;
 import com.jfinal.ext.route.AutoBindRoutes;
 import com.jfinal.kit.PathKit;
 import com.jfinal.kit.PropKit;
@@ -189,6 +190,9 @@ public class JFWebConfig extends JFinalConfig {
 				}
 			}
 		});
+		handlers.add(new UrlSkipHandler("/apipotal",false));
+		handlers.add(new UrlSkipHandler("/loginUser",false));
+		handlers.add(new UrlSkipHandler("/registerUser",false));
 		handlers.add(dvh);
 	}
 
