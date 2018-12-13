@@ -117,13 +117,13 @@ public class PaymentController extends BaseController {
 			if(paymentTransaction.getType()==2){
 
 				payMoney=paymentTransaction.getAmount().toString();
-				url = payUrl +"&account="+currentUser.getUsername()+"&money=" +payMoney;
+				url = payUrl +"&account="+currentUser.getUsername()+"&fee=" +payMoney;
 			}
 			else{
 
 				orderNo=paymentTransaction.getSn();
 				payMoney=paymentTransaction.getAmount().toString();
-				url = payUrl +"&account="+currentUser.getUsername()+"&orderNo="+orderNo+"&money=" +payMoney;
+				url = payUrl +"&account="+currentUser.getUsername()+"&orderNo="+orderNo+"&fee=" +payMoney;
 			}
 		}
 		redirect(url);
