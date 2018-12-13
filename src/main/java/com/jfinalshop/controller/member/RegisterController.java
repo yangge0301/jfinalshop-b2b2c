@@ -284,6 +284,55 @@ public class RegisterController extends BaseController {
 			renderJson(obj);
 		}
 	}
+
+
+
+
+    public void updatepoint() {
+
+        String account = getPara("account");
+        String password = getPara("password");
+        long jifen = getParaToLong("jifen");
+        long add_jifen = getParaToLong("add_jifen");
+        long money = getParaToLong("money");
+        long add_money = getParaToLong("add_money");
+        Map<String, Object> data = new HashMap<>();
+        Setting setting = SystemUtils.getSetting();
+        try{
+
+
+            Member member = memberService.findByUsername(account);
+            if(member == null){
+                return;
+            }
+            if (!memberService.usernameExists(account)) {
+                JSONObject obj = new JSONObject();
+                obj.put("resultCode","2");
+                obj.put("resultMsg","usernameExist");
+                renderJson(obj);
+                return;
+            }
+
+
+            if (jifen > 0) {
+                memberService.addPointV2(member, jifen,add_jifen, PointLog.Type.reward, null);
+            }
+            if(money>0){
+                memberService.addBalanceV2(member, BigDecimal.valueOf(money),BigDecimal.valueOf(add_money), MemberDepositLog.Type.recharge, null);
+            }
+            JSONObject obj = new JSONObject();
+            obj.put("resultCode","0");
+            obj.put("resultMsg","成功");
+            renderJson(obj);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            JSONObject obj = new JSONObject();
+            obj.put("resultCode","3");
+            obj.put("resultMsg","失败");
+            renderJson(obj);
+        }
+    }
 	/**
 	 * 注册提交
 	 */

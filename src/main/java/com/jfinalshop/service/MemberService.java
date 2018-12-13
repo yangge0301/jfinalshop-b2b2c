@@ -213,6 +213,43 @@ public class MemberService extends BaseService<Member> {
 	}
 
 	/**
+	 * 增加余额
+	 *
+	 * @param member
+	 *            会员
+	 * @param amount
+	 *            值
+	 * @param type
+	 *            类型
+	 * @param memo
+	 *            备注
+	 */
+	public void addBalanceV2(Member member, BigDecimal amount,BigDecimal addAmount, MemberDepositLog.Type type, String memo) {
+		Assert.notNull(member);
+		Assert.notNull(amount);
+		Assert.notNull(type);
+
+		if (amount.compareTo(BigDecimal.ZERO) == 0) {
+			return;
+		}
+
+		Assert.notNull(member.getBalance());
+		Assert.state(member.getBalance().add(amount).compareTo(BigDecimal.ZERO) >= 0);
+
+		member.setBalance(member.getBalance().add(amount));
+		memberDao.update(member);
+
+		MemberDepositLog memberDepositLog = new MemberDepositLog();
+		memberDepositLog.setType(type.ordinal());
+		memberDepositLog.setCredit(addAmount.compareTo(BigDecimal.ZERO) > 0 ? addAmount : BigDecimal.ZERO);
+		memberDepositLog.setDebit(addAmount.compareTo(BigDecimal.ZERO) < 0 ? addAmount.abs() : BigDecimal.ZERO);
+		memberDepositLog.setBalance(member.getBalance());
+		memberDepositLog.setMemo(memo);
+		memberDepositLog.setMemberId(member.getId());
+		memberDepositLogDao.save(memberDepositLog);
+	}
+
+	/**
 	 * 增加积分
 	 * 
 	 * @param member
@@ -248,6 +285,29 @@ public class MemberService extends BaseService<Member> {
 		pointLogDao.save(pointLog);
 	}
 
+	public void addPointV2(Member member,long nowPoint,long amount, PointLog.Type type, String memo) {
+		Assert.notNull(member);
+		Assert.notNull(type);
+
+		if (amount == 0) {
+			return;
+		}
+
+		Assert.notNull(member.getPoint());
+		Assert.state(nowPoint >= 0);
+
+		member.setPoint(nowPoint);
+		memberDao.update(member);
+
+		PointLog pointLog = new PointLog();
+		pointLog.setType(type.ordinal());
+		pointLog.setCredit(amount > 0 ? amount : 0L);
+		pointLog.setDebit(amount < 0 ? Math.abs(amount) : 0L);
+		pointLog.setBalance(nowPoint);
+		pointLog.setMemo(memo);
+		pointLog.setMemberId(member.getId());
+		pointLogDao.save(pointLog);
+	}
 
 	/**
 	 * 增加消费金额

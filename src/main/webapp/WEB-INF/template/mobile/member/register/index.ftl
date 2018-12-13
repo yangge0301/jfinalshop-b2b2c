@@ -61,7 +61,7 @@
 		// 表单验证
 		$registerForm.validate({
 			rules: {
-				username: {
+				"member.username": {
 					required: true,
 					minlength: 4,
 					pattern: /^[0-9a-zA-Z_\u4e00-\u9fa5]+$/,
@@ -79,7 +79,7 @@
 					required: true,
 					equalTo: "#password"
 				},
-				email: {
+                "member.email": {
 					required: true,
 					email: true,
 					remote: {
@@ -87,7 +87,7 @@
 						cache: false
 					}
 				},
-				mobile: {
+                "member.mobile": {
 					pattern: /^1[3|4|5|7|8]\d{9}$/,
 					remote: {
 						url: "${base}/member/register/check_mobile",
@@ -112,14 +112,14 @@
 				[/@member_attribute_list]
 			},
 			messages: {
-				username: {
+                "member.username": {
 					pattern: "${message("member.register.usernameIllegal")}",
 					remote: "${message("member.register.usernameExist")}"
 				},
-				email: {
+                "member.email": {
 					remote: "${message("member.register.emailExist")}"
 				},
-				mobile: {
+                "member.mobile": {
 					pattern: "${message("member.register.mobileIllegal")}",
 					remote: "${message("member.register.mobileExist")}"
 				}
@@ -169,11 +169,11 @@
 				<input name="uniqueId" type="hidden" value="${uniqueId}">
 				<div class="form-group">
 					<label for="username">${message("member.register.username")}</label>
-					<input id="username" name="username" class="form-control" type="text" maxlength="20">
+					<input id="username" name="member.username" class="form-control" type="text" maxlength="20">
 				</div>
 				<div class="form-group">
 					<label for="password">${message("member.register.password")}</label>
-					<input id="password" name="password" class="form-control" type="password" maxlength="20" autocomplete="off">
+					<input id="password" name="member.password" class="form-control" type="password" maxlength="20" autocomplete="off">
 				</div>
 				<div class="form-group">
 					<label for="rePassword">${message("member.register.rePassword")}</label>
@@ -181,11 +181,11 @@
 				</div>
 				<div class="form-group">
 					<label for="email">${message("member.register.email")}</label>
-					<input id="email" name="email" class="form-control" type="text" maxlength="200">
+					<input id="email" name="member.email" class="form-control" type="text" maxlength="200">
 				</div>
 				<div class="form-group">
 					<label for="mobile">${message("member.register.mobile")}</label>
-					<input id="mobile" name="mobile" class="form-control" type="text" maxlength="200">
+					<input id="mobile" name="member.mobile" class="form-control" type="text" maxlength="200">
 				</div>
 				[@member_attribute_list]
 					[#list memberAttributes as memberAttribute]
