@@ -14,6 +14,7 @@ public class MemberInterceptor implements Interceptor{
 	@Override
 	public void intercept(Invocation inv) {
 		Controller c = inv.getController();
+		c.getResponse().addHeader("Access-Control-Allow-Origin", "*");
 		inv.invoke();
 		Member member = memberService.getCurrentUser();
 		if (member != null) {

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jfinalshop>
 	<setting name="siteName" value="江宁广电" />
-	<setting name="siteUrl" value="http://localhost:8080" />
-	<setting name="siteImageUrl" value="http://localhost:8080" />
+	<setting name="siteUrl" value="http://121.41.27.25:83" />
+	<setting name="siteImageUrl" value="http://121.41.27.25:83" />
 	<setting name="logo" value="/upload/image/logo.gif" />
 	<setting name="hotSearch" value="苹果,三星,索尼,华为,魅族,佳能,华硕,美的,格力" />
 	<setting name="cancelReason" value="商品选错了,地址填错了,忘记使用优惠了,临时有事需要取消,不想要了" />
@@ -10,7 +10,7 @@
 	<setting name="address" value="深圳市福田区" />
 	<setting name="phone" value="800-8888888" />
 	<setting name="zipCode" value="400000" />
-	<setting name="email" value="service@jfinalshop.net" />
+	<setting name="email" value="service@qq.net" />
 	<setting name="certtext" value="苏ICP备8888888号" />
 	<setting name="largeProductImageWidth" value="700" />
 	<setting name="largeProductImageHeight" value="700" />

@@ -3,9 +3,9 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<title>${message("member.consultation.list")}[#if showPowered] - Powered By JFinalShop[/#if]</title>
-<meta name="author" content="JFinalShop Team" />
-<meta name="copyright" content="JFinalShop" />
+<title>${message("member.consultation.list")}[#if showPowered][/#if]</title>
+<meta name="author" content="" />
+<meta name="copyright" content="" />
 <link href="${base}/resources/member/css/animate.css" rel="stylesheet" type="text/css" />
 <link href="${base}/resources/member/css/common.css" rel="stylesheet" type="text/css" />
 <link href="${base}/resources/member/css/member.css" rel="stylesheet" type="text/css" />
@@ -16,7 +16,9 @@ $().ready(function() {
 
 	var $delete = $("a.delete");
 
-	[#if flashMessage?has_content]		$.alert("${flashMessage}");	[/#if]
+	[#if flashMessage?has_content]
+		$.alert("${flashMessage}");
+	[/#if]
 
 	// 删除
 	$delete.click(function() {

@@ -2,9 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-<title>${message("admin.index.title")} - Powered By JFinalShop</title>
-<meta name="author" content="JFinalShop Team" />
-<meta name="copyright" content="JFinalShop" />
+<title>${message("admin.index.title")}</title>
+<meta name="author" content=" " />
+<meta name="copyright" content="" />
 <link href="${base}/resources/admin/css/common.css" rel="stylesheet" type="text/css" />
 <link href="${base}/resources/admin/css/index.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="${base}/resources/admin/js/jquery.js"></script>

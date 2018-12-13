@@ -3,10 +3,10 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="author" content="JFinalShop Team" />
-<meta name="copyright" content="JFinalShop" />
+<meta name="author" content=" " />
+<meta name="copyright" content="" />
 [@seo type = "brandList"]
-	<title>${seo.resolveTitle()}[#if showPowered] - Powered By JFinalShop[/#if]</title>
+	<title>${seo.resolveTitle()}[#if showPowered] [/#if]</title>
 	[#if seo.resolveKeywords()?has_content]
 		<meta name="keywords" content="${seo.resolveKeywords()}" />
 	[/#if]

@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta name="author" content="JFinalShop Team">
-    <meta name="copyright" content="JFinalShop">
+    <meta name="author" content="">
+    <meta name="copyright" content="">
 	[@seo type = "index"]
-		<title>${seo.resolveTitle()}[#if showPowered] - Powered By JFinalShop[/#if]</title>
+		<title>${seo.resolveTitle()}[#if showPowered] [/#if]</title>
 		[#if seo.resolveKeywords()?has_content]
 			<meta name="keywords" content="${seo.resolveKeywords()}">
 		[/#if]

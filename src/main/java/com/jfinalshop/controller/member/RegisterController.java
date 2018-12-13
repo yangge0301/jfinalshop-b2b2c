@@ -9,6 +9,7 @@ import com.jfinal.kit.Kv;
 import com.jfinal.kit.StrKit;
 import com.jfinalshop.model.*;
 import com.jfinalshop.service.*;
+import com.jfinalshop.util.JHttp;
 import com.jfinalshop.util.WebUtils;
 import net.hasor.core.Inject;
 
@@ -177,10 +178,14 @@ public class RegisterController extends BaseController {
 	private String memberIndex;
 	@InjectSettings("${member_login_view}")
 	private String memberLoginView;
+	@InjectSettings("${user_register_to_wjn_url}")
+	private String registerurl;
 	/**
 	 * 消息名称
 	 */
 	public static final String MESSAGE = "message";
+
+	@Before(MobileInterceptor.class)
 	public void login() {
 		String account = getPara("account");
 		String password = getPara("password");
@@ -348,6 +353,9 @@ public class RegisterController extends BaseController {
 			member.setMemberRankId(memberRank.getId());
 		}
 		memberService.save(member);
+		//同步注册信息
+		String urls = registerurl+"&account="+member.getUsername()+"&source=shop";
+		JHttp.get(urls);
 		// 用户注册事件
 		if (setting.getRegisterPoint() > 0) {
 			memberService.addPoint(member, setting.getRegisterPoint(), PointLog.Type.reward, null);

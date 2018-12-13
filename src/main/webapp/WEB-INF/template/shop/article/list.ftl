@@ -4,7 +4,7 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 [@seo type = "articleList"]
-	<title>[#if articleCategory.resolveSeoTitle()?has_content]${articleCategory.resolveSeoTitle()}[#else]${seo.resolveTitle()}[/#if][#if showPowered] - Powered By JFinalShop[/#if]</title>
+	<title>[#if articleCategory.resolveSeoTitle()?has_content]${articleCategory.resolveSeoTitle()}[#else]${seo.resolveTitle()}[/#if][#if showPowered][/#if]</title>
 	<meta name="author" content="JFinalShop Team" />
 	<meta name="copyright" content="JFinalShop" />
 	[#if articleCategory.resolveSeoKeywords()?has_content]

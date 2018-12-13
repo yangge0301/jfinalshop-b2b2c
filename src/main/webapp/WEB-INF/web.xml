@@ -27,7 +27,7 @@
 			<param-value>com.jfinalshop.cfg.JFWebConfig</param-value>
 		</init-param>
 	</filter>
-	
+
 	<filter-mapping>
 		<filter-name>JFinalFilter</filter-name>
 		<url-pattern>/*</url-pattern>

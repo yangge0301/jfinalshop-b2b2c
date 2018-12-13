@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>${message("business.index.title")} - Powered By JFinalShop</title>
-  <meta name="author" content="JFinalShop Team" />
-  <meta name="copyright" content="JFinalShop" />
+  <title>${message("business.index.title")}</title>
+  <meta name="author" content="" />
+  <meta name="copyright" content="" />
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   

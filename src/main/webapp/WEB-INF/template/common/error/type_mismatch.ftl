@@ -3,9 +3,9 @@
 <head>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<title>${message("common.error.typeMismatch")}[#if showPowered] - Powered By JFinalShop[/#if]</title>
-<meta name="author" content="JFinalShop Team" />
-<meta name="copyright" content="JFinalShop" />
+<title>${message("common.error.typeMismatch")}[#if showPowered] [/#if]</title>
+<meta name="author" content=" " />
+<meta name="copyright" content="" />
 <link href="${base}/resources/shop/css/common.css" rel="stylesheet" type="text/css" />
 <link href="${base}/resources/shop/css/error.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="${base}/resources/shop/js/jquery.js"></script>

@@ -13,6 +13,7 @@ public class MobileInterceptor implements Interceptor {
 	@Override
 	public void intercept(Invocation inv) {
 		Controller c = inv.getController();
+		c.getResponse().addHeader("Access-Control-Allow-Origin", "*");
 		inv.invoke();
 		Render render = c.getRender();
 		String view = render.getView();

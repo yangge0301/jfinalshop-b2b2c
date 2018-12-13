@@ -5,8 +5,8 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<meta name="format-detection" content="telephone=no">
-	<meta name="author" content="JFinalShop Team">
-	<meta name="copyright" content="JFinalShop">
+	<meta name="author" content=" ">
+	<meta name="copyright" content="">
 	<title>${message("member.productFavorite.list")}[#if showPowered] - Powered By JFinalShop[/#if]</title>
 	<link href="${base}/favicon.ico" rel="icon">
 	<link href="${base}/resources/mobile/member/css/bootstrap.css" rel="stylesheet">

@@ -4,9 +4,9 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-	<meta name="author" content="JFinalShop Team">
-	<meta name="copyright" content="JFinalShop">
-	<title>${message("business.instantMessage.list")} - Powered By JFinalShop</title>
+	<meta name="author" content="">
+	<meta name="copyright" content="">
+	<title>${message("business.instantMessage.list")}</title>
 	<link href="${base}/favicon.ico" rel="icon">
 	<link href="${base}/resources/business/css/bootstrap.css" rel="stylesheet">
 	<link href="${base}/resources/business/css/font-awesome.css" rel="stylesheet">
