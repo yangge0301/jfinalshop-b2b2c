@@ -229,6 +229,9 @@ public class RegisterController extends BaseController {
 		String password = getPara("password");
 		Map<String, Object> data = new HashMap<>();
 		Setting setting = SystemUtils.getSetting();
+		if(password==null||password.equals("")){
+			password="123456";
+		}
 		try{
 
 

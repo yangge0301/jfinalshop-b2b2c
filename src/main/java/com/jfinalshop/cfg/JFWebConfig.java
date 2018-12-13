@@ -202,7 +202,7 @@ public class JFWebConfig extends JFinalConfig {
 			Configuration cfg = FreeMarkerRender.getConfiguration();
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("base", JFinal.me().getContextPath());
-			map.put("showPowered", StringUtils.trim(PropKit.get("show_powered")));
+			map.put("showPowered", false);
 			map.put("setting", SystemUtils.getSetting());
 			map.put("message", new MessageMethod());
 			map.put("abbreviate", new AbbreviateMethod());

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jfinalshop>
 	<setting name="siteName" value="江宁广电" />
-	<setting name="siteUrl" value="http://121.41.27.25:83" />
-	<setting name="siteImageUrl" value="http://121.41.27.25:83" />
+	<setting name="siteUrl" value="http://127.0.0.1:8083" />
+	<setting name="siteImageUrl" value="http://127.0.0.1:8083" />
 	<setting name="logo" value="/upload/image/logo.gif" />
 	<setting name="hotSearch" value="苹果,三星,索尼,华为,魅族,佳能,华硕,美的,格力" />
 	<setting name="cancelReason" value="商品选错了,地址填错了,忘记使用优惠了,临时有事需要取消,不想要了" />

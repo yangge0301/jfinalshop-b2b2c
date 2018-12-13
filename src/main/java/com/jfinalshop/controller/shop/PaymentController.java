@@ -1,12 +1,17 @@
 package com.jfinalshop.controller.shop;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.jfinalshop.model.Member;
+import com.jfinalshop.service.MemberService;
+import com.jfinalshop.util.JHttp;
 import net.hasor.core.Inject;
 
+import net.hasor.core.InjectSettings;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
@@ -33,6 +38,10 @@ import com.jfinalshop.util.Assert;
 @Clear(CsrfInterceptor.class)
 public class PaymentController extends BaseController {
 
+	@InjectSettings("${user_pay_to_wjn_url}")
+	private String payUrl;
+	@Inject
+	private MemberService memberService;
 	@Inject
 	private PluginService pluginService;
 	@Inject
@@ -64,20 +73,22 @@ public class PaymentController extends BaseController {
 				paymentItems.add(paymentItem);
 			}
 		}
-		
 		PaymentPlugin paymentPlugin = pluginService.getPaymentPlugin(paymentPluginId);
-		if (paymentPlugin == null || BooleanUtils.isNotTrue(paymentPlugin.getIsEnabled())) {
-			setAttr("errorMessage", "插件禁用!");
-			render(UNPROCESSABLE_ENTITY_VIEW);
-			return;
-		}
-		
-		if (CollectionUtils.isEmpty(paymentItems)) {
-			setAttr("errorMessage", "支付项是空!");
-			render(UNPROCESSABLE_ENTITY_VIEW);
-			return;
-		}
-
+//		if (paymentPlugin == null || BooleanUtils.isNotTrue(paymentPlugin.getIsEnabled())) {
+//			setAttr("errorMessage", "插件禁用!");
+//			render(UNPROCESSABLE_ENTITY_VIEW);
+//			return;
+//		}
+//
+//		if (CollectionUtils.isEmpty(paymentItems)) {
+//			setAttr("errorMessage", "支付项是空!");
+//			render(UNPROCESSABLE_ENTITY_VIEW);
+//			return;
+//		}
+		long orderNo=0L;
+		String payMoney = "0";
+		String url ="";
+		Member currentUser = memberService.getCurrentUser();
 		PaymentTransaction paymentTransaction = null;
 		if (paymentItems.size() > 1) {
 			Set<PaymentTransaction.LineItem> lineItems = new HashSet<>();
@@ -88,12 +99,35 @@ public class PaymentController extends BaseController {
 				}
 			}
 			paymentTransaction = paymentTransactionService.generateParent(lineItems, paymentPlugin);
+			if(paymentTransaction.getType()==2){
+				payMoney=paymentTransaction.getAmount().toString();
+				url = payUrl +"&account="+currentUser.getUsername()+"&money=" +payMoney;
+			}
+			else{
+
+				orderNo=paymentTransaction.getOrderId();
+				payMoney=paymentTransaction.getAmount().toString();
+				url = payUrl +"&account="+currentUser.getUsername()+"&orderNo="+orderNo+"&money=" +payMoney;
+			}
+
 		} else {
 			PaymentItem paymentItem = paymentItems.get(0);
 			LineItem lineItem = paymentTransactionService.generate(paymentItem, null);
 			paymentTransaction = paymentTransactionService.generate(lineItem, paymentPlugin);
+			if(paymentTransaction.getType()==2){
+
+				payMoney=paymentTransaction.getAmount().toString();
+				url = payUrl +"&account="+currentUser.getUsername()+"&money=" +payMoney;
+			}
+			else{
+
+				orderNo=paymentTransaction.getOrderId();
+				payMoney=paymentTransaction.getAmount().toString();
+				url = payUrl +"&account="+currentUser.getUsername()+"&orderNo="+orderNo+"&money=" +payMoney;
+			}
 		}
-		redirect(paymentPlugin.getPrePayUrl(paymentPlugin, paymentTransaction));
+		redirect(url);
+//		redirect(paymentPlugin.getPrePayUrl(paymentPlugin, paymentTransaction));
 	}
 
 	/**
