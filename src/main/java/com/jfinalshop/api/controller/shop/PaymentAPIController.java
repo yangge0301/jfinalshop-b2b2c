@@ -313,42 +313,26 @@ public class PaymentAPIController extends ApiController {
 
 	@ActionKey("/api/payment/paymenotify")
 	public void paymenotify() {
-		String xml = HttpKit.readData(getRequest());
-		LogKit.info("支付通知=" + xml);
-
-		if (StringUtils.isEmpty(xml)) {
-			return;
-		}
-		Map<String, String> params = PaymentKit.xmlToMap(xml);
-
-		// 总金额
-		//String totalFee = params.get("total_fee");
-		// 微信支付订单号
-		//String transactionId = params.get("transaction_id");
-		// 商户订单号
-		String outTradeNo = params.get("out_trade_no");
-		// 交易类型
-		//String tradeType = params.get("trade_type");
-		// 支付完成时间，格式为yyyyMMddHHmmss
-		//String timeEnd = params.get("time_end");
-		// 以下是附加参数
-		//String openId = params.get("openid");
-
-		//PaymentPlugin paymentPlugin = pluginService.getPaymentPlugin(paymentPluginId);
-
-		Map<String, String> resultMap = PaymentApi.queryByOutTradeNo(getAppId(), getMchId(), getApiKey(), outTradeNo);
-
-		LogKit.info("resultMap" + resultMap);
-		PaymentTransaction paymentTransaction = paymentTransactionService.findBySn(outTradeNo);
-
-		paymentTransactionService.handle(paymentTransaction);
-		// 发送通知等
-		Map<String, String> xmlMap = new HashMap<String, String>();
-		xmlMap.put("return_code", "SUCCESS");
-		xmlMap.put("return_msg", "OK");
 		JSONObject obj = new JSONObject();
-		obj.put("resultCode","0");
-		obj.put("resultMsg","Success");
+		try{
+			String outTradeNo = getPara("orderNo");
+			LogKit.info("支付通知=" + outTradeNo);
+			Map<String, String> resultMap = PaymentApi.queryByOutTradeNo(getAppId(), getMchId(), getApiKey(), outTradeNo);
+			LogKit.info("resultMap" + resultMap);
+			PaymentTransaction paymentTransaction = paymentTransactionService.findBySn(outTradeNo);
+			paymentTransactionService.handle(paymentTransaction);
+			// 发送通知等
+			Map<String, String> xmlMap = new HashMap<String, String>();
+			xmlMap.put("return_code", "SUCCESS");
+			xmlMap.put("return_msg", "OK");
+			obj.put("resultCode","0");
+			obj.put("resultMsg","Success");
+		}
+		catch (Exception e){
+			e.printStackTrace();
+			obj.put("resultCode","1");
+			obj.put("resultMsg","err");
+		}
 		renderJson(obj);
 		return;
 

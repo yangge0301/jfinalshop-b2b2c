@@ -85,7 +85,7 @@ public class PaymentController extends BaseController {
 //			render(UNPROCESSABLE_ENTITY_VIEW);
 //			return;
 //		}
-		long orderNo=0L;
+		String orderNo="";
 		String payMoney = "0";
 		String url ="";
 		Member currentUser = memberService.getCurrentUser();
@@ -105,7 +105,7 @@ public class PaymentController extends BaseController {
 			}
 			else{
 
-				orderNo=paymentTransaction.getOrderId();
+				orderNo=paymentTransaction.getSn();
 				payMoney=paymentTransaction.getAmount().toString();
 				url = payUrl +"&account="+currentUser.getUsername()+"&orderNo="+orderNo+"&money=" +payMoney;
 			}
@@ -121,7 +121,7 @@ public class PaymentController extends BaseController {
 			}
 			else{
 
-				orderNo=paymentTransaction.getOrderId();
+				orderNo=paymentTransaction.getSn();
 				payMoney=paymentTransaction.getAmount().toString();
 				url = payUrl +"&account="+currentUser.getUsername()+"&orderNo="+orderNo+"&money=" +payMoney;
 			}
