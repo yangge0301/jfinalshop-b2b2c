@@ -97,76 +97,6 @@ public class RegisterController extends BaseController {
 		render("/member/register/index.ftl");
 	}
 
-//	public void info(HttpServletRequest request){
-//		try{
-//
-//			String account = request.getParameter("account");
-//			String password = request.getParameter("password");
-//
-//			Member member = new Member();
-//			Setting setting = SystemUtils.getSetting();
-//			if (memberService.usernameExists(account)) {
-//				JSONObject obj = new JSONObject();
-//				obj.put("resultCode","2");
-//				obj.put("resultMsg","usernameExist");
-//				renderJson(obj);
-//				return;
-//			}
-//
-//			System.out.println(44);
-//			member.removeAttributeValue();
-//
-//			for (MemberAttribute memberAttribute : memberAttributeService.findList(true, true)) {
-//				String[] values = getParaValues("memberAttribute_" + memberAttribute.getId());
-//				if (!memberAttributeService.isValid(memberAttribute, values)) {
-//					Results.unprocessableEntity(getResponse(), Results.DEFAULT_UNPROCESSABLE_ENTITY_MESSAGE);
-//				}
-//				Object memberAttributeValue = memberAttributeService.toMemberAttributeValue(memberAttribute, values);
-//				member.setAttributeValue(memberAttribute, memberAttributeValue);
-//			}
-//
-//			System.out.println(55);
-//			member.setUsername(StringUtils.lowerCase(account));
-//			member.setEmail(StringUtils.lowerCase(member.getEmail()));
-//			member.setMobile(StringUtils.lowerCase(member.getMobile()));
-//			HasherInfo hasherInfo = HasherKit.hash(password, Hasher.DEFAULT);
-//			member.setPassword(hasherInfo.getHashResult());
-//			member.setHasher(hasherInfo.getHasher().value());
-//			member.setSalt(hasherInfo.getSalt());
-//
-//			System.out.println(66);
-//			member.setPoint(0L);
-//			member.setBalance(BigDecimal.ZERO);
-//			member.setAmount(BigDecimal.ZERO);
-//			member.setIsEnabled(true);
-//			member.setIsLocked(false);
-//			member.setLockDate(null);
-//			member.setLastLoginIp(IpUtil.getIpAddr(getRequest()));
-//			member.setLastLoginDate(new Date());
-//			MemberRank memberRank = memberRankService.findDefault();
-//			if (memberRank != null) {
-//				member.setMemberRankId(memberRank.getId());
-//			}
-//			memberService.save(member);
-//			// 用户注册事件
-//			if (setting.getRegisterPoint() > 0) {
-//				memberService.addPoint(member, setting.getRegisterPoint(), PointLog.Type.reward, null);
-//			}
-//			System.out.println(22);
-//			JSONObject obj = new JSONObject();
-//			obj.put("resultCode","0");
-//			obj.put("resultMsg","成功");
-//			renderJson(obj);
-//		}
-//		catch (Exception e){
-//			e.printStackTrace();
-//			JSONObject obj = new JSONObject();
-//			obj.put("resultCode","3");
-//			obj.put("resultMsg","失败");
-//			renderJson(obj);
-//		}
-//	}
-
 	/**
 	 * "重定向令牌"Cookie名称
 	 */
@@ -291,7 +221,6 @@ public class RegisterController extends BaseController {
 			if (setting.getRegisterPoint() > 0) {
 				memberService.addPoint(member, setting.getRegisterPoint(), PointLog.Type.reward, null);
 			}
-			System.out.println(22);
 			JSONObject obj = new JSONObject();
 			obj.put("resultCode","0");
 			obj.put("resultMsg","成功");

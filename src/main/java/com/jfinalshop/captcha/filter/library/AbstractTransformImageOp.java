@@ -47,8 +47,6 @@ public abstract class AbstractTransformImageOp extends AbstractImageOp {
         outPixels[x + y * width] = pixel;
       }
     }
-    //long time2 = System.currentTimeMillis() - time1;
-    //System.out.println("AbstractTransformImageOp " + time2);
   }
 
 }
