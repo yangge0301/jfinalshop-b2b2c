@@ -8,6 +8,8 @@ import java.util.Set;
 
 import com.jfinalshop.model.Member;
 import com.jfinalshop.service.MemberService;
+import com.jfinalshop.util.CheckUtil;
+import com.jfinalshop.util.Des;
 import com.jfinalshop.util.JHttp;
 import net.hasor.core.Inject;
 
@@ -32,7 +34,7 @@ import com.jfinalshop.util.Assert;
 
 /**
  * Controller - 支付
- * 
+ *
  */
 @ControllerBind(controllerKey = "/payment")
 @Clear(CsrfInterceptor.class)
@@ -40,6 +42,10 @@ public class PaymentController extends BaseController {
 
 	@InjectSettings("${user_pay_to_wjn_url}")
 	private String payUrl;
+	@InjectSettings("${desKey}")
+	private static String desKey;
+	@InjectSettings("${entryKey}")
+	private static String entryKey;
 	@Inject
 	private MemberService memberService;
 	@Inject
@@ -62,72 +68,71 @@ public class PaymentController extends BaseController {
 	 */
 	@Before(Tx.class)
 	public void index() {
-		String paymentPluginId = getPara("paymentPluginId");
-		Integer paymentItemIndex = getIndexNum("paymentItemList");
-		
-		List<PaymentItem> paymentItems = new ArrayList<>();
-		if (-1 < paymentItemIndex) {
-			for (int i = 0; i <= paymentItemIndex; i++) {
-				PaymentItem paymentItem = getBean(PaymentItem.class, "paymentItems[" + i + "]");
-				paymentItem.setType(getParaEnum(PaymentItem.Type.class, getPara("paymentItemList[" + i + "].type")));
-				paymentItems.add(paymentItem);
-			}
-		}
-		PaymentPlugin paymentPlugin = pluginService.getPaymentPlugin(paymentPluginId);
-//		if (paymentPlugin == null || BooleanUtils.isNotTrue(paymentPlugin.getIsEnabled())) {
-//			setAttr("errorMessage", "插件禁用!");
-//			render(UNPROCESSABLE_ENTITY_VIEW);
-//			return;
-//		}
-//
-//		if (CollectionUtils.isEmpty(paymentItems)) {
-//			setAttr("errorMessage", "支付项是空!");
-//			render(UNPROCESSABLE_ENTITY_VIEW);
-//			return;
-//		}
-		String orderNo="";
-		String payMoney = "0";
-		String url ="";
-		Member currentUser = memberService.getCurrentUser();
-		PaymentTransaction paymentTransaction = null;
-		if (paymentItems.size() > 1) {
-			Set<PaymentTransaction.LineItem> lineItems = new HashSet<>();
-			for (PaymentItem paymentItem : paymentItems) {
-				LineItem lineItem = paymentTransactionService.generate(paymentItem, null);
-				if (lineItem != null) {
-					lineItems.add(lineItem);
+		try{
+			String paymentPluginId = getPara("paymentPluginId");
+			Integer paymentItemIndex = getIndexNum("paymentItemList");
+
+			List<PaymentItem> paymentItems = new ArrayList<>();
+			if (-1 < paymentItemIndex) {
+				for (int i = 0; i <= paymentItemIndex; i++) {
+					PaymentItem paymentItem = getBean(PaymentItem.class, "paymentItems[" + i + "]");
+					paymentItem.setType(getParaEnum(PaymentItem.Type.class, getPara("paymentItemList[" + i + "].type")));
+					paymentItems.add(paymentItem);
 				}
 			}
-			paymentTransaction = paymentTransactionService.generateParent(lineItems, paymentPlugin);
-			if(paymentTransaction.getType()==2){
-				payMoney=paymentTransaction.getAmount().toString();
-				url = payUrl +"&account="+currentUser.getUsername()+"&money=" +payMoney;
+			PaymentPlugin paymentPlugin = pluginService.getPaymentPlugin(paymentPluginId);
+
+			Member currentUser = memberService.getCurrentUser();
+			String orderNo="";
+			String payMoney = "0";
+			String url ="";
+			String account=currentUser.getUsername();
+			long timestamp = System.currentTimeMillis();
+			PaymentTransaction paymentTransaction = null;
+			if (paymentItems.size() > 1) {
+				Set<PaymentTransaction.LineItem> lineItems = new HashSet<>();
+				for (PaymentItem paymentItem : paymentItems) {
+					LineItem lineItem = paymentTransactionService.generate(paymentItem, null);
+					if (lineItem != null) {
+						lineItems.add(lineItem);
+					}
+				}
+				paymentTransaction = paymentTransactionService.generateParent(lineItems, paymentPlugin);
+				if(paymentTransaction.getType()==2){
+					payMoney=paymentTransaction.getAmount().toString();
+				}
+				else{
+
+					orderNo=paymentTransaction.getSn();
+					payMoney=paymentTransaction.getAmount().toString();
+				}
+
+			} else {
+				PaymentItem paymentItem = paymentItems.get(0);
+				LineItem lineItem = paymentTransactionService.generate(paymentItem, null);
+				paymentTransaction = paymentTransactionService.generate(lineItem, paymentPlugin);
+				if(paymentTransaction.getType()==2){
+					payMoney=paymentTransaction.getAmount().toString();
+				}
+				else{
+					orderNo=paymentTransaction.getSn();
+					payMoney=paymentTransaction.getAmount().toString();
+				}
+			}
+			if(orderNo==null||orderNo.equals("")){
+
+				url = payUrl +"&account="+ Des.getDesData(account,desKey)+"&fee=" +payMoney+"&sign="+CheckUtil.getSign(account,timestamp+"",entryKey)+"&timestamp="+timestamp;
 			}
 			else{
 
-				orderNo=paymentTransaction.getSn();
-				payMoney=paymentTransaction.getAmount().toString();
-				url = payUrl +"&account="+currentUser.getUsername()+"&orderNo="+orderNo+"&money=" +payMoney;
+				url = payUrl +"&account="+Des.getDesData(account,desKey)+"&orderNo="+Des.getDesData(orderNo,desKey)+"&fee=" +payMoney+"&sign="+CheckUtil.getSign(account,timestamp+"",entryKey)+"&timestamp="+timestamp;
 			}
-
-		} else {
-			PaymentItem paymentItem = paymentItems.get(0);
-			LineItem lineItem = paymentTransactionService.generate(paymentItem, null);
-			paymentTransaction = paymentTransactionService.generate(lineItem, paymentPlugin);
-			if(paymentTransaction.getType()==2){
-
-				payMoney=paymentTransaction.getAmount().toString();
-				url = payUrl +"&account="+currentUser.getUsername()+"&fee=" +payMoney;
-			}
-			else{
-
-				orderNo=paymentTransaction.getSn();
-				payMoney=paymentTransaction.getAmount().toString();
-				url = payUrl +"&account="+currentUser.getUsername()+"&orderNo="+orderNo+"&fee=" +payMoney;
-			}
+			redirect(url);
 		}
-		redirect(url);
-//		redirect(paymentPlugin.getPrePayUrl(paymentPlugin, paymentTransaction));
+		catch (Exception e){
+			e.printStackTrace();
+		}
+
 	}
 
 	/**

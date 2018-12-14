@@ -203,7 +203,7 @@
 			</div>
 			[#if online]
 				[#if paymentPlugins?has_content]
-					<form id="paymentForm" action="${base}/payment" method="post" target="_blank">
+					<form id="paymentForm" action="${base}/payment" method="get" target="_blank">
 						[#list orderSns as orderSn]
 							<input name="paymentItemList[0].type" type="hidden" value="ORDER_PAYMENT">
 							<input name="paymentItems[0].orderSn" type="hidden" value="${orderSn}">

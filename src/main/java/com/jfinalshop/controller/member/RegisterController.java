@@ -9,8 +9,7 @@ import com.jfinal.kit.Kv;
 import com.jfinal.kit.StrKit;
 import com.jfinalshop.model.*;
 import com.jfinalshop.service.*;
-import com.jfinalshop.util.JHttp;
-import com.jfinalshop.util.WebUtils;
+import com.jfinalshop.util.*;
 import net.hasor.core.Inject;
 
 import net.hasor.core.InjectSettings;
@@ -27,8 +26,6 @@ import com.jfinalshop.shiro.core.SubjectKit;
 import com.jfinalshop.shiro.hasher.Hasher;
 import com.jfinalshop.shiro.hasher.HasherInfo;
 import com.jfinalshop.shiro.hasher.HasherKit;
-import com.jfinalshop.util.IpUtil;
-import com.jfinalshop.util.SystemUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -48,6 +45,10 @@ public class RegisterController extends BaseController {
 	@Inject
 	private SocialUserService socialUserService;
 
+    @InjectSettings("${desKey}")
+    private static String desKey;
+    @InjectSettings("${entryKey}")
+    private static String entryKey;
 	/**
 	 * 检查用户名是否存在
 	 */
@@ -187,54 +188,72 @@ public class RegisterController extends BaseController {
 
 	@Before(MobileInterceptor.class)
 	public void login() {
-		String account = getPara("account");
-		String password = getPara("password");
-		Map<String, Object> data = new HashMap<>();
-		if (StrKit.notBlank(account) || StrKit.notBlank(password)) {
-			Member member = memberService.findByUsername(account);
-			if (member == null) {
-				renderJson(Kv.by(MESSAGE, "用户不存在!"));
-				return;
-			}
-			if (!member.getIsEnabled()) {
-				renderJson(Kv.by(MESSAGE, "用户禁用中!"));
-				return;
-			}
-			if (member.getIsLocked()) {
-				renderJson(Kv.by(MESSAGE, "用户锁定中!"));
-				return;
-			}
-			if (SubjectKit.login(account, password, SubjectKit.UserType.MEMBER)) {
-				member.setLastLoginIp(IpUtil.getIpAddr(getRequest()));
-				member.setLastLoginDate(new Date());
-				member.update();
-			} else {
-				renderJson(Kv.by(MESSAGE, "用户名或密码错误!"));
-				return;
-			}
-		}
+	    try{
+            String acc = getPara("account");
+            String account = Des.deDesData(acc,desKey);
+            String sign = getPara("sign");
+            String timestamp = getPara("timestamp");
+            String msg = "";
+            if(!CheckUtil.checkSign(account,timestamp,sign,entryKey,msg)){
+                renderJson(Kv.by(MESSAGE, "接口参数错误!"));
+                return;
+            }
+            String password = getPara("password");
+            Map<String, Object> data = new HashMap<>();
+            if (StrKit.notBlank(account) || StrKit.notBlank(password)) {
+                Member member = memberService.findByUsername(account);
+                if (member == null) {
+                    renderJson(Kv.by(MESSAGE, "用户不存在!"));
+                    return;
+                }
+                if (!member.getIsEnabled()) {
+                    renderJson(Kv.by(MESSAGE, "用户禁用中!"));
+                    return;
+                }
+                if (member.getIsLocked()) {
+                    renderJson(Kv.by(MESSAGE, "用户锁定中!"));
+                    return;
+                }
+                if (SubjectKit.login(account, password, SubjectKit.UserType.MEMBER)) {
+                    member.setLastLoginIp(IpUtil.getIpAddr(getRequest()));
+                    member.setLastLoginDate(new Date());
+                    member.update();
+                } else {
+                    renderJson(Kv.by(MESSAGE, "用户名或密码错误!"));
+                    return;
+                }
+            }
 
-		setAttr("loginPlugins", pluginService.getActiveLoginPlugins(getRequest()));
+            setAttr("loginPlugins", pluginService.getActiveLoginPlugins(getRequest()));
 
-		if (memberService.isAuthenticated() && memberService.getCurrentUser() != null) {
-			render(memberIndex);
-		} else {
-			render(memberIndex);
-		}
-
+            if (memberService.isAuthenticated() && memberService.getCurrentUser() != null) {
+                render(memberIndex);
+            } else {
+                render(memberIndex);
+            }
+        }
+        catch (Exception e){
+	        e.printStackTrace();
+            render(memberIndex);
+        }
 	}
 	public void info() {
-
-		String account = getPara("account");
-		String password = getPara("password");
-		Map<String, Object> data = new HashMap<>();
-		Setting setting = SystemUtils.getSetting();
-		if(password==null||password.equals("")){
-			password="123456";
-		}
-		try{
-
-
+        try{
+            String acc = getPara("account");
+            String account = Des.deDesData(acc,desKey);
+            String sign = getPara("sign");
+            String timestamp = getPara("timestamp");
+            String msg = "";
+            if(!CheckUtil.checkSign(account,timestamp,sign,entryKey,msg)){
+                renderJson(Kv.by(MESSAGE, "接口参数错误!"));
+                return;
+            }
+            String password = getPara("password");
+            Map<String, Object> data = new HashMap<>();
+            Setting setting = SystemUtils.getSetting();
+            if(password==null||password.equals("")){
+                password="123456";
+            }
 			Member member = new Member();
 			if (memberService.usernameExists(account)) {
 				JSONObject obj = new JSONObject();
@@ -246,8 +265,7 @@ public class RegisterController extends BaseController {
 
 			member.removeAttributeValue();
 
-			System.out.println(55);
-			member.setUsername(StringUtils.lowerCase(account));
+			member.setUsername((account));
 			member.setEmail(StringUtils.lowerCase("1@1.com"));
 			member.setMobile(StringUtils.lowerCase(member.getMobile()));
 			HasherInfo hasherInfo = HasherKit.hash(password, Hasher.DEFAULT);
@@ -293,16 +311,24 @@ public class RegisterController extends BaseController {
 
     public void updatepoint() {
 
-        String account = getPara("account");
-        String password = getPara("password");
-        long jifen = getParaToLong("jifen");
-        long add_jifen = getParaToLong("add_jifen");
-        long money = getParaToLong("money");
-        long add_money = getParaToLong("add_money");
-        Map<String, Object> data = new HashMap<>();
-        Setting setting = SystemUtils.getSetting();
         try{
 
+            String acc = getPara("account");
+            String account = Des.deDesData(acc,desKey);
+            String sign = getPara("sign");
+            String timestamp = getPara("timestamp");
+            String msg = "";
+            if(!CheckUtil.checkSign(account,timestamp,sign,entryKey,msg)){
+                renderJson(Kv.by(MESSAGE, "接口参数错误!"));
+                return;
+            }
+            String password = getPara("password");
+            long jifen = getParaToLong("jifen");
+            long add_jifen = getParaToLong("add_jifen");
+            long money = getParaToLong("money");
+            long add_money = getParaToLong("add_money");
+            Map<String, Object> data = new HashMap<>();
+            Setting setting = SystemUtils.getSetting();
 
             Member member = memberService.findByUsername(account);
             if(member == null){

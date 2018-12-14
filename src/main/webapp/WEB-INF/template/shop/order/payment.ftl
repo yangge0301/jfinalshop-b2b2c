@@ -163,7 +163,7 @@ $().ready(function() {
 					</table>
 					[#if online]
 						[#if paymentPlugins?has_content]
-							<form id="paymentForm" action="${base}/payment" method="post" target="_blank">
+							<form id="paymentForm" action="${base}/payment" method="get" target="_blank">
 								[#list orderSns as orderSn]
 									<input type="hidden" name="paymentItemList[${orderSn_index}].type" value="ORDER_PAYMENT" />
 									<input type="hidden" name="paymentItems[${orderSn_index}].orderSn" value="${orderSn}" />

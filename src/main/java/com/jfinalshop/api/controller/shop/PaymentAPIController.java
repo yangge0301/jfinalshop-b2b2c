@@ -11,6 +11,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.alibaba.fastjson.JSONObject;
+import com.jfinal.kit.Kv;
+import com.jfinalshop.util.*;
 import net.hasor.core.Inject;
 import net.hasor.core.InjectSettings;
 
@@ -54,9 +56,6 @@ import com.jfinalshop.service.PaymentTransactionService;
 import com.jfinalshop.service.PluginConfigService;
 import com.jfinalshop.service.PluginService;
 import com.jfinalshop.shiro.core.ShiroInterceptor;
-import com.jfinalshop.util.Assert;
-import com.jfinalshop.util.IpUtil;
-import com.jfinalshop.util.SystemUtils;
 
 /**
  * 移动API - 支付
@@ -66,7 +65,11 @@ import com.jfinalshop.util.SystemUtils;
 @ControllerBind(controllerKey = "/api/payment")
 @Clear({CsrfInterceptor.class, ShiroInterceptor.class})
 public class PaymentAPIController extends ApiController {
-	
+
+	@InjectSettings("${desKey}")
+	private static String desKey;
+	@InjectSettings("${entryKey}")
+	private static String entryKey;
 	@Inject
 	private PluginService pluginService;
 	@Inject
@@ -185,7 +188,7 @@ public class PaymentAPIController extends ApiController {
 
 		PaymentTransaction paymentTransaction = null;
 		if (paymentItems.size() > 1) {
-			Set<PaymentTransaction.LineItem> lineItems = new HashSet<>();
+			Set<LineItem> lineItems = new HashSet<>();
 			for (PaymentItem paymentItem : paymentItems) {
 				LineItem lineItem = paymentTransactionService.generate(paymentItem, member);
 				if (lineItem != null) {
@@ -315,7 +318,17 @@ public class PaymentAPIController extends ApiController {
 	public void paymenotify() {
 		JSONObject obj = new JSONObject();
 		try{
-			String outTradeNo = getPara("orderNo");
+			String orderNo = getPara("orderNo");
+			String outTradeNo = Des.deDesData(orderNo,desKey);
+			String sign = getPara("sign");
+			String timestamp = getPara("timestamp");
+			String msg = "";
+			if(!CheckUtil.checkSign(outTradeNo,timestamp,sign,entryKey,msg)){
+				obj.put("resultCode","1");
+				obj.put("resultMsg","接口参数错误sign");
+				renderJson(obj);
+				return ;
+			}
 			LogKit.info("支付通知=" + outTradeNo);
 			Map<String, String> resultMap = PaymentApi.queryByOutTradeNo(getAppId(), getMchId(), getApiKey(), outTradeNo);
 			LogKit.info("resultMap" + resultMap);
