@@ -11,8 +11,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.alibaba.fastjson.JSONObject;
-import com.jfinal.kit.Kv;
-import com.jfinalshop.util.*;
 import net.hasor.core.Inject;
 import net.hasor.core.InjectSettings;
 
@@ -56,20 +54,19 @@ import com.jfinalshop.service.PaymentTransactionService;
 import com.jfinalshop.service.PluginConfigService;
 import com.jfinalshop.service.PluginService;
 import com.jfinalshop.shiro.core.ShiroInterceptor;
+import com.jfinalshop.util.Assert;
+import com.jfinalshop.util.IpUtil;
+import com.jfinalshop.util.SystemUtils;
 
 /**
  * 移动API - 支付
- * 
- * 
+ *
+ *
  */
 @ControllerBind(controllerKey = "/api/payment")
 @Clear({CsrfInterceptor.class, ShiroInterceptor.class})
 public class PaymentAPIController extends ApiController {
 
-	@InjectSettings("${desKey}")
-	private static String desKey;
-	@InjectSettings("${entryKey}")
-	private static String entryKey;
 	@Inject
 	private PluginService pluginService;
 	@Inject
@@ -78,39 +75,39 @@ public class PaymentAPIController extends ApiController {
 	private PaymentTransactionService paymentTransactionService;
 	@Inject
 	private PluginConfigService pluginConfigService;
-	
+
 	@InjectSettings("${is_test_url}")
 	private Boolean isTestURL;
-	
+
 	@InjectSettings("${redirect_uri}")
 	private String redirectUri;
-	
+
 	private String paymentPluginId = "weixinPublicPaymentPlugin";
-	
+
 	private Res res = I18n.use();
-	
+
 	private AjaxResult ajax = new AjaxResult();
-	
+
 	/**
 	 * 获取的code参数
-	 * 
+	 *
 	 */
 	public void getOpenId() {
 		Long memberId = getParaToLong("memberId");
 		String urlForward = getPara("url_forward");
-		
+
 		String state = urlForward + "," + memberId;
-		
+
 		Setting setting = SystemUtils.getSetting();
 		String redirectUri = setting.getSiteUrl() + "/api/payment/openIdNotify";
-		
+
 		String url;
 		if(isTestURL) {
 			url = "http://www.omengo.com/get-weixin-code.html?appid="+getAppId()+"&scope=snsapi_base&state=" + state + "&redirect_uri=http%3A%2F%2Ftest.jfinalshop.com%2Fapi%2Fpayment%2FopenIdNotify";
 		} else {
 			url =  SnsAccessTokenApi.getAuthorizeURL(getAppId(), redirectUri, state, true);
 		}
-		
+
 		try {
 			getResponse().sendRedirect(url);
 		} catch (IOException e) {
@@ -118,19 +115,19 @@ public class PaymentAPIController extends ApiController {
 		}
 		renderNull();
 	}
-	
+
 	/**
 	 * 授权回调页面域名
-	 * 
+	 *
 	 */
 	public void openIdNotify() {
-		String code = getPara("code"); 
+		String code = getPara("code");
 		String state = getPara("state");
-		
+
 		// 通过code获取access_token
 		SnsAccessToken snsAccessToken = SnsAccessTokenApi.getSnsAccessToken(getAppId(), getAppSecret(), code);
 		String openId = snsAccessToken.getOpenid();
-		
+
 		LogKit.info("SnsAccessToken" + snsAccessToken.getJson());
 		LogKit.info("state" + state);
 		int separator = StringUtils.indexOf(state, ",");
@@ -145,20 +142,20 @@ public class PaymentAPIController extends ApiController {
 		redirectUri += StringUtils.substring(state, 0, separator);
 		redirect(redirectUri);
 	}
-	
+
 	/**
 	 * 支付首页
-	 * 
+	 *
 	 */
 	@Before(Tx.class)
 	public void index() {
 		String[] orderSns = getParaValues("orderSns");
-		
+
 		if (orderSns == null || orderSns.length <= 0) {
 			renderArgumentError("订单号不能为空!");
 			return;
 		}
-		
+
 		List<PaymentItem> paymentItems = new ArrayList<>();
 		for (String orderSn : orderSns) {
 			PaymentItem paymentItem = new PaymentItem();
@@ -166,7 +163,7 @@ public class PaymentAPIController extends ApiController {
 			paymentItem.setType(PaymentItem.Type.valueOf("ORDER_PAYMENT"));
 			paymentItems.add(paymentItem);
 		}
-		
+
 		Member member = getMember();
 		if (member == null) {
 			renderArgumentError("用户不能为空!");
@@ -174,13 +171,13 @@ public class PaymentAPIController extends ApiController {
 		} else {
 			member = memberService.find(member.getId());
 		}
-		
+
 		PaymentPlugin paymentPlugin = pluginService.getPaymentPlugin(paymentPluginId);
 		if (paymentPlugin == null || BooleanUtils.isNotTrue(paymentPlugin.getIsEnabled())) {
 			renderArgumentError("插件禁用!");
 			return;
 		}
-		
+
 		if (CollectionUtils.isEmpty(paymentItems)) {
 			renderArgumentError("支付项是空!");
 			return;
@@ -188,7 +185,7 @@ public class PaymentAPIController extends ApiController {
 
 		PaymentTransaction paymentTransaction = null;
 		if (paymentItems.size() > 1) {
-			Set<LineItem> lineItems = new HashSet<>();
+			Set<PaymentTransaction.LineItem> lineItems = new HashSet<>();
 			for (PaymentItem paymentItem : paymentItems) {
 				LineItem lineItem = paymentTransactionService.generate(paymentItem, member);
 				if (lineItem != null) {
@@ -205,17 +202,17 @@ public class PaymentAPIController extends ApiController {
 			}
 			paymentTransaction = paymentTransactionService.generate(lineItem, paymentPlugin);
 		}
-		
+
 		if (paymentTransaction == null || paymentTransaction.hasExpired()) {
 			renderArgumentError("支付事务不存在或过期!");
 			return;
 		}
-		
+
 		if (paymentTransaction.getIsSuccess()) {
 			renderArgumentError(res.format("shop.payment.payCompleted"));
 			return;
 		}
-		
+
 		String openId = member.getOpenId();
 
 		Map<String, String> parameterMap = new HashMap<String, String>();
@@ -238,7 +235,7 @@ public class PaymentAPIController extends ApiController {
 
 		String result = PaymentApi.pushOrder(parameterMap);
 		Map<String, String> resultMap = PaymentKit.xmlToMap(result);
-		
+
 		String prepayId = resultMap.get("prepay_id");
 		String tradeType = resultMap.get("trade_type");
 		String returnCode = resultMap.get("return_code");
@@ -248,7 +245,7 @@ public class PaymentAPIController extends ApiController {
 			renderArgumentError(returnMsg);
 			return;
 		}
-		
+
 		Map<String, String> modelMap = new HashMap<String, String>();
 		modelMap.put("appId", getAppId());
 		modelMap.put("timeStamp", System.currentTimeMillis() / 1000 + "");
@@ -256,7 +253,7 @@ public class PaymentAPIController extends ApiController {
 		modelMap.put("package", "prepay_id=" + prepayId);
 		modelMap.put("signType", "MD5");
 		modelMap.put("paySign", PaymentKit.createSign(modelMap, getApiKey()));
-		
+
 		String jsonStr = JsonUtils.toJson(modelMap);
 		ajax.success(jsonStr);
 		LogKit.info("ajax=" + ajax);
@@ -271,36 +268,36 @@ public class PaymentAPIController extends ApiController {
 	public void paymentNotify() {
 		String xml = HttpKit.readData(getRequest());
 		LogKit.info("支付通知=" + xml);
-		
+
 		if (StringUtils.isEmpty(xml)) {
 			return;
 		}
 		Map<String, String> params = PaymentKit.xmlToMap(xml);
-		
+
 		// 总金额
-		//String totalFee = params.get("total_fee"); 
+		//String totalFee = params.get("total_fee");
 		// 微信支付订单号
-		//String transactionId = params.get("transaction_id"); 
+		//String transactionId = params.get("transaction_id");
 		// 商户订单号
-		String outTradeNo = params.get("out_trade_no"); 
+		String outTradeNo = params.get("out_trade_no");
 		// 交易类型
 		//String tradeType = params.get("trade_type");
 		// 支付完成时间，格式为yyyyMMddHHmmss
 		//String timeEnd = params.get("time_end");
 		// 以下是附加参数
 		//String openId = params.get("openid");
-		
+
 		//PaymentPlugin paymentPlugin = pluginService.getPaymentPlugin(paymentPluginId);
-		
+
 		Map<String, String> resultMap = PaymentApi.queryByOutTradeNo(getAppId(), getMchId(), getApiKey(), outTradeNo);
-		
+
 		LogKit.info("resultMap" + resultMap);
 		PaymentTransaction paymentTransaction = paymentTransactionService.findBySn(outTradeNo);
 		boolean isPaySuccess = StringUtils.equals(resultMap.get("return_code"), "SUCCESS")
 				&& StringUtils.equals(resultMap.get("result_code"), "SUCCESS")
 				&& StringUtils.equals(resultMap.get("trade_state"), "SUCCESS")
 				&& paymentTransaction.getAmount().multiply(new BigDecimal(100)).compareTo(new BigDecimal(resultMap.get("total_fee"))) == 0;
-		
+
 		if (isPaySuccess) {
 			// 执行更新订单
 			paymentTransactionService.handle(paymentTransaction);
@@ -318,17 +315,7 @@ public class PaymentAPIController extends ApiController {
 	public void paymenotify() {
 		JSONObject obj = new JSONObject();
 		try{
-			String orderNo = getPara("orderNo");
-			String outTradeNo = Des.deDesData(orderNo,desKey);
-			String sign = getPara("sign");
-			String timestamp = getPara("timestamp");
-			String msg = "";
-			if(!CheckUtil.checkSign(outTradeNo,timestamp,sign,entryKey,msg)){
-				obj.put("resultCode","1");
-				obj.put("resultMsg","接口参数错误sign");
-				renderJson(obj);
-				return ;
-			}
+			String outTradeNo = getPara("orderNo");
 			LogKit.info("支付通知=" + outTradeNo);
 			Map<String, String> resultMap = PaymentApi.queryByOutTradeNo(getAppId(), getMchId(), getApiKey(), outTradeNo);
 			LogKit.info("resultMap" + resultMap);
@@ -352,16 +339,16 @@ public class PaymentAPIController extends ApiController {
 	}
 	/**
 	 * 获取插件配置
-	 * 
+	 *
 	 * @return 插件配置
 	 */
 	public PluginConfig getPluginConfig() {
 		return pluginConfigService.findByPluginId(paymentPluginId);
 	}
-	
+
 	/**
 	 * 获取AppID
-	 * 
+	 *
 	 * @return AppID
 	 */
 	private String getAppId() {
@@ -371,7 +358,7 @@ public class PaymentAPIController extends ApiController {
 
 	/**
 	 * 获取AppSecret
-	 * 
+	 *
 	 * @return AppSecret
 	 */
 	private String getAppSecret() {
@@ -381,7 +368,7 @@ public class PaymentAPIController extends ApiController {
 
 	/**
 	 * 获取商户号
-	 * 
+	 *
 	 * @return 商户号
 	 */
 	private String getMchId() {
@@ -391,17 +378,17 @@ public class PaymentAPIController extends ApiController {
 
 	/**
 	 * 获取API密钥
-	 * 
+	 *
 	 * @return API密钥
 	 */
 	private String getApiKey() {
 		PluginConfig pluginConfig = getPluginConfig();
 		return pluginConfig.getAttribute("apiKey");
 	}
-	
+
 	/**
 	 * 获取支付描述
-	 * 
+	 *
 	 * @param paymentTransaction
 	 *            支付事务
 	 * @return 支付描述
@@ -415,37 +402,37 @@ public class PaymentAPIController extends ApiController {
 		}
 
 		switch (paymentTransaction.getTypeName()) {
-		case ORDER_PAYMENT:
-			return res.format("shop.payment.orderPaymentDescription", paymentTransaction.getOrder().getSn());
-		case SVC_PAYMENT:
-			return res.format("shop.payment.svcPaymentDescription", paymentTransaction.getSvc().getSn());
-		case DEPOSIT_RECHARGE:
-			return res.format("shop.payment.depositRechargeDescription", paymentTransaction.getSn());
-		case BAIL_PAYMENT:
-			return res.format("shop.payment.bailPaymentDescription", paymentTransaction.getSn());
-		default:
-			return res.format("shop.payment.paymentDescription", paymentTransaction.getSn());
+			case ORDER_PAYMENT:
+				return res.format("shop.payment.orderPaymentDescription", paymentTransaction.getOrder().getSn());
+			case SVC_PAYMENT:
+				return res.format("shop.payment.svcPaymentDescription", paymentTransaction.getSvc().getSn());
+			case DEPOSIT_RECHARGE:
+				return res.format("shop.payment.depositRechargeDescription", paymentTransaction.getSn());
+			case BAIL_PAYMENT:
+				return res.format("shop.payment.bailPaymentDescription", paymentTransaction.getSn());
+			default:
+				return res.format("shop.payment.paymentDescription", paymentTransaction.getSn());
 		}
 	}
-	
+
 	/**
-     * 响应请求参数有误*
-     * @param message 错误信息
-     */
-    private void renderArgumentError(String message) {
-        renderJson(new BaseResponse(Code.ARGUMENT_ERROR, message));
-    }
-    
-    /**
-     * 获取当前用户对象
-     * @return
-     */
-    private Member getMember() {
-    	String token = getPara("token");
-        if (StringUtils.isNotEmpty(token)) {
-            return TokenManager.getMe().validate(token);
-        }
-        return null;
-    }
-    
+	 * 响应请求参数有误*
+	 * @param message 错误信息
+	 */
+	private void renderArgumentError(String message) {
+		renderJson(new BaseResponse(Code.ARGUMENT_ERROR, message));
+	}
+
+	/**
+	 * 获取当前用户对象
+	 * @return
+	 */
+	private Member getMember() {
+		String token = getPara("token");
+		if (StringUtils.isNotEmpty(token)) {
+			return TokenManager.getMe().validate(token);
+		}
+		return null;
+	}
+
 }

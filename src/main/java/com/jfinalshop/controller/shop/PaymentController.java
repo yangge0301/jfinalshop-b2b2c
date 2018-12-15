@@ -8,8 +8,6 @@ import java.util.Set;
 
 import com.jfinalshop.model.Member;
 import com.jfinalshop.service.MemberService;
-import com.jfinalshop.util.CheckUtil;
-import com.jfinalshop.util.Des;
 import com.jfinalshop.util.JHttp;
 import net.hasor.core.Inject;
 
@@ -42,10 +40,6 @@ public class PaymentController extends BaseController {
 
 	@InjectSettings("${user_pay_to_wjn_url}")
 	private String payUrl;
-	@InjectSettings("${desKey}")
-	private static String desKey;
-	@InjectSettings("${entryKey}")
-	private static String entryKey;
 	@Inject
 	private MemberService memberService;
 	@Inject
@@ -68,71 +62,72 @@ public class PaymentController extends BaseController {
 	 */
 	@Before(Tx.class)
 	public void index() {
-		try{
-			String paymentPluginId = getPara("paymentPluginId");
-			Integer paymentItemIndex = getIndexNum("paymentItemList");
+		String paymentPluginId = getPara("paymentPluginId");
+		Integer paymentItemIndex = getIndexNum("paymentItemList");
 
-			List<PaymentItem> paymentItems = new ArrayList<>();
-			if (-1 < paymentItemIndex) {
-				for (int i = 0; i <= paymentItemIndex; i++) {
-					PaymentItem paymentItem = getBean(PaymentItem.class, "paymentItems[" + i + "]");
-					paymentItem.setType(getParaEnum(PaymentItem.Type.class, getPara("paymentItemList[" + i + "].type")));
-					paymentItems.add(paymentItem);
-				}
+		List<PaymentItem> paymentItems = new ArrayList<>();
+		if (-1 < paymentItemIndex) {
+			for (int i = 0; i <= paymentItemIndex; i++) {
+				PaymentItem paymentItem = getBean(PaymentItem.class, "paymentItems[" + i + "]");
+				paymentItem.setType(getParaEnum(PaymentItem.Type.class, getPara("paymentItemList[" + i + "].type")));
+				paymentItems.add(paymentItem);
 			}
-			PaymentPlugin paymentPlugin = pluginService.getPaymentPlugin(paymentPluginId);
-
-			Member currentUser = memberService.getCurrentUser();
-			String orderNo="";
-			String payMoney = "0";
-			String url ="";
-			String account=currentUser.getUsername();
-			long timestamp = System.currentTimeMillis();
-			PaymentTransaction paymentTransaction = null;
-			if (paymentItems.size() > 1) {
-				Set<PaymentTransaction.LineItem> lineItems = new HashSet<>();
-				for (PaymentItem paymentItem : paymentItems) {
-					LineItem lineItem = paymentTransactionService.generate(paymentItem, null);
-					if (lineItem != null) {
-						lineItems.add(lineItem);
-					}
-				}
-				paymentTransaction = paymentTransactionService.generateParent(lineItems, paymentPlugin);
-				if(paymentTransaction.getType()==2){
-					payMoney=paymentTransaction.getAmount().toString();
-				}
-				else{
-
-					orderNo=paymentTransaction.getSn();
-					payMoney=paymentTransaction.getAmount().toString();
-				}
-
-			} else {
-				PaymentItem paymentItem = paymentItems.get(0);
+		}
+		PaymentPlugin paymentPlugin = pluginService.getPaymentPlugin(paymentPluginId);
+//		if (paymentPlugin == null || BooleanUtils.isNotTrue(paymentPlugin.getIsEnabled())) {
+//			setAttr("errorMessage", "插件禁用!");
+//			render(UNPROCESSABLE_ENTITY_VIEW);
+//			return;
+//		}
+//
+//		if (CollectionUtils.isEmpty(paymentItems)) {
+//			setAttr("errorMessage", "支付项是空!");
+//			render(UNPROCESSABLE_ENTITY_VIEW);
+//			return;
+//		}
+		String orderNo="";
+		String payMoney = "0";
+		String url ="";
+		Member currentUser = memberService.getCurrentUser();
+		PaymentTransaction paymentTransaction = null;
+		if (paymentItems.size() > 1) {
+			Set<PaymentTransaction.LineItem> lineItems = new HashSet<>();
+			for (PaymentItem paymentItem : paymentItems) {
 				LineItem lineItem = paymentTransactionService.generate(paymentItem, null);
-				paymentTransaction = paymentTransactionService.generate(lineItem, paymentPlugin);
-				if(paymentTransaction.getType()==2){
-					payMoney=paymentTransaction.getAmount().toString();
-				}
-				else{
-					orderNo=paymentTransaction.getSn();
-					payMoney=paymentTransaction.getAmount().toString();
+				if (lineItem != null) {
+					lineItems.add(lineItem);
 				}
 			}
-			if(orderNo==null||orderNo.equals("")){
-
-				url = payUrl +"&account="+ Des.getDesData(account,desKey)+"&fee=" +payMoney+"&sign="+CheckUtil.getSign(account,timestamp+"",entryKey)+"&timestamp="+timestamp;
+			paymentTransaction = paymentTransactionService.generateParent(lineItems, paymentPlugin);
+			if(paymentTransaction.getType()==2){
+				payMoney=paymentTransaction.getAmount().toString();
+				url = payUrl +"&account="+currentUser.getUsername()+"&money=" +payMoney;
 			}
 			else{
 
-				url = payUrl +"&account="+Des.getDesData(account,desKey)+"&orderNo="+Des.getDesData(orderNo,desKey)+"&fee=" +payMoney+"&sign="+CheckUtil.getSign(account,timestamp+"",entryKey)+"&timestamp="+timestamp;
+				orderNo=paymentTransaction.getSn();
+				payMoney=paymentTransaction.getAmount().toString();
+				url = payUrl +"&account="+currentUser.getUsername()+"&orderNo="+orderNo+"&money=" +payMoney;
 			}
-			redirect(url);
-		}
-		catch (Exception e){
-			e.printStackTrace();
-		}
 
+		} else {
+			PaymentItem paymentItem = paymentItems.get(0);
+			LineItem lineItem = paymentTransactionService.generate(paymentItem, null);
+			paymentTransaction = paymentTransactionService.generate(lineItem, paymentPlugin);
+			if(paymentTransaction.getType()==2){
+
+				payMoney=paymentTransaction.getAmount().toString();
+				url = payUrl +"&account="+currentUser.getUsername()+"&fee=" +payMoney;
+			}
+			else{
+
+				orderNo=paymentTransaction.getSn();
+				payMoney=paymentTransaction.getAmount().toString();
+				url = payUrl +"&account="+currentUser.getUsername()+"&orderNo="+orderNo+"&fee=" +payMoney;
+			}
+		}
+		redirect(url);
+//		redirect(paymentPlugin.getPrePayUrl(paymentPlugin, paymentTransaction));
 	}
 
 	/**
@@ -142,7 +137,7 @@ public class PaymentController extends BaseController {
 	public void prePay() throws Exception {
 		String paymentTransactionSn = getPara(0);
 		String extra = getPara(1);
-		
+
 		PaymentTransaction paymentTransaction = paymentTransactionService.findBySn(paymentTransactionSn);
 		if (paymentTransaction == null || paymentTransaction.hasExpired()) {
 			setAttr("errorMessage", "支付事务不存在!");
@@ -171,7 +166,7 @@ public class PaymentController extends BaseController {
 	public void pay() throws Exception {
 		String paymentTransactionSn = getPara(0);
 		String extra = getPara(1);
-		
+
 		PaymentTransaction paymentTransaction = paymentTransactionService.findBySn(paymentTransactionSn);
 		if (paymentTransaction == null || paymentTransaction.hasExpired()) {
 			setAttr("errorMessage", "支付事务不存在或过期!");
@@ -196,13 +191,13 @@ public class PaymentController extends BaseController {
 
 	/**
 	 * 支付后处理
-	 * 
+	 *
 	 */
 	@ActionKey("/payment/post_pay")
 	public void postPay() throws Exception {
 		String paymentTransactionSn = getPara(0);
 		String extra = getPara(1);
-		
+
 		PaymentTransaction paymentTransaction = paymentTransactionService.findBySn(paymentTransactionSn);
 		if (paymentTransaction == null) {
 			setAttr("errorMessage", "支付事务不存在!");
@@ -226,7 +221,7 @@ public class PaymentController extends BaseController {
 
 	/**
 	 * 获取支付描述
-	 * 
+	 *
 	 * @param paymentTransaction
 	 *            支付事务
 	 * @return 支付描述
@@ -240,16 +235,16 @@ public class PaymentController extends BaseController {
 		}
 
 		switch (paymentTransaction.getTypeName()) {
-		case ORDER_PAYMENT:
-			return message("shop.payment.orderPaymentDescription", paymentTransaction.getOrder().getSn());
-		case SVC_PAYMENT:
-			return message("shop.payment.svcPaymentDescription", paymentTransaction.getSvc().getSn());
-		case DEPOSIT_RECHARGE:
-			return message("shop.payment.depositRechargeDescription", paymentTransaction.getSn());
-		case BAIL_PAYMENT:
-			return message("shop.payment.bailPaymentDescription", paymentTransaction.getSn());
-		default:
-			return message("shop.payment.paymentDescription", paymentTransaction.getSn());
+			case ORDER_PAYMENT:
+				return message("shop.payment.orderPaymentDescription", paymentTransaction.getOrder().getSn());
+			case SVC_PAYMENT:
+				return message("shop.payment.svcPaymentDescription", paymentTransaction.getSvc().getSn());
+			case DEPOSIT_RECHARGE:
+				return message("shop.payment.depositRechargeDescription", paymentTransaction.getSn());
+			case BAIL_PAYMENT:
+				return message("shop.payment.bailPaymentDescription", paymentTransaction.getSn());
+			default:
+				return message("shop.payment.paymentDescription", paymentTransaction.getSn());
 		}
 	}
 
