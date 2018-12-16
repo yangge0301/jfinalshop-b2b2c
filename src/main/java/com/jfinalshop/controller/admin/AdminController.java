@@ -92,7 +92,7 @@ public class AdminController extends BaseController {
 		admin.setHasher(hasherInfo.getHasher().value());
 		admin.setSalt(hasherInfo.getSalt());
 		admin.setIsEnabled(isEnabled);
-		admin.setUsername(StringUtils.lowerCase(admin.getUsername()));
+		admin.setUsername(admin.getUsername());
 		admin.setEmail(StringUtils.lowerCase(admin.getEmail()));
 		admin.setIsLocked(false);
 		admin.setLockDate(null);

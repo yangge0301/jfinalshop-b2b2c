@@ -49,7 +49,7 @@ public class AdminService extends BaseService<Admin> {
 	 * @return 用户名是否存在
 	 */
 	public boolean usernameExists(String username) {
-		return adminDao.exists("username", StringUtils.lowerCase(username));
+		return adminDao.exists("username", username);
 	}
 
 	/**

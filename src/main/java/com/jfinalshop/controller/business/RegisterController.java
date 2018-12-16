@@ -152,7 +152,7 @@ public class RegisterController extends Controller {
 			Object memberAttributeValue = businessAttributeService.toBusinessAttributeValue(businessAttribute, values);
 			business.setAttributeValue(businessAttribute, memberAttributeValue);
 		}
-		business.setUsername(StringUtils.lowerCase(business.getUsername()));
+		business.setUsername(business.getUsername());
 		business.setEmail(StringUtils.lowerCase(business.getEmail()));
 		business.setMobile(StringUtils.lowerCase(business.getMobile()));
 		HasherInfo hasherInfo = HasherKit.hash(business.getPassword(), Hasher.DEFAULT);

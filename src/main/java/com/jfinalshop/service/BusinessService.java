@@ -77,7 +77,7 @@ public class BusinessService extends BaseService<Business>{
 	 * @return 用户名是否存在
 	 */
 	public boolean usernameExists(String username) {
-		return businessDao.exists("username", StringUtils.lowerCase(username));
+		return businessDao.exists("username",username);
 	}
 
 	/**

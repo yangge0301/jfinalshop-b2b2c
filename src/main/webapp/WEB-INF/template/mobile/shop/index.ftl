@@ -162,19 +162,19 @@
                         </a>
                     </div>
                     <div class="col-xs-3 text-center" style="color:#fff">
-                        <a href="${base}/product/list/1"  style="color:#fff;font-size:1.4rem">
+                        <a href="${base}/product/list/2"  style="color:#fff;font-size:1.4rem">
                             <img src="${base}/resources/mobile/shop/images/home/menu-axym.png" alt="爱心义买">
                             爱心义买
                         </a>
                     </div>
                     <div class="col-xs-3 text-center"  style="color:#fff">
-                        <a href="${base}/product/list/1"  style="color:#fff;font-size:1.4rem">
+                        <a href="${base}/product/list/3"  style="color:#fff;font-size:1.4rem">
                             <img src="${base}/resources/mobile/shop/images/home/menu-yhjx.png" alt="优惠巨献">
                             优惠巨献
                         </a>
                     </div>
                     <div class="col-xs-3 text-center"  style="color:#fff">
-                        <a href="${base}/product/list/1"  style="color:#fff;font-size:1.4rem">
+                        <a href="${base}/product/list/4"  style="color:#fff;font-size:1.4rem">
                             <img src="${base}/resources/mobile/shop/images/home/menu-jfsc.png" alt="积分商城">
                             积分商城
                         </a>

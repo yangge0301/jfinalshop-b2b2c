@@ -1,5 +1,7 @@
 package com.jfinalshop.controller.shop;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.jfinal.aop.Before;
 import com.jfinal.core.ActionKey;
 import com.jfinal.ext.route.ControllerBind;
@@ -95,7 +97,17 @@ public class OrderController extends BaseController {
 	@ActionKey("/order/receiver_list")
 	public void receiverList() {
 		Member currentUser = memberService.getCurrentUser();
-		renderJson(receiverService.findList(currentUser));
+		List<Receiver> list = receiverService.findList(currentUser);
+		List<Receiver> list1 = new ArrayList<Receiver>();
+		if(list!=null&&list.size()>0){
+			for(int i=0;i<list.size();i++){
+				Receiver r=list.get(i);
+				r.setMid(list.get(i).getMemberId()+"");
+				r.setCid(list.get(i).getId()+"");
+				list1.add(r);
+			}
+		}
+		renderJson(list1);
 	}
 
 	/**
@@ -106,10 +118,15 @@ public class OrderController extends BaseController {
 		Receiver receiver = getModel(Receiver.class);
 		Long areaId = getParaToLong("areaId");
 		Boolean isDefault = getParaToBoolean("isDefault", false);
-		
+		String consignee = getPara("consignee");
+		String phone = getPara("phone");
+		String zipCode = getPara("zipCode");
 		Member currentUser = memberService.getCurrentUser();
 		Area area = areaService.find(areaId);
 		receiver.setAreaId(area.getId());
+		receiver.setZipCode(zipCode);
+		receiver.setConsignee(consignee);
+		receiver.setPhone(phone);
 		receiver.setIsDefault(isDefault);
 		if (Receiver.MAX_RECEIVER_COUNT != null && currentUser.getReceivers().size() >= Receiver.MAX_RECEIVER_COUNT) {
 			Results.unprocessableEntity(getResponse(), "shop.order.addReceiverCountNotAllowed", Receiver.MAX_RECEIVER_COUNT);

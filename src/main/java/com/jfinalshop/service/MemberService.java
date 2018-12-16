@@ -77,7 +77,7 @@ public class MemberService extends BaseService<Member> {
 	 * @return 用户名是否存在
 	 */
 	public boolean usernameExists(String username) {
-		return memberDao.exists("username", StringUtils.lowerCase(username));
+		return memberDao.exists("username", username);
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class MemberService extends BaseService<Member> {
 	 * @return 会员，若不存在则返回null
 	 */
 	public Member findByUsername(String username) {
-		return memberDao.find("username", StringUtils.lowerCase(username));
+		return memberDao.find("username", username);
 	}
 
 	/**
@@ -236,7 +236,7 @@ public class MemberService extends BaseService<Member> {
 		Assert.notNull(member.getBalance());
 		Assert.state(member.getBalance().add(amount).compareTo(BigDecimal.ZERO) >= 0);
 
-		member.setBalance(member.getBalance().add(amount));
+		member.setBalance(amount);
 		memberDao.update(member);
 
 		MemberDepositLog memberDepositLog = new MemberDepositLog();
