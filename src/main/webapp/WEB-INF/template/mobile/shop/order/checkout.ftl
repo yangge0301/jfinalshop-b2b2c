@@ -236,10 +236,26 @@
 					type: "GET",
 					dataType: "json",
 					success: function(data) {
-						$receiverList.html(receiverListTemplate({
-							currentReceiverId: $receiverId.val(),
-							receivers: data
-						}));
+					    var list = data;
+					    var list2=[];
+					    if(list!=null&&list.length>0){
+					        for(let i=0;i<list.length;i++){
+					            list[i].id=list[i].coupId;
+                                list[i].member_id=list[i].membId;
+                                list2.push(list[i]);
+							}
+                            console.log(list2)
+                            $receiverList.html(receiverListTemplate({
+                                currentReceiverId: $receiverId.val(),
+                                receivers: list2
+                            }));
+						}
+						else{
+                            $receiverList.html(receiverListTemplate({
+                                currentReceiverId: $receiverId.val(),
+                                receivers: data
+                            }));
+						}
 					}
 				});
 			}

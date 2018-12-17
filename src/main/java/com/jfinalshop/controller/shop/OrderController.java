@@ -1,7 +1,5 @@
 package com.jfinalshop.controller.shop;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.jfinal.aop.Before;
 import com.jfinal.core.ActionKey;
 import com.jfinal.ext.route.ControllerBind;
@@ -24,7 +22,7 @@ import java.util.Map;
 
 /**
  * Controller - 订单
- * 
+ *
  */
 @ControllerBind(controllerKey = "/order")
 public class OrderController extends BaseController {
@@ -58,7 +56,7 @@ public class OrderController extends BaseController {
 		Long skuId = getParaToLong("skuId");
 		Integer quantity = getParaToInt("quantity");
 		Member currentUser = memberService.getCurrentUser();
-		
+
 		if (quantity == null || quantity < 1) {
 			Results.unprocessableEntity(getResponse(), Results.DEFAULT_UNPROCESSABLE_ENTITY_MESSAGE);
 			return;
@@ -96,18 +94,23 @@ public class OrderController extends BaseController {
 	 */
 	@ActionKey("/order/receiver_list")
 	public void receiverList() {
-		Member currentUser = memberService.getCurrentUser();
-		List<Receiver> list = receiverService.findList(currentUser);
-		List<Receiver> list1 = new ArrayList<Receiver>();
-		if(list!=null&&list.size()>0){
-			for(int i=0;i<list.size();i++){
-				Receiver r=list.get(i);
-				r.setMid(list.get(i).getMemberId()+"");
-				r.setCid(list.get(i).getId()+"");
-				list1.add(r);
+		try{
+			Member currentUser = memberService.getCurrentUser();
+			List<Receiver> list = receiverService.findList(currentUser);
+			List<Receiver> list1 = new ArrayList<>();
+			if(list!=null&&list.size()>0){
+				for(Receiver r : list){
+					r.setCoupId(r.getId()+"");
+					r.setMembId(r.getMemberId()+"");
+					list1.add(r);
+				}
 			}
+			renderJson(list1);
 		}
-		renderJson(list1);
+		catch (Exception e){
+			e.printStackTrace();
+		}
+
 	}
 
 	/**
@@ -118,15 +121,10 @@ public class OrderController extends BaseController {
 		Receiver receiver = getModel(Receiver.class);
 		Long areaId = getParaToLong("areaId");
 		Boolean isDefault = getParaToBoolean("isDefault", false);
-		String consignee = getPara("consignee");
-		String phone = getPara("phone");
-		String zipCode = getPara("zipCode");
+
 		Member currentUser = memberService.getCurrentUser();
 		Area area = areaService.find(areaId);
 		receiver.setAreaId(area.getId());
-		receiver.setZipCode(zipCode);
-		receiver.setConsignee(consignee);
-		receiver.setPhone(phone);
 		receiver.setIsDefault(isDefault);
 		if (Receiver.MAX_RECEIVER_COUNT != null && currentUser.getReceivers().size() >= Receiver.MAX_RECEIVER_COUNT) {
 			Results.unprocessableEntity(getResponse(), "shop.order.addReceiverCountNotAllowed", Receiver.MAX_RECEIVER_COUNT);
@@ -144,7 +142,7 @@ public class OrderController extends BaseController {
 	public void lock() {
 		String[] orderSns = getParaValues("orderSns");
 		Member currentUser = memberService.getCurrentUser();
-		
+
 		for (String orderSn : orderSns) {
 			Order order = orderService.findBySn(orderSn);
 			if (order != null && currentUser.equals(order.getMember()) && order.getPaymentMethod() != null && PaymentMethod.Method.online.equals(order.getPaymentMethod().getMethod()) && order.getAmountPayable().compareTo(BigDecimal.ZERO) > 0) {
@@ -175,7 +173,7 @@ public class OrderController extends BaseController {
 	public void checkCoupon() {
 		String code = getPara("code");
 		Cart currentCart = cartService.getCurrent(getRequest());
-		
+
 		Map<String, Object> data = new HashMap<>();
 		if (currentCart == null || currentCart.isEmpty()) {
 			Results.unprocessableEntity(getResponse(), Results.DEFAULT_UNPROCESSABLE_ENTITY_MESSAGE);
@@ -235,7 +233,7 @@ public class OrderController extends BaseController {
 	private void checkoutGeneral() {
 		Member currentUser = memberService.getCurrentUser();
 		Cart currentCart = cartService.getCurrent(getRequest());
-		
+
 		if (currentCart == null || currentCart.isEmpty()) {
 			redirect("/cart/list");
 			return;
@@ -317,7 +315,7 @@ public class OrderController extends BaseController {
 		Long skuId = getParaToLong("skuId");
 		Integer quantity = getParaToInt("quantity");
 		Member currentUser = memberService.getCurrentUser();
-		
+
 		if (quantity == null || quantity < 1) {
 			setAttr("errorMessage", "数量小于1!");
 			render(UNPROCESSABLE_ENTITY_VIEW);
@@ -448,7 +446,7 @@ public class OrderController extends BaseController {
 		String memo = getPara("memo");
 		Member currentUser = memberService.getCurrentUser();
 		Cart currentCart = cartService.getCurrent(getRequest());
-		
+
 		Map<String, Object> data = new HashMap<>();
 		if (currentCart == null || currentCart.isEmpty()) {
 			Results.unprocessableEntity(getResponse(), Results.DEFAULT_UNPROCESSABLE_ENTITY_MESSAGE);
@@ -517,7 +515,7 @@ public class OrderController extends BaseController {
 		BigDecimal balance = new BigDecimal(getPara("balance", "0"));
 		//String memo = getPara("memo");
 		Member currentUser = memberService.getCurrentUser();
-		
+
 		Map<String, Object> data = new HashMap<>();
 		if (quantity == null || quantity < 1) {
 			Results.unprocessableEntity(getResponse(), Results.DEFAULT_UNPROCESSABLE_ENTITY_MESSAGE);
@@ -599,7 +597,7 @@ public class OrderController extends BaseController {
 	 */
 	@Before({Tx.class,MobileInterceptor.class})
 	private void createGeneral() {
-		String cartTag = getPara("cartTag"); 
+		String cartTag = getPara("cartTag");
 		Long receiverId = getParaToLong("receiverId");
 		Long paymentMethodId = getParaToLong("paymentMethodId");
 		Long shippingMethodId = getParaToLong("shippingMethodId");
@@ -609,7 +607,7 @@ public class OrderController extends BaseController {
 		String memo = getPara("memo");
 		Member currentUser = memberService.getCurrentUser();
 		Cart currentCart = cartService.getCurrent(getRequest());
-		
+
 		Map<String, Object> data = new HashMap<>();
 		if (currentCart == null || currentCart.isEmpty()) {
 			Results.unprocessableEntity(getResponse(), Results.DEFAULT_UNPROCESSABLE_ENTITY_MESSAGE);
@@ -684,7 +682,7 @@ public class OrderController extends BaseController {
 		BigDecimal balance = new BigDecimal(getPara("balance", "0"));
 		String memo = getPara("memo");
 		Member currentUser = memberService.getCurrentUser();
-		
+
 		Map<String, Object> data = new HashMap<>();
 		if (quantity == null || quantity < 1) {
 			Results.unprocessableEntity(getResponse(), Results.DEFAULT_UNPROCESSABLE_ENTITY_MESSAGE);
@@ -756,7 +754,7 @@ public class OrderController extends BaseController {
 	public void payment() {
 		String[] orderSns = StringUtils.split(getPara("orderSns"), ",");
 		Member currentUser = memberService.getCurrentUser();
-		
+
 		if (orderSns.length <= 0) {
 			setAttr("errorMessage", "订单号不存在!");
 			render(UNPROCESSABLE_ENTITY_VIEW);
@@ -829,7 +827,7 @@ public class OrderController extends BaseController {
 		String paymentPluginId = getPara("paymentPluginId");
 		String[] orderSns = StringUtils.split(getPara("orderSns"), ",");
 		Member currentUser = memberService.getCurrentUser();
-		
+
 		Map<String, Object> data = new HashMap<>();
 		if (orderSns.length <= 0) {
 			setAttr("errorMessage", "订单号不存在!");

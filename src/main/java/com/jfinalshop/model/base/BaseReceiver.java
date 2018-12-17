@@ -17,6 +17,20 @@ public abstract class BaseReceiver<M extends BaseReceiver<M>> extends Model<M> i
 		return getLong("id");
 	}
 
+	public void setCoupId(java.lang.String coupId) {
+		put("coupId", coupId);
+	}
+
+	public java.lang.String getCoupId() {
+		return get("coupId");
+	}
+	public void setMembId(java.lang.String membId) {
+		put("membId", membId);
+	}
+
+	public java.lang.String getMembId() {
+		return get("membId");
+	}
 	public void setCreatedDate(java.util.Date createdDate) {
 		set("created_date", createdDate);
 	}
