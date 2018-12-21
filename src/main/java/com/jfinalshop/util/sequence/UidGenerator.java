@@ -9,7 +9,7 @@ public class UidGenerator {
 	static Sequence sequence = new Sequence(0, 0);
 	
 	public static long nextId() {
-		long id = sequence.nextId();
+		long id = sequence.nextpId();
 		return id;
 	}
 	

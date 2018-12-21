@@ -71,7 +71,9 @@ public class Sequence {
 		this.workerId = workerId;
 		this.datacenterId = datacenterId;
 	}
-
+	public synchronized  long nextpId(){
+		return System.currentTimeMillis();
+	}
 	/**
 	 * 获得下一个ID (该方法是线程安全的)
 	 * 
