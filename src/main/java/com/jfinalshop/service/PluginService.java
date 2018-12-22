@@ -121,23 +121,23 @@ public class PluginService {
 		WeixinLoginPlugin weixinLoginPlugin = new WeixinLoginPlugin();
 		
 		/*****  支付插件  ******/
-		paymentPlugins.add(alipayBankPaymentPlugin);
-		paymentPlugins.add(alipayDirectPaymentPlugin);
-		paymentPlugins.add(alipayDualPaymentPlugin);
-		paymentPlugins.add(alipayEscowPaymentPlugin);
-		paymentPlugins.add(alipayPaymentPlugin);
+//		paymentPlugins.add(alipayBankPaymentPlugin);
+//		paymentPlugins.add(alipayDirectPaymentPlugin);
+//		paymentPlugins.add(alipayDualPaymentPlugin);
+//		paymentPlugins.add(alipayEscowPaymentPlugin);
+//		paymentPlugins.add(alipayPaymentPlugin);
 		paymentPlugins.add(weixinNativePaymentPlugin);
-		paymentPlugins.add(weixinPublicPaymentPlugin);
-		paymentPlugins.add(unionpayPaymentPlugin);
+//		paymentPlugins.add(weixinPublicPaymentPlugin);
+//		paymentPlugins.add(unionpayPaymentPlugin);
 		
-		paymentPluginMap.put(alipayBankPaymentPlugin.getId(), alipayBankPaymentPlugin);
-		paymentPluginMap.put(alipayDirectPaymentPlugin.getId(), alipayDirectPaymentPlugin);
-		paymentPluginMap.put(alipayDualPaymentPlugin.getId(), alipayDualPaymentPlugin);
-		paymentPluginMap.put(alipayEscowPaymentPlugin.getId(), alipayEscowPaymentPlugin);
-		paymentPluginMap.put(alipayPaymentPlugin.getId(), alipayPaymentPlugin);
+//		paymentPluginMap.put(alipayBankPaymentPlugin.getId(), alipayBankPaymentPlugin);
+//		paymentPluginMap.put(alipayDirectPaymentPlugin.getId(), alipayDirectPaymentPlugin);
+//		paymentPluginMap.put(alipayDualPaymentPlugin.getId(), alipayDualPaymentPlugin);
+//		paymentPluginMap.put(alipayEscowPaymentPlugin.getId(), alipayEscowPaymentPlugin);
+//		paymentPluginMap.put(alipayPaymentPlugin.getId(), alipayPaymentPlugin);
 		paymentPluginMap.put(weixinNativePaymentPlugin.getId(), weixinNativePaymentPlugin);
 		paymentPluginMap.put(weixinPublicPaymentPlugin.getId(), weixinPublicPaymentPlugin);
-		paymentPluginMap.put(unionpayPaymentPlugin.getId(), unionpayPaymentPlugin);
+//		paymentPluginMap.put(unionpayPaymentPlugin.getId(), unionpayPaymentPlugin);
 		
 		/*****  促销插件  ******/
 		promotionPlugins.add(fullReductionPromotionPlugin);
