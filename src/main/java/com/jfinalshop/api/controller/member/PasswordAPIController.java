@@ -71,7 +71,7 @@ public class PasswordAPIController extends BaseAPIController {
 		smsService.send(username, code);
 		renderJson(new BaseResponse("短信发送成功"));
 	}
-	
+
 	/**
 	 * 修改密码
 	 */
@@ -83,7 +83,7 @@ public class PasswordAPIController extends BaseAPIController {
 		String username = getPara("username");
 		String smsCode = getPara("smsCode");
 		String password = getPara("password");
-		
+
 		if (StrKit.isBlank(username)) {
 			renderArgumentError("用户名为空!");
 			return;
@@ -102,7 +102,7 @@ public class PasswordAPIController extends BaseAPIController {
 			renderArgumentError("用户名或验证码错误!");
 			return;
 		}
-		
+
 		HasherInfo passwordInfo = HasherKit.hash(password, Hasher.DEFAULT);
 		member.setPassword(passwordInfo.getHashResult());
 		member.setHasher(passwordInfo.getHasher().value());
@@ -112,7 +112,7 @@ public class PasswordAPIController extends BaseAPIController {
 		sms.setIsUsed(true);
 		sms.setUsedDate(new Date());
 		smsService.update(sms);
-		
+
 		renderJson(new BaseResponse("密码修改成功"));
 	}
 

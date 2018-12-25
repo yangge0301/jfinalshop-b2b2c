@@ -44,7 +44,7 @@ public class VersionProperty {
      *
      * @param fileName the full path the file that properties should be read from
      *                 and written to.
-     * @throws java.io.IOException if an error occurs loading the properties.
+     * @throws IOException if an error occurs loading the properties.
      */
     public VersionProperty(String fileName) throws IOException {
         this(new File(fileName));
@@ -54,7 +54,7 @@ public class VersionProperty {
      * Loads XML properties from a stream.
      *
      * @param in the input stream of XML.
-     * @throws java.io.IOException if an exception occurs when reading the stream.
+     * @throws IOException if an exception occurs when reading the stream.
      *//*
     public VersionProperty(InputStream in) throws IOException {
         if (in != null) {
@@ -67,7 +67,7 @@ public class VersionProperty {
      * Creates a new XMLPropertiesTest object.
      *
      * @param file the file that properties should be read from and written to.
-     * @throws java.io.IOException if an error occurs loading the properties.
+     * @throws IOException if an error occurs loading the properties.
      */
     public VersionProperty(File file) throws IOException {
         this.file = file;
@@ -107,7 +107,7 @@ public class VersionProperty {
     /**
      * Builds the document XML model up based the given reader of XML data.
      * @param in the input stream used to build the xml document
-     * @throws java.io.IOException thrown when an error occurs reading the input stream.
+     * @throws IOException thrown when an error occurs reading the input stream.
      */
     private void buildDoc(Reader in) throws IOException {
         try {
@@ -412,7 +412,7 @@ public class VersionProperty {
      *
      * @param inFile  The file to copy from
      * @param outFile The file to copy to
-     * @throws java.io.IOException If there was a problem making the copy
+     * @throws IOException If there was a problem making the copy
      */
     private static void copy(File inFile, File outFile) throws IOException {
         FileInputStream fin = null;
@@ -443,7 +443,7 @@ public class VersionProperty {
      *
      * @param in the stream to copy data from.
      * @param out the stream to copy data to.
-     * @throws java.io.IOException if there's trouble during the copy.
+     * @throws IOException if there's trouble during the copy.
      */
     private static void copy(InputStream in, OutputStream out) throws IOException {
         // Do not allow other threads to intrude on streams during copy.
