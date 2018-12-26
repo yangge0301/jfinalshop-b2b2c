@@ -33,7 +33,11 @@ public class PointLog extends BasePointLog<PointLog> {
 		/**
 		 * 积分调整
 		 */
-		adjustment
+		adjustment,
+		/**
+		 * 积分使用
+		 * **/
+		pointuse,
 	}
 	
 	/**

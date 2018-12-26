@@ -120,7 +120,7 @@ public class OrderAPIController extends BaseAPIController {
 		cartService.update(currentCart);
 		
 		Receiver defaultReceiver = receiverService.findDefault(currentUser);
-		List<Order> orders = orderService.generate(Order.Type.general, currentCart, defaultReceiver, null, null, null, null, null, null);
+		List<Order> orders = orderService.generate(Order.Type.general, currentCart, defaultReceiver, null, null, null, null, null, null,null);
 
 		// 缓存购物车
 		CacheKit.put(Cart.CURRENT_CART_NAME, currentCart.getCartKey(), currentCart);
@@ -268,7 +268,7 @@ public class OrderAPIController extends BaseAPIController {
 			return;
 		}
 		Invoice invoice = StringUtils.isNotEmpty(invoiceTitle) ? new Invoice(invoiceTitle, null) : null;
-		List<Order> orders = orderService.create(Order.Type.general, source, currentCart, receiver, paymentMethod, shippingMethod, couponCode, invoice, balance, memo);
+		List<Order> orders = orderService.create(Order.Type.general, source, currentCart, receiver, paymentMethod, shippingMethod, couponCode, invoice, balance, memo,null);
 		List<String> orderSns = new ArrayList<>();
 		for (Order order : orders) {
 			if (order != null) {

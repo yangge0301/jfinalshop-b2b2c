@@ -34,7 +34,11 @@ public class OrderPayment extends BaseOrderPayment<OrderPayment> {
 		/**
 		 * 预存款支付
 		 */
-		deposit
+		deposit,
+		/**
+		 * 预存款支付
+		 */
+		point
 	}
 	
 	

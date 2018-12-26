@@ -30,7 +30,7 @@
 	<setting name="isShowMarketPrice" value="true" />
 	<setting name="defaultMarketPriceScale" value="1.2" />
 	<setting name="allowedRegisterTypes" value="member,business" />
-	<setting name="registerPoint" value="5" />
+	<setting name="registerPoint" value="0" />
 	<setting name="captchaTypes" value="memberLogin,memberRegister,businessLogin,businessRegister,adminLogin,review,consultation,forgotPassword,resetPassword,other" />
 	<setting name="maxFailedLoginAttempts" value="5" />
 	<setting name="passwordLockTime" value="10" />

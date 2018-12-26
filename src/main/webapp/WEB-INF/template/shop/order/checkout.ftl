@@ -44,6 +44,8 @@
             var $amount = $("#amount");
             var $useBalance = $("#useBalance");
             var $balance = $("#balance");
+            var $usePoint = $("#usePoint");
+            var $point = $("#point");
             var $submit = $("#submit");
             var amount = ${amount};
             var amountPayable = ${amountPayable};
@@ -137,8 +139,10 @@
                         $amount.text(currency(amount, true, true));
                         if (amount > 0) {
                             $useBalance.parent().show();
+                            $usePoint.parent().show();
                         } else {
                             $useBalance.parent().hide();
+                            $usePoint.parent().hide();
                         }
                         if (amountPayable > 0) {
                             $paymentMethod.show();
@@ -249,8 +253,23 @@
             });
 
             // 使用余额
+            $usePoint.click(function() {
+                var $this = $(this);
+
+                $balance.prop("disabled", true).parent().hide();
+                if ($this.prop("checked")) {
+                    $point.prop("disabled", false).parent().show();
+                } else {
+                    $point.prop("disabled", true).parent().hide();
+                }
+                calculate();
+            });
+            // 使用余额
             $useBalance.click(function() {
                 var $this = $(this);
+                $point.prop("disabled", true).parent().hide();
+                $point.val("");
+                $usePoint.prop("checked",false);
                 if ($this.prop("checked")) {
                     $balance.prop("disabled", false).parent().show();
                 } else {
@@ -259,8 +278,25 @@
                 calculate();
             });
 
+            // 使用余额
+            $usePoint.click(function() {
+                var $this = $(this);
+                $balance.prop("disabled", true).parent().hide();
+                $balance.val("");
+                $useBalance.prop("checked",false);
+                if ($this.prop("checked")) {
+                    $point.prop("disabled", false).parent().show();
+                } else {
+                    $point.prop("disabled", true).parent().hide();
+                }
+                calculate();
+            });
             // 余额
             $balance.keypress(function(event) {
+                return (event.which >= 48 && event.which <= 57) || (event.which == 46 && $(this).val().indexOf(".") < 0) || event.which == 8;
+            });
+
+            $point.keypress(function(event) {
                 return (event.which >= 48 && event.which <= 57) || (event.which == 46 && $(this).val().indexOf(".") < 0) || event.which == 8;
             });
 
@@ -269,6 +305,20 @@
                 var $this = $(this);
                 if (/^\d+(\.\d{0,${setting.priceScale}})?$/.test($this.val())) {
                     var max = ${currentUser.balance} >= amount ? amount : ${currentUser.balance};
+                    if (parseFloat($this.val()) > max) {
+                        $this.val(max);
+                    }
+                } else {
+                    $this.val("0");
+                }
+                calculate();
+            });
+
+            // 余额
+            $point.change(function() {
+                var $this = $(this);
+                if (/^\d+(\.\d{0,${setting.priceScale}})?$/.test($this.val())) {
+                    var max = ${currentUser.point} >= amount ? amount : ${currentUser.point};
                     if (parseFloat($this.val()) > max) {
                         $this.val(max);
                     }
@@ -670,7 +720,7 @@
 								${message("Order.amount")}: <strong id="amount">${currency(amount, true, true)}</strong>
 							</span>
                     </li>
-				[#if currentUser.balance > 0]
+				[#if currentUser.balance > 0&&currentUser.balance>amount]
                     <li[#if amount <= 0] class="hidden"[/#if]>
                         <input type="checkbox" id="useBalance" name="useBalance" value="true" />
                         <label for="useBalance">
@@ -682,6 +732,18 @@
 								</span>
                     </li>
 				[/#if]
+				[#if currentUser.point > 0&&currentUser.point>amount]
+                    <li[#if amount <= 0] class="hidden"[/#if]>
+                        <input type="checkbox" id="usePoint" name="usePoint" value="true" />
+                        <label for="usePoint">
+                            使用积分
+                        </label>
+                        <span class="hidden">
+									<input type="text" id="point" name="point" class="balance" value="0" maxlength="16" onpaste="return false;" />
+									<p>${message("shop.order.balance")}: ${currency(currentUser.point, true)}</p>
+								</span>
+                    </li>
+                [/#if]
                 </ul>
             </div>
         </div>

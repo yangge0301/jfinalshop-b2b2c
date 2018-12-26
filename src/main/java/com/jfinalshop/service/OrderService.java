@@ -554,7 +554,7 @@ public class OrderService extends BaseService<Order> {
 	 *            附言
 	 * @return 订单
 	 */
-	public List<Order> generate(Order.Type type, Cart cart, Receiver receiver, PaymentMethod paymentMethod, ShippingMethod shippingMethod, CouponCode couponCode, Invoice invoice, BigDecimal balance, String memo) {
+	public List<Order> generate(Order.Type type, Cart cart, Receiver receiver, PaymentMethod paymentMethod, ShippingMethod shippingMethod, CouponCode couponCode, Invoice invoice, BigDecimal balance, String memo,BigDecimal point) {
 		Assert.notNull(type);
 		Assert.notNull(cart);
 		Assert.notNull(cart.getMember());
@@ -620,7 +620,6 @@ public class OrderService extends BaseService<Order> {
 
 			order.setTax(calculateTax(order));
 			order.setAmount(calculateAmount(order));
-
 			if (balance != null && balance.compareTo(BigDecimal.ZERO) > 0 && balance.compareTo(member.getBalance()) <= 0) {
 				if (balance.compareTo(order.getAmount()) <= 0) {
 					order.setAmountPaid(balance);
@@ -628,7 +627,16 @@ public class OrderService extends BaseService<Order> {
 					order.setAmountPaid(order.getAmount());
 					balance = balance.subtract(order.getAmount());
 				}
-			} else {
+			}
+			else if (point != null && point.compareTo(BigDecimal.ZERO) > 0 && point.compareTo(new BigDecimal(member.getPoint())) <= 0) {
+				if (point.compareTo(order.getAmount()) <= 0) {
+					order.setAmountPaid(point);
+				} else {
+					order.setAmountPaid(order.getAmount());
+					balance = balance.subtract(order.getAmount());
+				}
+			}
+			else {
 				order.setAmountPaid(BigDecimal.ZERO);
 			}
 
@@ -708,7 +716,7 @@ public class OrderService extends BaseService<Order> {
 	 *            附言
 	 * @return 订单
 	 */
-	public List<Order> create(Order.Type type, Order.Source source, Cart cart, Receiver receiver, PaymentMethod paymentMethod, ShippingMethod shippingMethod, CouponCode couponCode, Invoice invoice, BigDecimal balance, String memo) {
+	public List<Order> create(Order.Type type, Order.Source source, Cart cart, Receiver receiver, PaymentMethod paymentMethod, ShippingMethod shippingMethod, CouponCode couponCode, Invoice invoice, BigDecimal balance, String memo,BigDecimal point) {
 		Assert.notNull(type);
 		Assert.notNull(cart);
 		Assert.notNull(cart.getMember());
@@ -795,19 +803,46 @@ public class OrderService extends BaseService<Order> {
 			if (balance != null && (balance.compareTo(BigDecimal.ZERO) < 0 || balance.compareTo(member.getBalance()) > 0)) {
 				throw new IllegalArgumentException();
 			}
+			if (point != null && (point.compareTo(BigDecimal.ZERO) < 0 || point.compareTo(member.getBalance()) > 0)) {
+				throw new IllegalArgumentException();
+			}
 			BigDecimal amountPayable = balance != null ? order.getAmount().subtract(balance) : order.getAmount();
-			if (amountPayable.compareTo(BigDecimal.ZERO) > 0) {
-				if (paymentMethod == null) {
-					throw new IllegalArgumentException();
-				}
-				order.setStatus(PaymentMethod.Type.deliveryAgainstPayment.equals(paymentMethod.getTypeName()) ? Order.Status.pendingPayment.ordinal() : Order.Status.pendingReview.ordinal());
+			BigDecimal pointPayable = point != null ? order.getAmount().subtract(point) : order.getAmount();
+			String payType = "0";
+			if (balance!=null&&balance.compareTo(BigDecimal.ZERO) > 0&&amountPayable.compareTo(BigDecimal.ZERO) > 0) {
 				order.setPaymentMethodId(paymentMethod.getId());
-				if (paymentMethod.getTimeout() != null && Order.Status.pendingPayment.equals(order.getStatusName())) {
-					order.setExpire(DateUtils.addMinutes(new Date(), paymentMethod.getTimeout()));
+				throw new IllegalArgumentException();
+//				if (paymentMethod == null) {
+//					throw new IllegalArgumentException();
+//				}
+//				order.setStatus(PaymentMethod.Type.deliveryAgainstPayment.equals(paymentMethod.getTypeName()) ? Order.Status.pendingPayment.ordinal() : Order.Status.pendingReview.ordinal());
+//				order.setPaymentMethodId(paymentMethod.getId());
+//				if (paymentMethod.getTimeout() != null && Order.Status.pendingPayment.equals(order.getStatusName())) {
+//					order.setExpire(DateUtils.addMinutes(new Date(), paymentMethod.getTimeout()));
+//				}
+//				payType="1";
+			}
+			else if(point!=null&&point.compareTo(BigDecimal.ZERO) > 0&&pointPayable.compareTo(BigDecimal.ZERO) > 0){
+				order.setPaymentMethodId(paymentMethod.getId());
+				throw new IllegalArgumentException();
+//				if (paymentMethod == null) {
+//					throw new IllegalArgumentException();
+//				}
+//				order.setStatus(PaymentMethod.Type.deliveryAgainstPayment.equals(paymentMethod.getTypeName()) ? Order.Status.pendingPayment.ordinal() : Order.Status.pendingReview.ordinal());
+//				order.setPaymentMethodId(paymentMethod.getId());
+//				if (paymentMethod.getTimeout() != null && Order.Status.pendingPayment.equals(order.getStatusName())) {
+//					order.setExpire(DateUtils.addMinutes(new Date(), paymentMethod.getTimeout()));
+//				}
+//				payType="2";
+			}
+			else {
+				if(balance!=null&&balance.compareTo(BigDecimal.ZERO)>0||point!=null&&point.compareTo(BigDecimal.ZERO) > 0){
+					order.setStatus(Order.Status.pendingReview.ordinal());
 				}
-			} else {
-				order.setStatus(Order.Status.pendingReview.ordinal());
-				order.setPaymentMethod(null);
+				else{
+					order.setStatus(Order.Status.pendingPayment.ordinal());
+				}
+				order.setPaymentMethodId(paymentMethod!=null?paymentMethod.getId():null);
 			}
 			
 			if (receiver.getArea() != null) {
@@ -890,7 +925,20 @@ public class OrderService extends BaseService<Order> {
 				}
 				payment(order, orderPayment);
 			}
-
+			else if (point != null && point.compareTo(BigDecimal.ZERO) > 0 ) {
+				OrderPayment orderPayment = new OrderPayment();
+				orderPayment.setMethod(OrderPayment.Method.point.ordinal());
+				orderPayment.setFee(BigDecimal.ZERO);
+				orderPayment.setOrderId(order.getId());
+				if (point.compareTo(order.getAmount()) >= 0) {
+					point = point.subtract(order.getAmount());
+					orderPayment.setAmount(order.getAmount());
+				} else {
+					orderPayment.setAmount(point);
+					point = BigDecimal.ZERO;
+				}
+				payment(order, orderPayment);
+			}
 			//mailService.sendCreateOrderMail(order);
 			//smsService.sendCreateOrderSms(order);
 			orders.add(order);
@@ -1039,6 +1087,9 @@ public class OrderService extends BaseService<Order> {
 		if (order.getMember() != null && OrderPayment.Method.deposit.equals(orderPayment.getMethodName())) {
 			memberService.addBalance(order.getMember(), orderPayment.getEffectiveAmount().negate(), MemberDepositLog.Type.orderPayment, null);
 		}
+		else if (order.getMember() != null && OrderPayment.Method.point.equals(orderPayment.getMethodName())) {
+			memberService.addPoint(order.getMember(), orderPayment.getEffectiveAmount().negate().longValue(), PointLog.Type.pointuse, null);
+		}
 
 		Setting setting = SystemUtils.getSetting();
 		if (Setting.StockAllocationTime.payment.equals(setting.getStockAllocationTime())) {
@@ -1062,7 +1113,6 @@ public class OrderService extends BaseService<Order> {
 		//mailService.sendPaymentOrderMail(order);
 		//smsService.sendPaymentOrderSms(order);
 	}
-
 	/**
 	 * 订单退款
 	 * 

@@ -72,6 +72,7 @@
 			var $paymentMethodId = $("#paymentMethodId");
 			var $shippingMethodId = $("#shippingMethodId");
 			var $useBalance = $("#useBalance");
+            var $usePoint = $("#usePoint");
 			var $currentReceiver = $("#currentReceiver");
 			var $currentPaymentMethod = $("#currentPaymentMethod");
 			var $currentShippingMethod = $("#currentShippingMethod");
@@ -79,7 +80,9 @@
 			var $couponName = $("#couponName");
 			var $couponCode = $("#couponCode");
 			var $useBalanceItem = $("#useBalanceItem");
+            var $usePointItem = $("#usePointItem");
 			var $balance = $("#balance");
+            var $point = $("#point");
 			var $receiverList = $("#receiverPage div.list-group");
 			var $addReceiverForm = $("#addReceiverForm");
 			var $areaId = $("#areaId");
@@ -131,15 +134,45 @@
 				});
 			}
 			
-			// 切换条目
+			// 切换条目 ======
 			$toggleItem.click(function() {
 				var $element = $(this);
+				var _index=$element.index("[data-toggle='item']");
+				console.log(_index);
+				if(_index==1){
+					$point.val('');
+                    $toggleItem.eq(2).removeClass('active');
+                    $target1 = $($toggleItem.eq(2).data("target"));
+                    $target1.velocity("slideUp").find("input").prop("disabled", true);
+				}
+                if(_index==2){
+                    $balance.val('');
+                    $toggleItem.eq(1).removeClass('active');
+                    $target1 = $($toggleItem.eq(1).data("target"));
+                    $target1.velocity("slideUp").find("input").prop("disabled", true);
+                }
 				$element.toggleClass("active");
 				$target = $($element.data("target"));
 				if ($element.hasClass("active")) {
 					$target.velocity("slideDown").find("input").prop("disabled", false);
+                    if(_index==1){
+                        $useBalance.val(true);
+                        $usePoint.val(false);
+                    }
+                    if(_index==2){
+                        $useBalance.val(false);
+                        $usePoint.val(true);
+                    }
 				} else {
 					$target.velocity("slideUp").find("input").prop("disabled", true);
+                    if(_index==1){
+                        $useBalance.val(false);
+                        $usePoint.val(false);
+                    }
+                    if(_index==2){
+                        $useBalance.val(false);
+                        $usePoint.val(false);
+                    }
 				}
 				calculate();
 			});
@@ -218,8 +251,22 @@
 				}
 				calculate();
 			});
-			
-			// 收货地址列表
+			//积分
+            $point.change(function() {
+                var $element = $(this);
+                if (/^\d+(\.\d{0,${setting.priceScale}})?$/.test($element.val())) {
+                    var max = ${currentUser.point} >= amount ? amount : ${currentUser.point};
+                    if (parseFloat($element.val()) > max) {
+                        $element.val(max);
+                    }
+                } else {
+                    $element.val("0");
+                }
+                calculate();
+            });
+
+
+            // 收货地址列表
 			$receiverList.on("click", "div.list-group-item", function() {
 				var $element = $(this);
 				var receiver = $element.data("receiver");
@@ -401,7 +448,7 @@
 			});
 			
 			// 计算
-			function calculate() {
+			function calculate(type) {
 				$.ajax({
 					url: "calculate",
 					type: "GET",
@@ -435,9 +482,12 @@
 								$currentPaymentMethod.velocity("slideDown");
 							}
 							$paymentMethodId.prop("disabled", false);
-							if ($useBalanceItem.is(":hidden")) {
-								$useBalanceItem.velocity("slideDown");
-							}
+                            if ($useBalanceItem.is(":hidden")) {
+                                $useBalanceItem.velocity("slideDown");
+                            }
+                            if ($usePointItem.is(":hidden")) {
+                                $usePointItem.velocity("slideDown");
+                            }
 						} else {
 							if ($currentPaymentMethod.is(":visible")) {
 								$currentPaymentMethod.velocity("slideUp");
@@ -447,6 +497,9 @@
 								if ($useBalanceItem.is(":visible")) {
 									$useBalanceItem.velocity("slideUp");
 								}
+                                if ($usePointItem.is(":hidden")) {
+                                    $usePointItem.velocity("slideDown");
+                                }
 								var $toggleItem = $useBalanceItem.find("[data-toggle='item']");
 								if ($toggleItem.hasClass("active")) {
 									$toggleItem.trigger("click");
@@ -476,6 +529,7 @@
 			<input id="paymentMethodId" name="paymentMethodId" type="hidden"[#if defaultPaymentMethod??] value="${defaultPaymentMethod.id}"[/#if]>
 			<input id="shippingMethodId" name="shippingMethodId" type="hidden"[#if defaultShippingMethod??] value="${defaultShippingMethod.id}"[/#if]>
 			<input id="useBalance" name="useBalance" type="hidden" value="false">
+            <input id="usePoint" name="usePoint" type="hidden" value="false">
 			<div class="header-fixed">
 				<a class="pull-left" href="javascript: history.back();">
 					<span class="glyphicon glyphicon-menu-left"></span>
@@ -554,7 +608,7 @@
 								</div>
 							</div>
 						[/#if]
-						[#if currentUser.balance > 0]
+						[#if currentUser.balance > 0&&currentUser.balance>amount]
 							<div id="useBalanceItem" class="[#if amount <= 0]hidden-element [/#if]list-group-item">
 								<div class="row">
 									<div class="col-xs-3">${message("shop.order.useBalance")}</div>
@@ -574,6 +628,27 @@
 									</div>
 								</div>
 							</div>
+						[/#if]
+						[#if currentUser.point > 0&&currentUser.point>amount]
+							<div id="usePointItem" class="[#if amount <= 0]hidden-element [/#if]list-group-item">
+                                <div class="row">
+                                    <div class="col-xs-3">使用积分</div>
+                                    <div class="col-xs-7">
+                                        <span class="gray-darker">当前余额: ${currency(currentUser.point, true)}</span>
+                                    </div>
+                                    <div class="col-xs-2 text-right">
+                                        <span class="glyphicon glyphicon-check" data-toggle="item" data-target="#pointItem"></span>
+                                    </div>
+                                </div>
+                            </div>
+							<div id="pointItem" class="hidden-element list-group-item">
+                                <div class="row">
+                                    <div class="col-xs-3">积分数量</div>
+                                    <div class="col-xs-9">
+                                        <input id="point" name="point" type="text" value="0" maxlength="16" onpaste="return false;" disabled>
+                                    </div>
+                                </div>
+                            </div>
 						[/#if]
 						<div class="list-group-item">
 							<div class="row">
