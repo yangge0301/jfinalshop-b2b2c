@@ -8,10 +8,10 @@
 			${message("member.index.memberRank")}:
 			<span class="red">${currentUser.memberRank.name}</span>
 		</p>
-		<p>
-			${message("member.index.balance")}:
-			<span class="red">${currency(currentUser.balance, true, true)}</span>
-		</p>
+		[#--<p>--]
+			[#--${message("member.index.balance")}:--]
+			[#--<span class="red">${currency(currentUser.balance, true, true)}</span>--]
+		[#--</p>--]
 		<p>
 			${message("member.index.amount")}:
 			<span class="red">${currency(currentUser.amount, true, true)}</span>
@@ -86,14 +86,14 @@
 				<a href="${base}/member/social_user/list">${message("member.socialUser.list")}</a>
 			</dd>
 		</dl>
-		<dl>
-			<dt>${message("member.navigation.deposit")}</dt>
-			<dd [#if current == "depositRecharge"] class="current"[/#if]>
-				<a href="${base}/member/deposit/recharge">${message("member.memberDeposit.recharge")}</a>
-			</dd>
-			<dd class="last[#if current == "memberDepositLog"] current[/#if]">
-				<a href="${base}/member/deposit/log">${message("member.memberDeposit.log")}</a>
-			</dd>
-		</dl>
+		[#--<dl>--]
+			[#--<dt>${message("member.navigation.deposit")}</dt>--]
+			[#--<dd [#if current == "depositRecharge"] class="current"[/#if]>--]
+				[#--<a href="${base}/member/deposit/recharge">${message("member.memberDeposit.recharge")}</a>--]
+			[#--</dd>--]
+			[#--<dd class="last[#if current == "memberDepositLog"] current[/#if]">--]
+				[#--<a href="${base}/member/deposit/log">${message("member.memberDeposit.log")}</a>--]
+			[#--</dd>--]
+		[#--</dl>--]
 	</div>
 </div>

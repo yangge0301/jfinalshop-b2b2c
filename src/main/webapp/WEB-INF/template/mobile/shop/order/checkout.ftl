@@ -608,27 +608,27 @@
 								</div>
 							</div>
 						[/#if]
-						[#if currentUser.balance > 0&&currentUser.balance>amount]
-							<div id="useBalanceItem" class="[#if amount <= 0]hidden-element [/#if]list-group-item">
-								<div class="row">
-									<div class="col-xs-3">${message("shop.order.useBalance")}</div>
-									<div class="col-xs-7">
-										<span class="gray-darker">${message("shop.order.balance")}: ${currency(currentUser.balance, true)}</span>
-									</div>
-									<div class="col-xs-2 text-right">
-										<span class="glyphicon glyphicon-check" data-toggle="item" data-target="#balanceItem"></span>
-									</div>
-								</div>
-							</div>
-							<div id="balanceItem" class="hidden-element list-group-item">
-								<div class="row">
-									<div class="col-xs-3">${message("shop.order.useAmount")}</div>
-									<div class="col-xs-9">
-										<input id="balance" name="balance" type="text" value="0" maxlength="16" onpaste="return false;" disabled>
-									</div>
-								</div>
-							</div>
-						[/#if]
+						[#--[#if currentUser.balance > 0&&currentUser.balance>amount]--]
+							[#--<div id="useBalanceItem" class="[#if amount <= 0]hidden-element [/#if]list-group-item">--]
+								[#--<div class="row">--]
+									[#--<div class="col-xs-3">${message("shop.order.useBalance")}</div>--]
+									[#--<div class="col-xs-7">--]
+										[#--<span class="gray-darker">${message("shop.order.balance")}: ${currency(currentUser.balance, true)}</span>--]
+									[#--</div>--]
+									[#--<div class="col-xs-2 text-right">--]
+										[#--<span class="glyphicon glyphicon-check" data-toggle="item" data-target="#balanceItem"></span>--]
+									[#--</div>--]
+								[#--</div>--]
+							[#--</div>--]
+							[#--<div id="balanceItem" class="hidden-element list-group-item">--]
+								[#--<div class="row">--]
+									[#--<div class="col-xs-3">${message("shop.order.useAmount")}</div>--]
+									[#--<div class="col-xs-9">--]
+										[#--<input id="balance" name="balance" type="text" value="0" maxlength="16" onpaste="return false;" disabled>--]
+									[#--</div>--]
+								[#--</div>--]
+							[#--</div>--]
+						[#--[/#if]--]
 						[#if currentUser.point > 0&&currentUser.point>amount]
 							<div id="usePointItem" class="[#if amount <= 0]hidden-element [/#if]list-group-item">
                                 <div class="row">

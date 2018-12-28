@@ -45,6 +45,21 @@ public class RegisterController extends BaseController {
     @Inject
     private SocialUserService socialUserService;
 
+    private static final int NEW_ORDER_SIZE = 3;
+    @Inject
+    private OrderService orderService;
+    @Inject
+    private CouponCodeService couponCodeService;
+    @Inject
+    private MessageService messageService;
+    @Inject
+    private ProductFavoriteService productFavoriteService;
+    @Inject
+    private ProductNotifyService productNotifyService;
+    @Inject
+    private ReviewService reviewService;
+    @Inject
+    private ConsultationService consultationService;
     /**
      * 检查用户名是否存在
      */
@@ -173,6 +188,8 @@ public class RegisterController extends BaseController {
     private PluginService pluginService;
     @InjectSettings("${mobile_login_view}")
     private String memberIndex;
+    @InjectSettings("${member_user_index}")
+    private String memberUserIndex;
     @InjectSettings("${member_login_view}")
     private String memberLoginView;
     @InjectSettings("${user_register_to_wjn_url}")
@@ -186,6 +203,7 @@ public class RegisterController extends BaseController {
     public void login() {
         String account = getPara("account");
         String password = getPara("password");
+        String type=getPara("type");
         password="123456";
         Map<String, Object> data = new HashMap<>();
         if (StrKit.notBlank(account) || StrKit.notBlank(password)) {
@@ -211,13 +229,31 @@ public class RegisterController extends BaseController {
                 return;
             }
         }
+        String viewUrl = "";
+        if(type!=null&&type.equals("1")){
+            Member currentUser = memberService.getCurrentUser();
+            setAttr("pendingPaymentOrderCount", orderService.count(null, Order.Status.pendingPayment, null, currentUser, null, null, null, null, null, null, false));
+            setAttr("pendingShipmentOrderCount", orderService.count(null, Order.Status.pendingShipment, null, currentUser, null, null, null, null, null, null, null));
+            setAttr("shippedOrderCount", orderService.count(null, Order.Status.shipped, null, currentUser, null, null, null, null, null, null, null));
+            setAttr("messageCount", messageService.count(currentUser, false));
+            setAttr("couponCodeCount", couponCodeService.count(null, currentUser, null, false, false));
+            setAttr("productFavoriteCount", productFavoriteService.count(currentUser));
+            setAttr("productNotifyCount", productNotifyService.count(currentUser, null, null, null));
+            setAttr("reviewCount", reviewService.count(currentUser, null, null, null));
+            setAttr("consultationCount", consultationService.count(currentUser, null, null));
+            setAttr("newOrders", orderService.findList(null, null, null, currentUser, null, null, null, null, null, null, null, NEW_ORDER_SIZE, null, null));
 
+            viewUrl=memberUserIndex;
+        }
+        else{
+            viewUrl= memberIndex;
+        }
         setAttr("loginPlugins", pluginService.getActiveLoginPlugins(getRequest()));
 
         if (memberService.isAuthenticated() && memberService.getCurrentUser() != null) {
-            render(memberIndex);
+            render(viewUrl);
         } else {
-            render(memberIndex);
+            render(viewUrl);
         }
 
     }

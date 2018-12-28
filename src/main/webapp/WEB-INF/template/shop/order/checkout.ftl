@@ -720,18 +720,18 @@
 								${message("Order.amount")}: <strong id="amount">${currency(amount, true, true)}</strong>
 							</span>
                     </li>
-				[#if currentUser.balance > 0&&currentUser.balance>amount]
-                    <li[#if amount <= 0] class="hidden"[/#if]>
-                        <input type="checkbox" id="useBalance" name="useBalance" value="true" />
-                        <label for="useBalance">
-						${message("shop.order.useBalance")}
-                        </label>
-                        <span class="hidden">
-									<input type="text" id="balance" name="balance" class="balance" value="0" maxlength="16" onpaste="return false;" />
-									<p>${message("shop.order.balance")}: ${currency(currentUser.balance, true)}</p>
-								</span>
-                    </li>
-				[/#if]
+				[#--[#if currentUser.balance > 0&&currentUser.balance>amount]--]
+                    [#--<li[#if amount <= 0] class="hidden"[/#if]>--]
+                        [#--<input type="checkbox" id="useBalance" name="useBalance" value="true" />--]
+                        [#--<label for="useBalance">--]
+						[#--${message("shop.order.useBalance")}--]
+                        [#--</label>--]
+                        [#--<span class="hidden">--]
+									[#--<input type="text" id="balance" name="balance" class="balance" value="0" maxlength="16" onpaste="return false;" />--]
+									[#--<p>${message("shop.order.balance")}: ${currency(currentUser.balance, true)}</p>--]
+								[#--</span>--]
+                    [#--</li>--]
+				[#--[/#if]--]
 				[#if currentUser.point > 0&&currentUser.point>amount]
                     <li[#if amount <= 0] class="hidden"[/#if]>
                         <input type="checkbox" id="usePoint" name="usePoint" value="true" />
