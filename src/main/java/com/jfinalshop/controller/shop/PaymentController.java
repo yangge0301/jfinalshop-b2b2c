@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.*;
 
+import com.jfinal.kit.LogKit;
 import com.jfinalshop.model.Member;
 import com.jfinalshop.service.MemberService;
 import com.jfinalshop.util.JHttp;
@@ -131,6 +132,8 @@ public class PaymentController extends BaseController {
 		parameters.put("timestamp",timestamp);
 		String sign = MD5Util.createSign(parameters,"");
 		url = payUrl +"&orderId="+orderNo+"&fee=" +payMoney+"&timestamp="+timestamp+"&sign="+sign+"&source=shop&isSign=1";
+		System.out.println(url);
+		LogKit.info(">>>>> "+currentUser.getUsername()+"支付二维码==>【" + url + "】 <<<<<");
 		redirect(url);
 //		redirect(paymentPlugin.getPrePayUrl(paymentPlugin, paymentTransaction));
 	}

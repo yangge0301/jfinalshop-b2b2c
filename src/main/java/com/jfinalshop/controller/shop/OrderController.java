@@ -4,6 +4,7 @@ import com.jfinal.aop.Before;
 import com.jfinal.core.ActionKey;
 import com.jfinal.ext.route.ControllerBind;
 import com.jfinal.kit.HttpKit;
+import com.jfinal.kit.LogKit;
 import com.jfinal.plugin.activerecord.tx.Tx;
 import com.jfinalshop.Results;
 import com.jfinalshop.entity.Invoice;
@@ -699,6 +700,7 @@ public class OrderController extends BaseController {
 					String sign = MD5Util.createSign(parameters,"");
 					String url = noticeUrl +"&account="+URLEncoder.encode(account)+"&timestamp="+timestamp+"&jifen=" +-point.longValue()+"&sign="+sign+"&isSign=1";
 					System.out.println(url);
+					LogKit.info(">>>>> "+account+"积分同步==>【" + url + "】 <<<<<");
 					HttpKit.get(url);
 				}
 			}
