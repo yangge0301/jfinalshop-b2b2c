@@ -9,8 +9,7 @@ import com.jfinal.kit.Kv;
 import com.jfinal.kit.StrKit;
 import com.jfinalshop.model.*;
 import com.jfinalshop.service.*;
-import com.jfinalshop.util.JHttp;
-import com.jfinalshop.util.WebUtils;
+import com.jfinalshop.util.*;
 import net.hasor.core.Inject;
 
 import net.hasor.core.InjectSettings;
@@ -27,8 +26,6 @@ import com.jfinalshop.shiro.core.SubjectKit;
 import com.jfinalshop.shiro.hasher.Hasher;
 import com.jfinalshop.shiro.hasher.HasherInfo;
 import com.jfinalshop.shiro.hasher.HasherKit;
-import com.jfinalshop.util.IpUtil;
-import com.jfinalshop.util.SystemUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -299,6 +296,24 @@ public class RegisterController extends BaseController {
         long add_jifen = getParaToLong("add_jifen");
         String money1 = getPara("money");
         String add_money1 = getPara("add_money");
+        String timestamp = getPara("timestamp");
+        String sign = getPara("sign");
+
+        SortedMap<Object,Object> parameters = new TreeMap<Object, Object>();
+        parameters.put("account",account);
+        parameters.put("password",password);
+        parameters.put("jifen",jifen);
+        parameters.put("add_jifen",add_jifen);
+        parameters.put("money",money1);
+        parameters.put("add_money",add_money1);
+        parameters.put("timestamp",timestamp);
+        if(!MD5Util.createSign(parameters).equals(sign)){
+            JSONObject obj = new JSONObject();
+            obj.put("resultCode","1");
+            obj.put("resultMsg","sign error");
+            renderJson(obj);
+            return;
+        }
         double money = Double.parseDouble(money1);
         double add_money = Double.parseDouble(add_money1);
         Map<String, Object> data = new HashMap<>();

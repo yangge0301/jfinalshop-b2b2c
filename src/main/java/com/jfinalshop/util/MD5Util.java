@@ -1,5 +1,6 @@
 package com.jfinalshop.util;
 import java.security.MessageDigest;
+import java.util.*;
 
 public class MD5Util {
     public static String MD5(String s) {
@@ -49,11 +50,34 @@ public class MD5Util {
 
     }
 
+    public static String createSign(SortedMap<Object,Object> parameters){
+        StringBuffer sb = new StringBuffer();
+        Set es = parameters.entrySet();//所有参与传参的参数按照accsii排序（升序）
+        Iterator it = es.iterator();
+        // stringA="appid=wxd930ea5d5a258f4f&body=test&device_info=1000&mch_id=10000100&nonce_str=ibuaiVcKdpRxkhJA";
+        while(it.hasNext()) {
+            Map.Entry entry = (Map.Entry)it.next();
+            String k = (String)entry.getKey();
+            Object v = entry.getValue();
+            if(null != v && !"".equals(v)
+                    && !"sign".equals(k)) {
+                sb.append(k + "=" + v + "&");
+            }
+        }
+        sb.append("key=" + "wjn888WJN");
+        System.out.println(sb.toString());
+        // stringSignTemp="stringA&key=192006250b4c09247ec02edce69f6a2d"
+        // sign=MD5(stringSignTemp).toUpperCase()="9A0A8659F005D6984697E2CA0A9CF3B7"
+        return MD5(sb.toString());
+    }
     public static void main(String[] args) {
-
-        String md5 = MD5("password");
+        SortedMap<Object,Object> parameters = new TreeMap<Object,Object>();
+        parameters.put("orderNo", "123456");
+        parameters.put("timestamp", "12312312312123");
+        String md5 = MD5("orderNo=123456&timestamp=12312312312123&key=wjn888WJN");
 
         System.out.println(md5);
+        System.out.println(createSign(parameters));
 
 
     }

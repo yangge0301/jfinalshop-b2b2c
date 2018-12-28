@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.inject.Singleton;
 
+import com.jfinalshop.util.IdCreater;
 import net.hasor.core.Inject;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -109,7 +110,6 @@ public class PaymentTransactionService extends BaseService<PaymentTransaction> {
 		PaymentTransaction paymentTransaction = paymentTransactionDao.findAvailable(lineItem, paymentPlugin);
 		if (paymentTransaction == null) {
 			paymentTransaction = new PaymentTransaction();
-			paymentTransaction.setSn(snDao.generate(Sn.Type.paymentTransaction));
 			paymentTransaction.setType(lineItem.getType().ordinal());
 			paymentTransaction.setAmount(paymentPlugin.calculateAmount(lineItem.getAmount()));
 			paymentTransaction.setFee(paymentPlugin.calculateFee(lineItem.getAmount()));
@@ -119,6 +119,12 @@ public class PaymentTransactionService extends BaseService<PaymentTransaction> {
 			paymentTransaction.setChildren(null);
 			paymentTransaction.setTarget(lineItem.getTarget());
 			paymentTransaction.setPaymentPlugin(paymentPlugin);
+			if(paymentTransaction.getType()==2){
+				paymentTransaction.setSn(IdCreater.getId("order"));
+			}
+			else{
+				paymentTransaction.setSn(snDao.generate(Sn.Type.paymentTransaction));
+			}
 			paymentTransactionDao.save(paymentTransaction);
 		}
 		return paymentTransaction;
