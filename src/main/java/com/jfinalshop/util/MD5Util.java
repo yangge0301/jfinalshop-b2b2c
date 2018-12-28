@@ -1,8 +1,13 @@
 package com.jfinalshop.util;
+import net.hasor.core.InjectSettings;
+
 import java.security.MessageDigest;
 import java.util.*;
 
 public class MD5Util {
+
+    private static String isCheckMD5 = "true";
+
     public static String MD5(String s) {
         char hexDigits[]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
         try {
@@ -50,10 +55,19 @@ public class MD5Util {
 
     }
 
-    public static String createSign(SortedMap<Object,Object> parameters){
+    public static String createSign(SortedMap<Object,Object> parameters,String sign){
+        if(isCheckMD5!=null&&isCheckMD5.equals("false")){
+            return sign;
+        }
         StringBuffer sb = new StringBuffer();
         Set es = parameters.entrySet();//所有参与传参的参数按照accsii排序（升序）
         Iterator it = es.iterator();
+        long times = System.currentTimeMillis();
+        Object obj = parameters.get("timestamp")==null?parameters.get("timeStamp"):parameters.get("timestamp");
+        long timestamp = Long.parseLong(obj.toString());
+        if((times-timestamp)>=10*60*1000||(timestamp-times)>=10*60*1000){
+            return "error";
+        }
         // stringA="appid=wxd930ea5d5a258f4f&body=test&device_info=1000&mch_id=10000100&nonce_str=ibuaiVcKdpRxkhJA";
         while(it.hasNext()) {
             Map.Entry entry = (Map.Entry)it.next();
@@ -77,7 +91,7 @@ public class MD5Util {
         String md5 = MD5("orderNo=123456&timestamp=12312312312123&key=wjn888WJN");
 
         System.out.println(md5);
-        System.out.println(createSign(parameters));
+        System.out.println(createSign(parameters,""));
 
 
     }

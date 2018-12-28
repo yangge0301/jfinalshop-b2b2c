@@ -1,6 +1,7 @@
 package com.jfinalshop.controller.shop;
 
 import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.util.*;
 
 import com.jfinalshop.model.Member;
@@ -124,12 +125,12 @@ public class PaymentController extends BaseController {
 		}
 		long timestamp = System.currentTimeMillis();
 		SortedMap<Object,Object> parameters = new TreeMap<Object, Object>();
-		parameters.put("account",currentUser.getUsername());
 		parameters.put("orderId",orderNo);
-		parameters.put("payMoney",payMoney);
+		parameters.put("fee",payMoney);
+		parameters.put("source","shop");
 		parameters.put("timestamp",timestamp);
-		String sign = MD5Util.createSign(parameters);
-		url = payUrl +"&account="+currentUser.getUsername()+"&orderId="+orderNo+"&fee=" +payMoney+"&timestamp="+timestamp+"&sign="+sign;
+		String sign = MD5Util.createSign(parameters,"");
+		url = payUrl +"&orderId="+orderNo+"&fee=" +payMoney+"&timestamp="+timestamp+"&sign="+sign+"&source=shop&isSign=1";
 		redirect(url);
 //		redirect(paymentPlugin.getPrePayUrl(paymentPlugin, paymentTransaction));
 	}

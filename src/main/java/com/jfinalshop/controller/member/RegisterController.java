@@ -2,6 +2,7 @@ package com.jfinalshop.controller.member;
 
 import java.io.BufferedReader;
 import java.math.BigDecimal;
+import java.net.URLDecoder;
 import java.util.*;
 
 import com.alibaba.fastjson.JSONObject;
@@ -201,10 +202,31 @@ public class RegisterController extends BaseController {
 
     @Before(MobileInterceptor.class)
     public void login() {
-        String account = getPara("account");
+        String account = URLDecoder.decode(getPara("account"));
         String password = getPara("password");
+        String timestamp = getPara("timestamp")==null?getPara("timeStamp"):getPara("timestamp");
+        String sign = getPara("sign");
         String type=getPara("type");
-        password="123456";
+
+        SortedMap<Object,Object> parameters = new TreeMap<Object, Object>();
+        parameters.put("account",account);
+        parameters.put("password",password);
+        if(getPara("timestamp")==null){
+
+            parameters.put("timeStamp",timestamp);
+        }
+        else{
+
+            parameters.put("timestamp",timestamp);
+        }
+        if(!MD5Util.createSign(parameters,sign).equals(sign)){
+            JSONObject obj = new JSONObject();
+            obj.put("resultCode","1");
+            obj.put("resultMsg","sign error");
+            renderJson(obj);
+            return;
+        }
+
         Map<String, Object> data = new HashMap<>();
         if (StrKit.notBlank(account) || StrKit.notBlank(password)) {
             Member member = memberService.findByUsername(account);
@@ -259,17 +281,33 @@ public class RegisterController extends BaseController {
     }
     public void info() {
 
-        String account = getPara("account");
+        String account = URLDecoder.decode(getPara("account"));
         String password = getPara("password");
-        password="123456";
+        String timestamp = getPara("timestamp")==null?getPara("timeStamp"):getPara("timestamp");
+        String sign = getPara("sign");
         Map<String, Object> data = new HashMap<>();
         Setting setting = SystemUtils.getSetting();
-        if(password==null||password.equals("")){
-            password="123456";
-        }
+
         try{
 
+            SortedMap<Object,Object> parameters = new TreeMap<Object, Object>();
+            parameters.put("account",account);
+            parameters.put("password",password);
+            if(getPara("timestamp")==null){
 
+                parameters.put("timeStamp",timestamp);
+            }
+            else{
+
+                parameters.put("timestamp",timestamp);
+            }
+            if(!MD5Util.createSign(parameters,sign).equals(sign)){
+                JSONObject obj = new JSONObject();
+                obj.put("resultCode","1");
+                obj.put("resultMsg","sign error");
+                renderJson(obj);
+                return;
+            }
             Member member = new Member();
             if (memberService.usernameExists(account)) {
                 JSONObject obj = new JSONObject();
@@ -278,9 +316,7 @@ public class RegisterController extends BaseController {
                 renderJson(obj);
                 return;
             }
-
             member.removeAttributeValue();
-
             member.setUsername(account);
             member.setEmail(StringUtils.lowerCase("1@1.com"));
             member.setMobile(StringUtils.lowerCase(member.getMobile()));
@@ -326,13 +362,13 @@ public class RegisterController extends BaseController {
 
     public void updatepoint() {
 
-        String account = getPara("account");
+        String account = URLDecoder.decode(getPara("account"));
         String password = getPara("password");
         long jifen = getParaToLong("jifen");
         long add_jifen = getParaToLong("add_jifen");
         String money1 = getPara("money");
         String add_money1 = getPara("add_money");
-        String timestamp = getPara("timestamp");
+        String timestamp = getPara("timestamp")==null?getPara("timeStamp"):getPara("timestamp");
         String sign = getPara("sign");
 
         SortedMap<Object,Object> parameters = new TreeMap<Object, Object>();
@@ -342,8 +378,15 @@ public class RegisterController extends BaseController {
         parameters.put("add_jifen",add_jifen);
         parameters.put("money",money1);
         parameters.put("add_money",add_money1);
-        parameters.put("timestamp",timestamp);
-        if(!MD5Util.createSign(parameters).equals(sign)){
+        if(getPara("timestamp")==null){
+
+            parameters.put("timeStamp",timestamp);
+        }
+        else{
+
+            parameters.put("timestamp",timestamp);
+        }
+        if(!MD5Util.createSign(parameters,sign).equals(sign)){
             JSONObject obj = new JSONObject();
             obj.put("resultCode","1");
             obj.put("resultMsg","sign error");

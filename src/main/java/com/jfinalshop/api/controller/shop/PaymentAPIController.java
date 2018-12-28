@@ -310,13 +310,19 @@ public class PaymentAPIController extends ApiController {
 	public void paymenotify() {
 		JSONObject obj = new JSONObject();
 		try{
-			String outTradeNo = getPara("orderNo");
-			String timestamp = getPara("timestamp");
+			String outTradeNo = getPara("orderId");
+			String timestamp = getPara("timestamp")==null?getPara("timeStamp"):getPara("timestamp");
 			String sign = getPara("sign");
+			System.out.println();
 			SortedMap<Object,Object> parameters = new TreeMap<Object, Object>();
-			parameters.put("orderNo",outTradeNo);
-			parameters.put("timestamp",timestamp);
-			if(!MD5Util.createSign(parameters).equals(sign)){
+			parameters.put("orderId",outTradeNo);
+			if(getPara("timestamp")==null){
+				parameters.put("timeStamp",timestamp);
+			}
+			else{
+				parameters.put("timestamp",timestamp);
+			}
+			if(!MD5Util.createSign(parameters,sign).equals(sign)){
 				obj.put("resultCode","1");
 				obj.put("resultMsg","sign error");
 				renderJson(obj);

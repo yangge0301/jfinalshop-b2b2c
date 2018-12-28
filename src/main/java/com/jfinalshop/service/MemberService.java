@@ -291,16 +291,6 @@ public class MemberService extends BaseService<Member> {
 		pointLog.setMemberId(member.getId());
 		pointLogDao.save(pointLog);
 
-		String account = member.getUsername();
-		long timestamp = System.currentTimeMillis();
-
-		SortedMap<Object,Object> parameters = new TreeMap<Object, Object>();
-		parameters.put("account",account);
-		parameters.put("jifen",amount);
-		parameters.put("timestamp",timestamp);
-		String sign = MD5Util.createSign(parameters);
-		String url = noticeUrl +"&account="+account+"&timestamp="+timestamp+"&jifen=" +amount+"&sign="+sign;
-		HttpKit.get(url);
 	}
 
 	public void addPointV2(Member member,long nowPoint,long amount, PointLog.Type type, String memo) {
@@ -325,16 +315,6 @@ public class MemberService extends BaseService<Member> {
 		pointLog.setMemo(memo);
 		pointLog.setMemberId(member.getId());
 		pointLogDao.save(pointLog);
-		String account = member.getUsername();
-		long timestamp = System.currentTimeMillis();
-
-		SortedMap<Object,Object> parameters = new TreeMap<Object, Object>();
-		parameters.put("account",account);
-		parameters.put("jifen",amount);
-		parameters.put("timestamp",timestamp);
-		String sign = MD5Util.createSign(parameters);
-		String url = noticeUrl +"&account="+account+"&timestamp="+timestamp+"&jifen=" +amount+"&sign="+sign;
-		HttpKit.get(url);
 	}
 
 	/**
