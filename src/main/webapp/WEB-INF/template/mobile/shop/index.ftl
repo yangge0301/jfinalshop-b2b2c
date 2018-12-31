@@ -157,26 +157,26 @@
                 <div class="row">
                     <div class="col-xs-3 text-center"  style="color:#fff">
                         <a href="${base}/product/list/1"  style="color:#fff;font-size:1.4rem">
-                            <img src="${base}/resources/mobile/shop/images/home/menu-jntc.png" alt="江宁特产">
-                            江宁特产
+                            <img src="${base}/resources/mobile/shop/images/home/menu-jntc.png" alt="家用电器">
+                            家用电器
                         </a>
                     </div>
                     <div class="col-xs-3 text-center" style="color:#fff">
                         <a href="${base}/product/list/2"  style="color:#fff;font-size:1.4rem">
-                            <img src="${base}/resources/mobile/shop/images/home/menu-axym.png" alt="爱心义买">
-                            爱心义买
+                            <img src="${base}/resources/mobile/shop/images/home/menu-axym.png" alt="生活电器">
+                            生活电器
                         </a>
                     </div>
                     <div class="col-xs-3 text-center"  style="color:#fff">
                         <a href="${base}/product/list/3"  style="color:#fff;font-size:1.4rem">
-                            <img src="${base}/resources/mobile/shop/images/home/menu-yhjx.png" alt="优惠巨献">
-                            优惠巨献
+                            <img src="${base}/resources/mobile/shop/images/home/menu-yhjx.png" alt="厨卫电器">
+                            厨卫电器
                         </a>
                     </div>
                     <div class="col-xs-3 text-center"  style="color:#fff">
                         <a href="${base}/product/list/4"  style="color:#fff;font-size:1.4rem">
-                            <img src="${base}/resources/mobile/shop/images/home/menu-jfsc.png" alt="积分商城">
-                            积分商城
+                            <img src="${base}/resources/mobile/shop/images/home/menu-jfsc.png" alt="五金家装">
+                            五金家装
                         </a>
                     </div>
                     [#--<div class="col-xs-3 text-center">--]

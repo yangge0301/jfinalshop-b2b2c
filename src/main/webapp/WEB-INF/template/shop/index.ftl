@@ -3,10 +3,10 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="author" content="江宁广电" />
-<meta name="copyright" content="江宁广电" />
+<meta name="author" content="厨具商城" />
+<meta name="copyright" content="厨具商城" />
 [@seo type = "index"]
-	<title>江宁广电</title>
+	<title>厨具商城</title>
 	[#if seo.resolveKeywords()?has_content]
 		<meta name="keywords" content="${seo.resolveKeywords()}" />
 	[/#if]

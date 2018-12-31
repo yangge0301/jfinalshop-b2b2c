@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jfinalshop>
-	<setting name="siteName" value="江宁广电" />
+	<setting name="siteName" value="厨具商城" />
 	<setting name="siteUrl" value="http://127.0.0.1:8083" />
 	<setting name="siteImageUrl" value="http://127.0.0.1:8083" />
 	<setting name="logo" value="/upload/image/logo.gif" />
