@@ -772,12 +772,18 @@ public class OrderController extends BaseController {
 			Results.unprocessableEntity(getResponse(), "shop.order.insufficientBalance");
 			return;
 		}
-
+		BigDecimal point = new BigDecimal("0");
 		Cart currentCart = cartService.create();
 		cartService.add(currentCart, sku, quantity);
+		if(currentCart!=null){
+			for (CartItem cartItem : currentCart.getCartItems()) {
+				Sku skuitem = cartItem.getSku();
+				point = new BigDecimal(skuitem.getExchangePoint()*quantity);
+			}
 
+		}
 		List<String> orderSns = new ArrayList<>();
-		List<Order> orders = orderService.create(Order.Type.exchange, Order.Source.PC, currentCart, receiver, paymentMethod, shippingMethod, null, null, balance, memo,null);
+		List<Order> orders = orderService.create(Order.Type.exchange, Order.Source.PC, currentCart, receiver, paymentMethod, shippingMethod, null, null, balance, memo,point);
 		for (Order order : orders) {
 			if (order != null) {
 				orderSns.add(order.getSn());

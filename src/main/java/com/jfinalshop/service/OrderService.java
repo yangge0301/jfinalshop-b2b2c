@@ -1078,7 +1078,7 @@ public class OrderService extends BaseService<Order> {
 		Assert.notNull(orderPayment);
 		Assert.isTrue(orderPayment.isNew());
 		Assert.notNull(orderPayment.getAmount());
-		Assert.state(orderPayment.getAmount().compareTo(BigDecimal.ZERO) > 0);
+		Assert.state(orderPayment.getAmount().compareTo(BigDecimal.ZERO) >= 0);
 
 		orderPayment.setSn(snDao.generate(Sn.Type.orderPayment));
 		orderPayment.setOrderId(order.getId());

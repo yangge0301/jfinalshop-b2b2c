@@ -679,13 +679,13 @@
 											[#if orderItem.sku.specifications?has_content]
 												<span class="small gray-darker">${orderItem.sku.specifications?join(", ")}</span>
 											[/#if]
-											[#if orderItem.typeName != "general"]
-												<strong class="small">[${message("Product.Type." + orderItem.type)}]</strong>
+											[#if orderType  != "general"]
+												<strong class="small">${message("Product.Type." + orderType)}</strong>
 											[/#if]
 										</div>
 										<div class="media-right media-middle">
-											${currency(orderItem.price, true)}
-											<span class="small gray-darker">&times; ${orderItem.quantity}</span>
+											${currency(orderItem.order.price, true)}
+											<span class="small gray-darker">&times; ${orderItem.order.quantity}</span>
 										</div>
 									</div>
 								</div>

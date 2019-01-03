@@ -723,7 +723,7 @@
 						</div>
 						[#if product.typeName == "general"]
 							<button id="addCart" class="btn btn-lg btn-primary btn-flat btn-block" type="button">${message("shop.product.addCart")}</button>
-						[#elseif product.type == "exchange"]
+						[#elseif product.typeName == "exchange"]
 							<button id="exchange" class="btn btn-lg btn-primary btn-flat btn-block" type="button">${message("shop.product.exchange")}</button>
 						[/#if]
 					</div>
