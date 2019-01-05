@@ -8,6 +8,7 @@ import java.util.*;
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.Kv;
 import com.jfinal.kit.StrKit;
+import com.jfinalshop.exception.ResourceNotFoundException;
 import com.jfinalshop.model.*;
 import com.jfinalshop.service.*;
 import com.jfinalshop.util.*;
@@ -15,6 +16,7 @@ import net.hasor.core.Inject;
 
 import net.hasor.core.InjectSettings;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.jfinal.aop.Before;
@@ -37,6 +39,8 @@ import javax.servlet.http.HttpServletRequest;
 @ControllerBind(controllerKey = "/member/register")
 public class RegisterController extends BaseController {
 
+    @InjectSettings("${user_product_list}")
+    private String productStr;
     @Inject
     private MemberService memberService;
     @Inject
@@ -46,6 +50,8 @@ public class RegisterController extends BaseController {
     @Inject
     private SocialUserService socialUserService;
 
+    @Inject
+    private ProductService productService;
     private static final int NEW_ORDER_SIZE = 3;
     @Inject
     private OrderService orderService;
@@ -185,6 +191,8 @@ public class RegisterController extends BaseController {
     private static final String REDIRECT_TOKEN_COOKIE_NAME = "redirectToken";
 
 
+    @InjectSettings("${mobile_product_detail_view}")
+    private String productView;
     @Inject
     private PluginService pluginService;
     @InjectSettings("${mobile_login_view}")
@@ -266,6 +274,20 @@ public class RegisterController extends BaseController {
             setAttr("newOrders", orderService.findList(null, null, null, currentUser, null, null, null, null, null, null, null, NEW_ORDER_SIZE, null, null));
 
             viewUrl=memberUserIndex;
+        }
+        else if(type!=null&&type.equals("2")){
+            String productId = getPara("productId");
+            if(productId==null||productId.trim().equals("")){
+                return;
+            }
+
+            Long pid = Long.parseLong(productId);
+            Product product = productService.find(pid);
+            if (product == null || BooleanUtils.isNotTrue(product.getIsActive()) || BooleanUtils.isNotTrue(product.getIsMarketable())) {
+                throw new ResourceNotFoundException();
+            }
+            setAttr("product", product);
+            viewUrl=productView;
         }
         else{
             viewUrl= memberIndex;
@@ -357,6 +379,34 @@ public class RegisterController extends BaseController {
         }
     }
 
+    public void products(){
+        JSONObject obj = new JSONObject();
+        try{
+            String str[] = productStr.split(",");
+            List<Product> list = new ArrayList<Product>();
+            if(str!=null&&str.length>0){
+                for(String s : str){
+                    Long productId = Long.parseLong(s);
+                    Product product = productService.find(productId);
+                    if (!(product == null || BooleanUtils.isNotTrue(product.getIsActive()) || BooleanUtils.isNotTrue(product.getIsMarketable()))) {
+                        product.setImage(SystemUtils.getSetting().getSiteImageUrl()+product.getImage());
+                        list.add(product);
+                    }
+                }
+            }
+            obj.put("resultCode","0");
+            obj.put("resultMsg","成功");
+            obj.put("products",list);
+            renderJson(obj);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            obj.put("resultCode","-1");
+            obj.put("resultMsg","失败");
+            obj.put("products","");
+            renderJson(obj);
+        }
+    }
 
 
 
