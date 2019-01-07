@@ -3,6 +3,7 @@ package com.jfinalshop.controller.business;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.jfinalshop.util.SystemUtils;
 import net.hasor.core.Inject;
 
 import org.apache.commons.lang.StringUtils;
@@ -44,7 +45,7 @@ public class FileController extends BaseController {
 			renderJson(Results.unprocessableEntity("business.upload.error"));
 			return;
 		}
-		data.put("url", url);
+		data.put("url", SystemUtils.getSetting().getSiteImageUrl()+url);
 		renderJson(data);
 	}
 

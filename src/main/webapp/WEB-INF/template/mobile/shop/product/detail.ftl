@@ -22,6 +22,19 @@
        	 	width: 100%!important;
 			height:auto!important;
 		}
+		#detail img{
+            width: 100%!important;
+            height:auto!important;
+		}
+		#detail div{
+
+            width: 100%!important;
+            height:auto!important;
+		}
+		#detail p{
+            width: 100%!important;
+            height:auto!important;
+		}
 		#J_DcTopRightWrap,#J_DcTopRight,.J_TModule,.skin-box-bd,.content,.MsoNormal,#description{
             width: 100%!important;
             height:auto!important;
