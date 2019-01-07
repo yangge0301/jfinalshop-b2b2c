@@ -65,7 +65,7 @@ public class MD5Util {
         long times = System.currentTimeMillis();
         Object obj = parameters.get("timestamp")==null?parameters.get("timeStamp"):parameters.get("timestamp");
         long timestamp = Long.parseLong(obj.toString());
-        if((times-timestamp)>=10*60*1000||(timestamp-times)>=10*60*1000){
+        if((times-timestamp)>=24*60*60*1000||(timestamp-times)>=24*60*60*1000){
             return "error";
         }
         // stringA="appid=wxd930ea5d5a258f4f&body=test&device_info=1000&mch_id=10000100&nonce_str=ibuaiVcKdpRxkhJA";
