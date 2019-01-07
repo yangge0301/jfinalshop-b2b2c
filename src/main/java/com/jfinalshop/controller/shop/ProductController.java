@@ -240,7 +240,8 @@ public class ProductController extends BaseController {
 		setAttr("orderType", orderType);
 		setAttr("pageNumber", pageNumber);
 		setAttr("pageSize", pageSize);
-		setAttr("page", productService.findPage(type, null, productCategory, null, brand, promotion, productTag, null, attributeValueMap, startPrice, endPrice, true, true, null, true, null, null, null, orderType, pageable));
+		Page<Product> p = productService.findPage(type, null, productCategory, null, brand, promotion, productTag, null, attributeValueMap, startPrice, endPrice, true, true, null, true, null, null, null, orderType, pageable);
+		setAttr("page", p);
 		render("/shop/product/list.ftl");
 
 	}

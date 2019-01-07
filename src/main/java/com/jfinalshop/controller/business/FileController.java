@@ -44,7 +44,6 @@ public class FileController extends BaseController {
 			renderJson(Results.unprocessableEntity("business.upload.error"));
 			return;
 		}
-		Thread.sleep(1000);
 		data.put("url", url);
 		renderJson(data);
 	}

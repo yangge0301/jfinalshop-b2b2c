@@ -581,6 +581,14 @@ public class Product extends BaseProduct<Product> {
 		if (CollectionUtils.isEmpty(getProductImagesConverter())) {
 			return null;
 		}
+		List<ProductImage> ls= getProductImagesConverter();
+		if(ls!=null&&ls.size()>0){
+			for(ProductImage pi:ls){
+				if(pi.getThumbnail()!=null&&!pi.getThumbnail().trim().equals("")){
+					return pi.getThumbnail();
+				}
+			}
+		}
 		return getProductImagesConverter().get(0).getThumbnail();
 	}
 
