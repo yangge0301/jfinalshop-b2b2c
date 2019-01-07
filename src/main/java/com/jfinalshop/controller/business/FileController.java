@@ -26,7 +26,7 @@ public class FileController extends BaseController {
 	/**
 	 * 上传
 	 */
-	public void upload() {
+	public void upload() throws Exception{
 		UploadFile file = getFile();
 		FileType fileType = FileType.valueOf(getPara("fileType", "image"));
 		
@@ -44,6 +44,7 @@ public class FileController extends BaseController {
 			renderJson(Results.unprocessableEntity("business.upload.error"));
 			return;
 		}
+		Thread.sleep(1000);
 		data.put("url", url);
 		renderJson(data);
 	}

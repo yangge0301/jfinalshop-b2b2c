@@ -56,7 +56,7 @@
 						<strong class="red"><%-currency(product.price, true)%></strong>
 					<%} else if (product.type == "exchange") {%>
 						<span class="small">${message("Sku.exchangePoint")}:</span>
-						<strong class="red"><%-product.defaultSku.exchangePoint%></strong>
+						<strong class="red"><%-product.defaultSku.exchange_point%></strong>
 					<%}%>
 					<p>
 						<%if (product.store.type == "self") {%>

@@ -17,6 +17,16 @@
 		[/#if]
 	[/@seo]
 	<link href="${base}/favicon.ico" rel="icon">
+	<style>
+		#detail table{
+       	 	width: 100%!important;
+			height:auto!important;
+		}
+		#J_DcTopRightWrap,#J_DcTopRight,.J_TModule,.skin-box-bd,.content,.MsoNormal,#description{
+            width: 100%!important;
+            height:auto!important;
+        }
+	</style>
 	<link href="${base}/resources/mobile/shop/css/bootstrap.css" rel="stylesheet">
 	<link href="${base}/resources/mobile/shop/css/font-awesome.css" rel="stylesheet">
 	<link href="${base}/resources/mobile/shop/css/animate.css" rel="stylesheet">
