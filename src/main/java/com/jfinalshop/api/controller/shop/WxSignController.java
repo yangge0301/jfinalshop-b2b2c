@@ -106,7 +106,7 @@ public class WxSignController  extends Controller {
                 obj.put("session_key",session_key);
                 redisManager.set(id,obj.toJSONString(),30*60);
                 //注册
-                String registerUrl = serverUrl +"member/register/info?account="+openId+"&password=3";
+                String registerUrl = serverUrl +"member/register/info?account="+openId+"&password=3441901P1o";
                 String result = HttpClient.reqUrl(registerUrl);
                 LogKit.info("userlogin userregister==>"+result);
                 renderJson(new JsonResult("1","登录成功",null,null,id));
