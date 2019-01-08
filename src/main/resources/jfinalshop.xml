@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jfinalshop>
 	<setting name="siteName" value="江宁广电" />
-	<setting name="siteUrl" value="http://127.0.0.1:8083" />
-	<setting name="siteImageUrl" value="http://127.0.0.1:8083" />
+	<setting name="siteUrl" value="http://wx.3ch.net.cn:83" />
+	<setting name="siteImageUrl" value="http://wx.3ch.net.cn:83" />
 	<setting name="logo" value="/upload/image/logo.gif" />
-	<setting name="hotSearch" value="苹果,三星,索尼,华为,魅族,佳能,华硕,美的,格力" />
+	<setting name="hotSearch" value="鸭,衣服,雨伞" />
 	<setting name="cancelReason" value="商品选错了,地址填错了,忘记使用优惠了,临时有事需要取消,不想要了" />
     <setting name="refundsReason" value="商品选错了,地址填错了,忘记使用优惠了,临时有事需要取消,不想要了,商家告知我缺货,商家未及时发货,未收到货,商品有质量问题,商品错发、漏发,告诉我超区无法配送,其他" />
 	<setting name="address" value="深圳市福田区" />

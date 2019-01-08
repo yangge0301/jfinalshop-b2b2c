@@ -258,20 +258,20 @@
                         <ul class="carousel-inner">
                             <li class="item active">
                                 <a href="${base}/product/list/1">
-                                    <em class="blue-dark">苹果产品促销专场，全部最低价</em>
-                                    以旧换新最高可抵2000元
+                                    <em class="blue-dark">杨震金牌鸭王南京美食</em>
+                                    色泽鲜艳，皮脆肉嫩，配加秘制卤汁
                                 </a>
                             </li>
                             <li class="item">
                                 <a href="${base}/product/list/1">
-                                    <em class="blue-dark">Color Cube立体声蓝牙音箱</em>
-                                    精致生活，声色享受
+                                    <em class="blue-dark">南国有福椰年货特产大礼包春节礼品</em>
+                                    新品上市 特产礼盒年货送礼
                                 </a>
                             </li>
                             <li class="item">
                                 <a href="${base}/product/list/1">
-                                    <em class="blue-dark">四款让人任性的数码产品，达人分享</em>
-                                    忙碌1年，任性1把
+                                    <em class="blue-dark">南京特产-江宁金箔书</em>
+                                    金箔工艺品 商务礼品 道德经金箔礼品书
                                 </a>
                             </li>
                         </ul>

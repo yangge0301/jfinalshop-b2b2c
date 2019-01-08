@@ -8,6 +8,7 @@ import java.util.*;
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.Kv;
 import com.jfinal.kit.StrKit;
+import com.jfinalshop.entity.ProductImage;
 import com.jfinalshop.exception.ResourceNotFoundException;
 import com.jfinalshop.model.*;
 import com.jfinalshop.service.*;
@@ -286,6 +287,17 @@ public class RegisterController extends BaseController {
             if (product == null || BooleanUtils.isNotTrue(product.getIsActive()) || BooleanUtils.isNotTrue(product.getIsMarketable())) {
                 throw new ResourceNotFoundException();
             }
+            List<ProductImage> list = product.getProductImagesConverter();
+            List<ProductImage> listtmp = new ArrayList<ProductImage>();
+            if (list == null || list.size()==0) {
+                throw new ResourceNotFoundException();
+            }
+            for(ProductImage p : list){
+                if(p!=null&&p.getLarge()!=null&&!p.getLarge().trim().equals("")&&p.getMedium()!=null&&!p.getMedium().trim().equals("")){
+                    listtmp.add(p);
+                }
+            }
+            product.setProductImages(listtmp);
             setAttr("product", product);
             viewUrl=productView;
         }
