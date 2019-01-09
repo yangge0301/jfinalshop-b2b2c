@@ -426,8 +426,8 @@ public class RegisterController extends BaseController {
 
         String account = URLDecoder.decode(getPara("account"));
         String password = getPara("password");
-        long jifen = getParaToLong("jifen");
-        long add_jifen = getParaToLong("add_jifen");
+        String jifen = getPara("jifen");
+        String add_jifen = getPara("add_jifen");
         String money1 = getPara("money");
         String add_money1 = getPara("add_money");
         String timestamp = getPara("timestamp")==null?getPara("timeStamp"):getPara("timestamp");
@@ -435,7 +435,7 @@ public class RegisterController extends BaseController {
 
         SortedMap<Object,Object> parameters = new TreeMap<Object, Object>();
         parameters.put("account",account);
-        parameters.put("password",password);
+        parameters.put("password",password==null||password.equals("null")?"":password);
         parameters.put("jifen",jifen);
         parameters.put("add_jifen",add_jifen);
         parameters.put("money",money1);
@@ -457,6 +457,8 @@ public class RegisterController extends BaseController {
         }
         double money = Double.parseDouble(money1);
         double add_money = Double.parseDouble(add_money1);
+        long jf = new BigDecimal(jifen).longValue();
+        long ad_jf=new BigDecimal(add_jifen).longValue();
         Map<String, Object> data = new HashMap<>();
         Setting setting = SystemUtils.getSetting();
         try{
@@ -475,8 +477,8 @@ public class RegisterController extends BaseController {
             }
 
 
-            if (jifen > 0) {
-                memberService.addPointV2(member, jifen,add_jifen, PointLog.Type.reward, null);
+            if (jf > 0) {
+                memberService.addPointV2(member, jf,ad_jf, PointLog.Type.reward, null);
             }
             if(money>0){
                 memberService.addBalanceV2(member, BigDecimal.valueOf(money),BigDecimal.valueOf(add_money), MemberDepositLog.Type.recharge, null);

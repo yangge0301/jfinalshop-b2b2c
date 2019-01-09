@@ -789,6 +789,19 @@ public class OrderController extends BaseController {
 				orderSns.add(order.getSn());
 			}
 		}
+		if(point!=null&&point.compareTo(BigDecimal.ZERO)>0){
+			String account = currentUser.getUsername();
+			long timestamp = System.currentTimeMillis();
+			SortedMap<Object,Object> parameters = new TreeMap<Object, Object>();
+			parameters.put("account",account);
+			parameters.put("jifen",-point.longValue());
+			parameters.put("timestamp",timestamp);
+			String sign = MD5Util.createSign(parameters,"");
+			String url = noticeUrl +"&account="+URLEncoder.encode(account)+"&timestamp="+timestamp+"&jifen=" +-point.longValue()+"&sign="+sign+"&isSign=1";
+			System.out.println(url);
+			LogKit.info(">>>>> "+account+"积分同步==>【" + url + "】 <<<<<");
+			HttpKit.get(url);
+		}
 		data.put("orderSns", orderSns);
 		renderJson(data);
 	}
