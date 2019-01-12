@@ -167,18 +167,18 @@
 										${message("member.index.pointLogList")}
 									</a>
 								</div>
-								<div class="col-xs-4 text-center">
-									<a class="icon" href="${base}/member/deposit/log">
-										<span class="fa fa-rmb blue-dark"></span>
-										${message("member.index.depositLog")}
-									</a>
-								</div>
-								<div class="col-xs-4 text-center">
-									<a class="icon" href="${base}/member/deposit/recharge">
-										<span class="fa fa-money magenta"></span>
-										${message("member.index.depositRecharge")}
-									</a>
-								</div>
+								[#--<div class="col-xs-4 text-center">--]
+									[#--<a class="icon" href="${base}/member/deposit/log">--]
+										[#--<span class="fa fa-rmb blue-dark"></span>--]
+										[#--${message("member.index.depositLog")}--]
+									[#--</a>--]
+								[#--</div>--]
+								[#--<div class="col-xs-4 text-center">--]
+									[#--<a class="icon" href="${base}/member/deposit/recharge">--]
+										[#--<span class="fa fa-money magenta"></span>--]
+										[#--${message("member.index.depositRecharge")}--]
+									[#--</a>--]
+								[#--</div>--]
 							</div>
 						</div>
 					</div>

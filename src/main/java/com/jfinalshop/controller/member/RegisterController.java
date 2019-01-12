@@ -2,19 +2,22 @@ package com.jfinalshop.controller.member;
 
 import java.io.BufferedReader;
 import java.math.BigDecimal;
+import java.net.URLDecoder;
 import java.util.*;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.Kv;
 import com.jfinal.kit.StrKit;
+import com.jfinalshop.entity.ProductImage;
+import com.jfinalshop.exception.ResourceNotFoundException;
 import com.jfinalshop.model.*;
 import com.jfinalshop.service.*;
-import com.jfinalshop.util.JHttp;
-import com.jfinalshop.util.WebUtils;
+import com.jfinalshop.util.*;
 import net.hasor.core.Inject;
 
 import net.hasor.core.InjectSettings;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.jfinal.aop.Before;
@@ -27,8 +30,6 @@ import com.jfinalshop.shiro.core.SubjectKit;
 import com.jfinalshop.shiro.hasher.Hasher;
 import com.jfinalshop.shiro.hasher.HasherInfo;
 import com.jfinalshop.shiro.hasher.HasherKit;
-import com.jfinalshop.util.IpUtil;
-import com.jfinalshop.util.SystemUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -39,6 +40,8 @@ import javax.servlet.http.HttpServletRequest;
 @ControllerBind(controllerKey = "/member/register")
 public class RegisterController extends BaseController {
 
+    @InjectSettings("${user_product_list}")
+    private String productStr;
     @Inject
     private MemberService memberService;
     @Inject
@@ -48,6 +51,23 @@ public class RegisterController extends BaseController {
     @Inject
     private SocialUserService socialUserService;
 
+    @Inject
+    private ProductService productService;
+    private static final int NEW_ORDER_SIZE = 3;
+    @Inject
+    private OrderService orderService;
+    @Inject
+    private CouponCodeService couponCodeService;
+    @Inject
+    private MessageService messageService;
+    @Inject
+    private ProductFavoriteService productFavoriteService;
+    @Inject
+    private ProductNotifyService productNotifyService;
+    @Inject
+    private ReviewService reviewService;
+    @Inject
+    private ConsultationService consultationService;
     /**
      * 检查用户名是否存在
      */
@@ -172,10 +192,14 @@ public class RegisterController extends BaseController {
     private static final String REDIRECT_TOKEN_COOKIE_NAME = "redirectToken";
 
 
+    @InjectSettings("${mobile_product_detail_view}")
+    private String productView;
     @Inject
     private PluginService pluginService;
     @InjectSettings("${mobile_login_view}")
     private String memberIndex;
+    @InjectSettings("${member_user_index}")
+    private String memberUserIndex;
     @InjectSettings("${member_login_view}")
     private String memberLoginView;
     @InjectSettings("${user_register_to_wjn_url}")
@@ -187,9 +211,31 @@ public class RegisterController extends BaseController {
 
     @Before(MobileInterceptor.class)
     public void login() {
-        String account = getPara("account");
+        String account = URLDecoder.decode(getPara("account"));
         String password = getPara("password");
-        password="123456";
+        String timestamp = getPara("timestamp")==null?getPara("timeStamp"):getPara("timestamp");
+        String sign = getPara("sign");
+        String type=getPara("type");
+
+        SortedMap<Object,Object> parameters = new TreeMap<Object, Object>();
+        parameters.put("account",account);
+        parameters.put("password",password);
+        if(getPara("timestamp")==null){
+
+            parameters.put("timeStamp",timestamp);
+        }
+        else{
+
+            parameters.put("timestamp",timestamp);
+        }
+        if(!MD5Util.createSign(parameters,sign).equals(sign)){
+            JSONObject obj = new JSONObject();
+            obj.put("resultCode","1");
+            obj.put("resultMsg","sign error");
+            renderJson(obj);
+            return;
+        }
+
         Map<String, Object> data = new HashMap<>();
         if (StrKit.notBlank(account) || StrKit.notBlank(password)) {
             Member member = memberService.findByUsername(account);
@@ -214,29 +260,88 @@ public class RegisterController extends BaseController {
                 return;
             }
         }
+        String viewUrl = "";
+        if(type!=null&&type.equals("1")){
+            Member currentUser = memberService.getCurrentUser();
+            setAttr("pendingPaymentOrderCount", orderService.count(null, Order.Status.pendingPayment, null, currentUser, null, null, null, null, null, null, false));
+            setAttr("pendingShipmentOrderCount", orderService.count(null, Order.Status.pendingShipment, null, currentUser, null, null, null, null, null, null, null));
+            setAttr("shippedOrderCount", orderService.count(null, Order.Status.shipped, null, currentUser, null, null, null, null, null, null, null));
+            setAttr("messageCount", messageService.count(currentUser, false));
+            setAttr("couponCodeCount", couponCodeService.count(null, currentUser, null, false, false));
+            setAttr("productFavoriteCount", productFavoriteService.count(currentUser));
+            setAttr("productNotifyCount", productNotifyService.count(currentUser, null, null, null));
+            setAttr("reviewCount", reviewService.count(currentUser, null, null, null));
+            setAttr("consultationCount", consultationService.count(currentUser, null, null));
+            setAttr("newOrders", orderService.findList(null, null, null, currentUser, null, null, null, null, null, null, null, NEW_ORDER_SIZE, null, null));
 
+            viewUrl=memberUserIndex;
+        }
+        else if(type!=null&&type.equals("2")){
+            String productId = getPara("productId");
+            if(productId==null||productId.trim().equals("")){
+                return;
+            }
+
+            Long pid = Long.parseLong(productId);
+            Product product = productService.find(pid);
+            if (product == null || BooleanUtils.isNotTrue(product.getIsActive()) || BooleanUtils.isNotTrue(product.getIsMarketable())) {
+                throw new ResourceNotFoundException();
+            }
+            List<ProductImage> list = product.getProductImagesConverter();
+            List<ProductImage> listtmp = new ArrayList<ProductImage>();
+            if (list == null || list.size()==0) {
+                throw new ResourceNotFoundException();
+            }
+            for(ProductImage p : list){
+                if(p!=null&&p.getLarge()!=null&&!p.getLarge().trim().equals("")&&p.getMedium()!=null&&!p.getMedium().trim().equals("")){
+                    listtmp.add(p);
+                }
+            }
+            product.setProductImages(listtmp);
+            setAttr("product", product);
+            viewUrl=productView;
+        }
+        else{
+            viewUrl= memberIndex;
+        }
         setAttr("loginPlugins", pluginService.getActiveLoginPlugins(getRequest()));
 
         if (memberService.isAuthenticated() && memberService.getCurrentUser() != null) {
-            render(memberIndex);
+            render(viewUrl);
         } else {
-            render(memberIndex);
+            render(viewUrl);
         }
 
     }
     public void info() {
 
-        String account = getPara("account");
+        String account = URLDecoder.decode(getPara("account"));
         String password = getPara("password");
-        password="123456";
+        String timestamp = getPara("timestamp")==null?getPara("timeStamp"):getPara("timestamp");
+        String sign = getPara("sign");
         Map<String, Object> data = new HashMap<>();
         Setting setting = SystemUtils.getSetting();
-        if(password==null||password.equals("")){
-            password="123456";
-        }
+
         try{
 
+            SortedMap<Object,Object> parameters = new TreeMap<Object, Object>();
+            parameters.put("account",account);
+            parameters.put("password",password);
+            if(getPara("timestamp")==null){
 
+                parameters.put("timeStamp",timestamp);
+            }
+            else{
+
+                parameters.put("timestamp",timestamp);
+            }
+            if(!MD5Util.createSign(parameters,sign).equals(sign)){
+                JSONObject obj = new JSONObject();
+                obj.put("resultCode","1");
+                obj.put("resultMsg","sign error");
+                renderJson(obj);
+                return;
+            }
             Member member = new Member();
             if (memberService.usernameExists(account)) {
                 JSONObject obj = new JSONObject();
@@ -245,9 +350,7 @@ public class RegisterController extends BaseController {
                 renderJson(obj);
                 return;
             }
-
             member.removeAttributeValue();
-
             member.setUsername(account);
             member.setEmail(StringUtils.lowerCase("1@1.com"));
             member.setMobile(StringUtils.lowerCase(member.getMobile()));
@@ -288,19 +391,74 @@ public class RegisterController extends BaseController {
         }
     }
 
+    public void products(){
+        JSONObject obj = new JSONObject();
+        try{
+            String str[] = productStr.split(",");
+            List<Product> list = new ArrayList<Product>();
+            if(str!=null&&str.length>0){
+                for(String s : str){
+                    Long productId = Long.parseLong(s);
+                    Product product = productService.find(productId);
+                    if (!(product == null || BooleanUtils.isNotTrue(product.getIsActive()) || BooleanUtils.isNotTrue(product.getIsMarketable()))) {
+                        product.setImage(SystemUtils.getSetting().getSiteImageUrl()+product.getImage());
+                        list.add(product);
+                    }
+                }
+            }
+            obj.put("resultCode","0");
+            obj.put("resultMsg","成功");
+            obj.put("products",list);
+            renderJson(obj);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            obj.put("resultCode","-1");
+            obj.put("resultMsg","失败");
+            obj.put("products","");
+            renderJson(obj);
+        }
+    }
 
 
 
     public void updatepoint() {
 
-        String account = getPara("account");
+        String account = URLDecoder.decode(getPara("account"));
         String password = getPara("password");
-        long jifen = getParaToLong("jifen");
-        long add_jifen = getParaToLong("add_jifen");
+        String jifen = getPara("jifen");
+        String add_jifen = getPara("add_jifen");
         String money1 = getPara("money");
         String add_money1 = getPara("add_money");
+        String timestamp = getPara("timestamp")==null?getPara("timeStamp"):getPara("timestamp");
+        String sign = getPara("sign");
+
+        SortedMap<Object,Object> parameters = new TreeMap<Object, Object>();
+        parameters.put("account",account);
+        parameters.put("password",password==null||password.equals("null")?"":password);
+        parameters.put("jifen",jifen);
+        parameters.put("add_jifen",add_jifen);
+        parameters.put("money",money1);
+        parameters.put("add_money",add_money1);
+        if(getPara("timestamp")==null){
+
+            parameters.put("timeStamp",timestamp);
+        }
+        else{
+
+            parameters.put("timestamp",timestamp);
+        }
+        if(!MD5Util.createSign(parameters,sign).equals(sign)){
+            JSONObject obj = new JSONObject();
+            obj.put("resultCode","1");
+            obj.put("resultMsg","sign error");
+            renderJson(obj);
+            return;
+        }
         double money = Double.parseDouble(money1);
         double add_money = Double.parseDouble(add_money1);
+        long jf = new BigDecimal(jifen).longValue();
+        long ad_jf=new BigDecimal(add_jifen).longValue();
         Map<String, Object> data = new HashMap<>();
         Setting setting = SystemUtils.getSetting();
         try{
@@ -319,8 +477,8 @@ public class RegisterController extends BaseController {
             }
 
 
-            if (jifen > 0) {
-                memberService.addPointV2(member, jifen,add_jifen, PointLog.Type.reward, null);
+            if (jf > 0) {
+                memberService.addPointV2(member, jf,ad_jf, PointLog.Type.reward, null);
             }
             if(money>0){
                 memberService.addBalanceV2(member, BigDecimal.valueOf(money),BigDecimal.valueOf(add_money), MemberDepositLog.Type.recharge, null);

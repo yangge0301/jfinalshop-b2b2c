@@ -3,6 +3,8 @@ package com.jfinalshop.controller.shop;
 import com.jfinal.aop.Before;
 import com.jfinal.core.ActionKey;
 import com.jfinal.ext.route.ControllerBind;
+import com.jfinal.kit.HttpKit;
+import com.jfinal.kit.LogKit;
 import com.jfinal.plugin.activerecord.tx.Tx;
 import com.jfinalshop.Results;
 import com.jfinalshop.entity.Invoice;
@@ -10,15 +12,15 @@ import com.jfinalshop.interceptor.MobileInterceptor;
 import com.jfinalshop.model.*;
 import com.jfinalshop.plugin.PaymentPlugin;
 import com.jfinalshop.service.*;
+import com.jfinalshop.util.MD5Util;
 import net.hasor.core.Inject;
+import net.hasor.core.InjectSettings;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.URLEncoder;
+import java.util.*;
 
 /**
  * Controller - 订单
@@ -27,6 +29,9 @@ import java.util.Map;
 @ControllerBind(controllerKey = "/order")
 public class OrderController extends BaseController {
 
+
+	@InjectSettings("${user_pay_to_wjn_jifen_url}")
+	private String noticeUrl;
 	@Inject
 	private SkuService skuService;
 	@Inject
@@ -249,7 +254,7 @@ public class OrderController extends BaseController {
 			return;
 		}
 		Receiver defaultReceiver = receiverService.findDefault(currentUser);
-		List<Order> orders = orderService.generate(Order.Type.general, currentCart, defaultReceiver, null, null, null, null, null, null);
+		List<Order> orders = orderService.generate(Order.Type.general, currentCart, defaultReceiver, null, null, null, null, null, null,null);
 
 		BigDecimal price = BigDecimal.ZERO;
 		BigDecimal fee = BigDecimal.ZERO;
@@ -361,7 +366,7 @@ public class OrderController extends BaseController {
 		cart.setMember(currentUser);
 		cart.setCartItems(cartItems);
 		Receiver defaultReceiver = receiverService.findDefault(currentUser);
-		List<Order> orders = orderService.generate(Order.Type.exchange, cart, defaultReceiver, null, null, null, null, null, null);
+		List<Order> orders = orderService.generate(Order.Type.exchange, cart, defaultReceiver, null, null, null, null, null, null,null);
 
 		Long exchangePoint = 0L;
 		Long rewardPoint = 0L;
@@ -443,6 +448,7 @@ public class OrderController extends BaseController {
 		String code = getPara("code");
 		String invoiceTitle = getPara("invoiceTitle");
 		BigDecimal balance = new BigDecimal(getPara("balance", "0"));
+		BigDecimal point = new BigDecimal(getPara("point", "0"));
 		String memo = getPara("memo");
 		Member currentUser = memberService.getCurrentUser();
 		Cart currentCart = cartService.getCurrent(getRequest());
@@ -465,12 +471,20 @@ public class OrderController extends BaseController {
 			Results.unprocessableEntity(getResponse(), "shop.order.insufficientBalance");
 			return;
 		}
+		if (point!=null&&point.longValue()<0) {
+			Results.unprocessableEntity(getResponse(), Results.DEFAULT_UNPROCESSABLE_ENTITY_MESSAGE);
+			return;
+		}
+		if (point != null &&point.longValue()>0&&point.longValue()>currentUser.getPoint()) {
+			Results.unprocessableEntity(getResponse(), "shop.order.insufficientBalance");
+			return;
+		}
 
 		PaymentMethod paymentMethod = paymentMethodService.find(paymentMethodId);
 		ShippingMethod shippingMethod = shippingMethodService.find(shippingMethodId);
 		CouponCode couponCode = couponCodeService.findByCode(code);
 		Invoice invoice = StringUtils.isNotEmpty(invoiceTitle) ? new Invoice(invoiceTitle, null) : null;
-		List<Order> orders = orderService.generate(Order.Type.general, currentCart, receiver, paymentMethod, shippingMethod, couponCode, invoice, balance, memo);
+		List<Order> orders = orderService.generate(Order.Type.general, currentCart, receiver, paymentMethod, shippingMethod, couponCode, invoice, balance, memo,point);
 
 		BigDecimal price = BigDecimal.ZERO;
 		BigDecimal fee = BigDecimal.ZERO;
@@ -548,7 +562,7 @@ public class OrderController extends BaseController {
 		Cart cart = new Cart();
 		cart.setMemberId(currentUser.getId());
 		cart.setCartItems(cartItems);
-		List<Order> orders = orderService.generate(Order.Type.general, cart, receiver, paymentMethod, shippingMethod, null, null, balance, null);
+		List<Order> orders = orderService.generate(Order.Type.general, cart, receiver, paymentMethod, shippingMethod, null, null, balance, null,null);
 		BigDecimal price = BigDecimal.ZERO;
 		BigDecimal fee = BigDecimal.ZERO;
 		BigDecimal freight = BigDecimal.ZERO;
@@ -604,6 +618,7 @@ public class OrderController extends BaseController {
 		String code = getPara("code");
 		String invoiceTitle = getPara("invoiceTitle");
 		BigDecimal balance = new BigDecimal(getPara("balance", "0"));
+		BigDecimal point = new BigDecimal(getPara("point", "0"));
 		String memo = getPara("memo");
 		Member currentUser = memberService.getCurrentUser();
 		Cart currentCart = cartService.getCurrent(getRequest());
@@ -657,12 +672,37 @@ public class OrderController extends BaseController {
 			Results.unprocessableEntity(getResponse(), "shop.order.insufficientBalance");
 			return;
 		}
+		if (point != null && point.compareTo(BigDecimal.ZERO) < 0) {
+			Results.unprocessableEntity(getResponse(), Results.DEFAULT_UNPROCESSABLE_ENTITY_MESSAGE);
+			return;
+		}
+		if (point != null && point.compareTo(currentUser.getBalance()) > 0) {
+			Results.unprocessableEntity(getResponse(), "shop.order.insufficientPoint");
+			return;
+		}
 		Invoice invoice = StringUtils.isNotEmpty(invoiceTitle) ? new Invoice(invoiceTitle, null) : null;
-		List<Order> orders = orderService.create(Order.Type.general, Order.Source.PC, currentCart, receiver, paymentMethod, shippingMethod, couponCode, invoice, balance, memo);
+		List<Order> orders = orderService.create(Order.Type.general, Order.Source.PC, currentCart, receiver, paymentMethod, shippingMethod, couponCode, invoice, balance, memo,point);
+
+
+
+
 		List<String> orderSns = new ArrayList<>();
 		for (Order order : orders) {
 			if (order != null) {
 				orderSns.add(order.getSn());
+				if(point!=null&&point.compareTo(BigDecimal.ZERO)>0){
+					String account = currentUser.getUsername();
+					long timestamp = System.currentTimeMillis();
+					SortedMap<Object,Object> parameters = new TreeMap<Object, Object>();
+					parameters.put("account",account);
+					parameters.put("jifen",-point.longValue());
+					parameters.put("timestamp",timestamp);
+					String sign = MD5Util.createSign(parameters,"");
+					String url = noticeUrl +"&account="+URLEncoder.encode(account)+"&timestamp="+timestamp+"&jifen=" +-point.longValue()+"&sign="+sign+"&isSign=1";
+					System.out.println(url);
+					LogKit.info(">>>>> "+account+"积分同步==>【" + url + "】 <<<<<");
+					HttpKit.get(url);
+				}
 			}
 		}
 		data.put("orderSns", orderSns);
@@ -732,16 +772,35 @@ public class OrderController extends BaseController {
 			Results.unprocessableEntity(getResponse(), "shop.order.insufficientBalance");
 			return;
 		}
-
+		BigDecimal point = new BigDecimal("0");
 		Cart currentCart = cartService.create();
 		cartService.add(currentCart, sku, quantity);
+		if(currentCart!=null){
+			for (CartItem cartItem : currentCart.getCartItems()) {
+				Sku skuitem = cartItem.getSku();
+				point = new BigDecimal(skuitem.getExchangePoint()*quantity);
+			}
 
+		}
 		List<String> orderSns = new ArrayList<>();
-		List<Order> orders = orderService.create(Order.Type.exchange, Order.Source.PC, currentCart, receiver, paymentMethod, shippingMethod, null, null, balance, memo);
+		List<Order> orders = orderService.create(Order.Type.exchange, Order.Source.PC, currentCart, receiver, paymentMethod, shippingMethod, null, null, balance, memo,point);
 		for (Order order : orders) {
 			if (order != null) {
 				orderSns.add(order.getSn());
 			}
+		}
+		if(point!=null&&point.compareTo(BigDecimal.ZERO)>0){
+			String account = currentUser.getUsername();
+			long timestamp = System.currentTimeMillis();
+			SortedMap<Object,Object> parameters = new TreeMap<Object, Object>();
+			parameters.put("account",account);
+			parameters.put("jifen",-point.longValue());
+			parameters.put("timestamp",timestamp);
+			String sign = MD5Util.createSign(parameters,"");
+			String url = noticeUrl +"&account="+URLEncoder.encode(account)+"&timestamp="+timestamp+"&jifen=" +-point.longValue()+"&sign="+sign+"&isSign=1";
+			System.out.println(url);
+			LogKit.info(">>>>> "+account+"积分同步==>【" + url + "】 <<<<<");
+			HttpKit.get(url);
 		}
 		data.put("orderSns", orderSns);
 		renderJson(data);
@@ -774,7 +833,7 @@ public class OrderController extends BaseController {
 				render(UNPROCESSABLE_ENTITY_VIEW);
 				return;
 			}
-			if (order.getAmount().compareTo(order.getAmountPaid()) != 0) {
+//			if (order.getAmount().compareTo(order.getAmountPaid()) != 0) {
 				if (!currentUser.equals(order.getMember()) || order.getPaymentMethod() == null || order.getAmountPayable().compareTo(BigDecimal.ZERO) <= 0) {
 					setAttr("errorMessage", "订单异常!");
 					render(UNPROCESSABLE_ENTITY_VIEW);
@@ -798,7 +857,7 @@ public class OrderController extends BaseController {
 				}
 				pOrderSn.add(order.getSn());
 				orders.add(order);
-			}
+//			}
 		}
 		if (defaultPaymentPlugin != null) {
 			amount = defaultPaymentPlugin.calculateFee(amount).add(amount);

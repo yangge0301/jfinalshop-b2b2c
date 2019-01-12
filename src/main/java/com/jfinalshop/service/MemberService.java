@@ -1,9 +1,14 @@
 package com.jfinalshop.service;
 
 import java.math.BigDecimal;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
 
+import com.jfinal.kit.HttpKit;
+import com.jfinalshop.util.MD5Util;
 import net.hasor.core.Inject;
+import net.hasor.core.InjectSettings;
 import net.hasor.core.Singleton;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
@@ -41,7 +46,9 @@ public class MemberService extends BaseService<Member> {
 	public MemberService() {
 		super(Member.class);
 	}
-	
+
+	@InjectSettings("${user_pay_to_wjn_jifen_url}")
+	private String noticeUrl;
 	@Inject
 	private MemberDao memberDao;
 	@Inject
@@ -283,6 +290,7 @@ public class MemberService extends BaseService<Member> {
 		pointLog.setMemo(memo);
 		pointLog.setMemberId(member.getId());
 		pointLogDao.save(pointLog);
+
 	}
 
 	public void addPointV2(Member member,long nowPoint,long amount, PointLog.Type type, String memo) {

@@ -153,32 +153,32 @@ $().ready(function() {
 					[/#noautoesc]
 				[/@ad_position]
 			</div>
-			<div class="span3">
-				[@article_category_root_list count = 2]
-					[#if articleCategories?has_content]
-						<div id="newArticle" class="newArticle">
-							<ul class="tab">
-								[#list articleCategories as articleCategory]
-									<li>
-										<a href="${base}${articleCategory.path}" target="_blank">${articleCategory.name}</a>
-									</li>
-								[/#list]
-							</ul>
-							[#list articleCategories as articleCategory]
-								[@article_list article_category_id = articleCategory.id count = 6]
-									<ul class="tabContent[#if articleCategory_index > 0] hidden[/#if]">
-										[#list articles as article]
-											<li>
-												<a href="${base}${article.path}" title="${article.title}" target="_blank">${abbreviate(article.title, 40)}</a>
-											</li>
-										[/#list]
-									</ul>
-								[/@article_list]
-							[/#list]
-						</div>
-					[/#if]
-				[/@article_category_root_list]
-			</div>
+			[#--<div class="span3">--]
+				[#--[@article_category_root_list count = 2]--]
+					[#--[#if articleCategories?has_content]--]
+						[#--<div id="newArticle" class="newArticle">--]
+							[#--<ul class="tab">--]
+								[#--[#list articleCategories as articleCategory]--]
+									[#--<li>--]
+										[#--<a href="${base}${articleCategory.path}" target="_blank">${articleCategory.name}</a>--]
+									[#--</li>--]
+								[#--[/#list]--]
+							[#--</ul>--]
+							[#--[#list articleCategories as articleCategory]--]
+								[#--[@article_list article_category_id = articleCategory.id count = 6]--]
+									[#--<ul class="tabContent[#if articleCategory_index > 0] hidden[/#if]">--]
+										[#--[#list articles as article]--]
+											[#--<li>--]
+												[#--<a href="${base}${article.path}" title="${article.title}" target="_blank">${abbreviate(article.title, 40)}</a>--]
+											[#--</li>--]
+										[#--[/#list]--]
+									[#--</ul>--]
+								[#--[/@article_list]--]
+							[#--[/#list]--]
+						[#--</div>--]
+					[#--[/#if]--]
+				[#--[/@article_category_root_list]--]
+			[#--</div>--]
 		</div>
 		<div class="row">
 			<div class="span12">

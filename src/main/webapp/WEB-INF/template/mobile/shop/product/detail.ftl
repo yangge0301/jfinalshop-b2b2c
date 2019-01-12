@@ -17,6 +17,29 @@
 		[/#if]
 	[/@seo]
 	<link href="${base}/favicon.ico" rel="icon">
+	<style>
+		#detail table{
+       	 	width: 100%!important;
+			height:auto!important;
+		}
+		#detail img{
+            width: 100%!important;
+            height:auto!important;
+		}
+		#detail div{
+
+            width: 100%!important;
+            height:auto!important;
+		}
+		#detail p{
+            width: 100%!important;
+            height:auto!important;
+		}
+		#J_DcTopRightWrap,#J_DcTopRight,.J_TModule,.skin-box-bd,.content,.MsoNormal,#description{
+            width: 100%!important;
+            height:auto!important;
+        }
+	</style>
 	<link href="${base}/resources/mobile/shop/css/bootstrap.css" rel="stylesheet">
 	<link href="${base}/resources/mobile/shop/css/font-awesome.css" rel="stylesheet">
 	<link href="${base}/resources/mobile/shop/css/animate.css" rel="stylesheet">
@@ -723,7 +746,7 @@
 						</div>
 						[#if product.typeName == "general"]
 							<button id="addCart" class="btn btn-lg btn-primary btn-flat btn-block" type="button">${message("shop.product.addCart")}</button>
-						[#elseif product.type == "exchange"]
+						[#elseif product.typeName == "exchange"]
 							<button id="exchange" class="btn btn-lg btn-primary btn-flat btn-block" type="button">${message("shop.product.exchange")}</button>
 						[/#if]
 					</div>

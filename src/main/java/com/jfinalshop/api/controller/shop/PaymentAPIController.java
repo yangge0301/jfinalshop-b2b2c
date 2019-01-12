@@ -2,15 +2,10 @@ package com.jfinalshop.api.controller.shop;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import com.alibaba.fastjson.JSONObject;
+import com.jfinalshop.util.MD5Util;
 import net.hasor.core.Inject;
 import net.hasor.core.InjectSettings;
 
@@ -315,7 +310,24 @@ public class PaymentAPIController extends ApiController {
 	public void paymenotify() {
 		JSONObject obj = new JSONObject();
 		try{
-			String outTradeNo = getPara("orderNo");
+			String outTradeNo = getPara("orderId");
+			String timestamp = getPara("timestamp")==null?getPara("timeStamp"):getPara("timestamp");
+			String sign = getPara("sign");
+			System.out.println();
+			SortedMap<Object,Object> parameters = new TreeMap<Object, Object>();
+			parameters.put("orderId",outTradeNo);
+			if(getPara("timestamp")==null){
+				parameters.put("timeStamp",timestamp);
+			}
+			else{
+				parameters.put("timestamp",timestamp);
+			}
+			if(!MD5Util.createSign(parameters,sign).equals(sign)){
+				obj.put("resultCode","1");
+				obj.put("resultMsg","sign error");
+				renderJson(obj);
+				return;
+			}
 			LogKit.info("支付通知=" + outTradeNo);
 			Map<String, String> resultMap = PaymentApi.queryByOutTradeNo(getAppId(), getMchId(), getApiKey(), outTradeNo);
 			LogKit.info("resultMap" + resultMap);

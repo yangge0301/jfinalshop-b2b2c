@@ -7,6 +7,7 @@ import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinalshop.Pageable;
 import com.jfinalshop.Results;
+import com.jfinalshop.entity.ProductImage;
 import com.jfinalshop.entity.ProductVO;
 import com.jfinalshop.exception.ResourceNotFoundException;
 import com.jfinalshop.interceptor.MobileInterceptor;
@@ -71,6 +72,17 @@ public class ProductController extends BaseController {
 		if (product == null || BooleanUtils.isNotTrue(product.getIsActive()) || BooleanUtils.isNotTrue(product.getIsMarketable())) {
 			throw new ResourceNotFoundException();
 		}
+		List<ProductImage> list = product.getProductImagesConverter();
+		List<ProductImage> listtmp = new ArrayList<ProductImage>();
+		if (list == null || list.size()==0) {
+			throw new ResourceNotFoundException();
+		}
+		for(ProductImage p : list){
+			if(p!=null&&p.getLarge()!=null&&!p.getLarge().trim().equals("")&&p.getMedium()!=null&&!p.getMedium().trim().equals("")){
+				listtmp.add(p);
+			}
+		}
+		product.setProductImages(listtmp);
 		setAttr("product", product);
 		render("/shop/product/detail.ftl");
 	}
@@ -228,7 +240,8 @@ public class ProductController extends BaseController {
 		setAttr("orderType", orderType);
 		setAttr("pageNumber", pageNumber);
 		setAttr("pageSize", pageSize);
-		setAttr("page", productService.findPage(type, null, productCategory, null, brand, promotion, productTag, null, attributeValueMap, startPrice, endPrice, true, true, null, true, null, null, null, orderType, pageable));
+		Page<Product> p = productService.findPage(type, null, productCategory, null, brand, promotion, productTag, null, attributeValueMap, startPrice, endPrice, true, true, null, true, null, null, null, orderType, pageable);
+		setAttr("page", p);
 		render("/shop/product/list.ftl");
 
 	}
