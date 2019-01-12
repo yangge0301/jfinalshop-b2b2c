@@ -13,6 +13,7 @@ import com.jfinalshop.exception.ResourceNotFoundException;
 import com.jfinalshop.interceptor.MobileInterceptor;
 import com.jfinalshop.model.*;
 import com.jfinalshop.service.*;
+import com.jfinalshop.util.SystemUtils;
 import net.hasor.core.Inject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
@@ -356,6 +357,10 @@ public class ProductController extends BaseController {
 		List<Product> products = new ArrayList<Product>();
 		if (CollectionUtils.isNotEmpty(pages.getList())) {
 			for (Product product : pages.getList()) {
+
+				if (!(product == null || BooleanUtils.isNotTrue(product.getIsActive()) || BooleanUtils.isNotTrue(product.getIsMarketable()))) {
+					product.setImage(SystemUtils.getSetting().getSiteImageUrl()+product.getImage());
+				}
 				product.put("type", product.getTypeName());
 				product.put("thumbnail", product.getThumbnail());
 				Store store = product.getStore();
