@@ -81,4 +81,12 @@ public abstract class BaseAdPosition<M extends BaseAdPosition<M>> extends Model<
 		return getInt("width");
 	}
 
+	public void setAd(java.lang.Object ad) {
+		put("ad", ad);
+	}
+
+	public java.lang.Object getAd() {
+		return getInt("ad");
+	}
+
 }

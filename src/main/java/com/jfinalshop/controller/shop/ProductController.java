@@ -359,7 +359,9 @@ public class ProductController extends BaseController {
 			for (Product product : pages.getList()) {
 
 				if (!(product == null || BooleanUtils.isNotTrue(product.getIsActive()) || BooleanUtils.isNotTrue(product.getIsMarketable()))) {
-					product.setImage(SystemUtils.getSetting().getSiteImageUrl()+product.getImage());
+					if(product.getImage().indexOf(SystemUtils.getSetting().getSiteImageUrl())<0){
+						product.setImage(SystemUtils.getSetting().getSiteImageUrl()+product.getImage());
+					}
 				}
 				product.put("type", product.getTypeName());
 				product.put("thumbnail", product.getThumbnail());

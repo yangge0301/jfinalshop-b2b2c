@@ -107,7 +107,7 @@ public class CartAPIController extends BaseAPIController {
 		}
 		renderJson(new DatumResponse(data));
 	}
-	
+
 	/**
 	 * 添加
 	 * 
@@ -116,15 +116,8 @@ public class CartAPIController extends BaseAPIController {
 	public void add() {
 		Long skuId = getParaToLong("skuId");
 		Integer quantity = getParaToInt("quantity");
-		String cartKey = getPara("cartKey");
-		
-		if (!"post".equalsIgnoreCase(getRequest().getMethod())) {
-			renderArgumentError("必须采用POST请求!");
-            return;
-        }
-		
 		Map<String, Object> data = new HashMap<>();
-		Cart currentCart = cartService.getCurrent(cartKey);
+		Cart currentCart = cartService.getCurrent(getRequest());
 		if (quantity == null || quantity < 1) {
 			renderArgumentError("数量不能为空哟!");
 			return;
@@ -191,11 +184,7 @@ public class CartAPIController extends BaseAPIController {
 		Integer quantity = getParaToInt("quantity");
 		String cartKey = getPara("cartKey");
 		Cart currentCart = cartService.getCurrent(cartKey);
-		
-		if (!"post".equalsIgnoreCase(getRequest().getMethod())) {
-			renderArgumentError("必须采用POST请求!");
-            return;
-        }
+
 		Map<String, Object> data = new HashMap<>();
 		if (quantity == null || quantity < 1) {
 			renderArgumentError("数量不能为空哟!");
@@ -302,10 +291,7 @@ public class CartAPIController extends BaseAPIController {
 		String cartKey = getPara("cartKey");
 		Cart currentCart = cartService.getCurrent(cartKey);
 		
-		if (!"post".equalsIgnoreCase(getRequest().getMethod())) {
-			renderArgumentError("必须采用POST请求!");
-            return;
-        }
+
 		if (currentCart == null) {
 			renderArgumentError("购物车没有找到!");
             return;
