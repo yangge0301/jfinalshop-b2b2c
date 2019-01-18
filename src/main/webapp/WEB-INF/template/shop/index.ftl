@@ -246,7 +246,7 @@ $().ready(function() {
 										[#else]
 											<li class="low">
 												<a href="${base}${product.path}" title="${product.name}" target="_blank">
-													<img src="${base}/upload/image/blank.gif" data-original="${product.image!setting.defaultThumbnailProductImage}" style="width:100%;" />
+													<img src="${base}/upload/image/blank.gif" data-original="${product.image!setting.defaultThumbnailProductImage}" />
 													<span title="${product.name}">${abbreviate(product.name, 24)}</span>
 													<strong>${currency(product.price, true)}</strong>
 												</a>
