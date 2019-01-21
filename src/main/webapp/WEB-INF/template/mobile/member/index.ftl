@@ -193,7 +193,7 @@
 					</a>
 				</div>
 			</div>
-			<div class="list-group list-group-flat">
+			<div class="list-group list-group-flat" style="padding-bottom:40px;">
 				<div class="list-group-item">
 					${message("member.index.profileEdit")}
 					<a class="pull-right gray-darker" href="${base}/member/profile/edit">
@@ -202,29 +202,29 @@
 					</a>
 				</div>
 			</div>
-			<div class="list-group list-group-flat">
-				<div class="list-group-item">
-					${message("member.index.passwordEdit")}
-					<a class="pull-right gray-darker" href="${base}/member/password/edit">
-						${message("member.index.passwordEdit")}
-						<span class="glyphicon glyphicon-menu-right"></span>
-					</a>
-				</div>
-			</div>
-			<div class="list-group list-group-flat">
-				<div class="list-group-item">
-					${message("member.index.socialUserList")}
-					<a class="pull-right gray-darker" href="${base}/member/social_user/list">
-						${message("member.index.socialUserList")}
-						<span class="glyphicon glyphicon-menu-right"></span>
-					</a>
-				</div>
-			</div>
-			<div class="list-group list-group-flat">
-				<div class="list-group-item">
-					<a class="btn btn-lg btn-primary btn-flat btn-block" href="${base}/member/logout">${message("member.index.logout")}</a>
-				</div>
-			</div>
+			[#--<div class="list-group list-group-flat">--]
+				[#--<div class="list-group-item">--]
+					[#--${message("member.index.passwordEdit")}--]
+					[#--<a class="pull-right gray-darker" href="${base}/member/password/edit">--]
+						[#--${message("member.index.passwordEdit")}--]
+						[#--<span class="glyphicon glyphicon-menu-right"></span>--]
+					[#--</a>--]
+				[#--</div>--]
+			[#--</div>--]
+			[#--<div class="list-group list-group-flat">--]
+				[#--<div class="list-group-item">--]
+					[#--${message("member.index.socialUserList")}--]
+					[#--<a class="pull-right gray-darker" href="${base}/member/social_user/list">--]
+						[#--${message("member.index.socialUserList")}--]
+						[#--<span class="glyphicon glyphicon-menu-right"></span>--]
+					[#--</a>--]
+				[#--</div>--]
+			[#--</div>--]
+			[#--<div class="list-group list-group-flat">--]
+				[#--<div class="list-group-item">--]
+					[#--<a class="btn btn-lg btn-primary btn-flat btn-block" href="${base}/member/logout">${message("member.index.logout")}</a>--]
+				[#--</div>--]
+			[#--</div>--]
 		</div>
 	</main>
 	<footer class="footer-fixed">

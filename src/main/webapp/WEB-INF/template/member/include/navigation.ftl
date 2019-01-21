@@ -4,10 +4,10 @@
 			${message("member.navigation.welcome")}
 			<strong>${currentUser.username}</strong>
 		</p>
-		<p>
-			${message("member.index.memberRank")}:
-			<span class="red">${currentUser.memberRank.name}</span>
-		</p>
+		[#--<p>--]
+			[#--${message("member.index.memberRank")}:--]
+			[#--<span class="red">${currentUser.memberRank.name}</span>--]
+		[#--</p>--]
 		[#--<p>--]
 			[#--${message("member.index.balance")}:--]
 			[#--<span class="red">${currency(currentUser.balance, true, true)}</span>--]
@@ -76,15 +76,15 @@
 			<dd [#if current == "profileEdit"] class="current"[/#if]>
 				<a href="${base}/member/profile/edit">${message("member.profile.edit")}</a>
 			</dd>
-			<dd [#if current == "passwordEdit"] class="current"[/#if]>
-				<a href="${base}/member/password/edit">${message("member.password.edit")}</a>
-			</dd>
+			[#--<dd [#if current == "passwordEdit"] class="current"[/#if]>--]
+				[#--<a href="${base}/member/password/edit">${message("member.password.edit")}</a>--]
+			[#--</dd>--]
 			<dd [#if current == "receiverList"] class="current"[/#if]>
 				<a href="${base}/member/receiver/list">${message("member.receiver.list")}</a>
 			</dd>
-			<dd [#if current == "socialUserList"] class="current"[/#if]>
-				<a href="${base}/member/social_user/list">${message("member.socialUser.list")}</a>
-			</dd>
+			[#--<dd [#if current == "socialUserList"] class="current"[/#if]>--]
+				[#--<a href="${base}/member/social_user/list">${message("member.socialUser.list")}</a>--]
+			[#--</dd>--]
 		</dl>
 		[#--<dl>--]
 			[#--<dt>${message("member.navigation.deposit")}</dt>--]
