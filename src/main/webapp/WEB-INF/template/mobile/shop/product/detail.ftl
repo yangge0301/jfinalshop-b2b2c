@@ -811,12 +811,12 @@
 								</a>
 							</section>
 						[/#if]
-						[#--<section>--]
-							[#--<a id="viewSpecification" href="javascript:;">--]
+						<section>
+							<a id="viewSpecification" href="javascript:;">
 								[#--${message("shop.product.specification")}--]
 								[#--<span class="glyphicon glyphicon-option-horizontal gray"></span>--]
-							[#--</a>--]
-						[#--</section>--]
+							</a>
+						</section>
 					</div>
 					<div id="detail" class="detail tab-pane">
 						[#noautoesc]

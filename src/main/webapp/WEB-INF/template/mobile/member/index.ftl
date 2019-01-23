@@ -30,16 +30,16 @@
 		</a>
 		${message("member.index.title")}
 	</header>
-	<main>
+	<main style="margin-top:34px">
 		<div class="container-fluid">
 			<div class="panel panel-flat">
 				<div class="panel-heading">
-					${message("member.index.welcome")}
-					<span class="red">${currentUser.username}</span>
-					<span class="pull-right">
-						${message("member.index.memberRank")}:
-						<span class="red">${currentUser.memberRank.name}</span>
-					</span>
+					[#--${message("member.index.welcome")}--]
+					[#--<span class="red">${currentUser.username}</span>--]
+					[#--<span class="pull-right">--]
+						[#--${message("member.index.memberRank")}:--]
+						[#--<span class="red">${currentUser.memberRank.name}</span>--]
+					[#--</span>--]
 				</div>
 				<div class="panel-body small">
 					<div class="row">
