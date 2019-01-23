@@ -282,7 +282,7 @@
 
         <!--中间商城左右结构入口 开始-->
         <div class="shop-allright">
-            <a class="allright allright-left" href="${base}/product/list/1">
+            <a class="allright allright-left" href="${base}/product/list/6">
 
                 <img src="${base}/resources/mobile/shop/images/home/allright-left.png" alt="logo" width="100%" />
             </a>

@@ -240,7 +240,7 @@ $().ready(function() {
 														[/#if]
 													</div>
 													<strong>${currency(product.price, true)}</strong>
-													<img src="${base}/upload/image/blank.gif" data-original="${product.image!setting.defaultThumbnailProductImage}" />
+													<img src="${base}/upload/image/blank.gif" data-original="${product.image!setting.defaultThumbnailProductImage}" style="width:100%;" />
 												</a>
 											</li>
 										[#else]
