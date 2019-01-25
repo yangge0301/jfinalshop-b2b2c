@@ -90,6 +90,7 @@ public class CartAPIController extends BaseAPIController {
 					Product product = sku.getProduct();
 					Brand brand = product.getBrand();
 					item.put("skuId", sku.getId());
+					item.put("product",product );
 					item.put("skuName", sku.getName());
 					item.put("skuThumbnail", sku.getThumbnail() != null ? sku.getThumbnail() : setting.getDefaultThumbnailProductImage());
 					item.put("price", cartItem.getPrice());
@@ -116,8 +117,9 @@ public class CartAPIController extends BaseAPIController {
 	public void add() {
 		Long skuId = getParaToLong("skuId");
 		Integer quantity = getParaToInt("quantity");
+		String cartKey = getPara("cartKey");
 		Map<String, Object> data = new HashMap<>();
-		Cart currentCart = cartService.getCurrent(getRequest());
+		Cart currentCart = cartService.getCurrent(cartKey);
 		if (quantity == null || quantity < 1) {
 			renderArgumentError("数量不能为空哟!");
 			return;

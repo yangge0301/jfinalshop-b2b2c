@@ -216,31 +216,10 @@ public class CartService extends BaseService<Cart> {
 			return null;
 		}
 		String key = WebUtils.getCookie(request, Cart.KEY_COOKIE_NAME);
-		String JSESSIONID=request.getHeader("Set-Cookie");
-		Cookie[] c= request.getCookies();
-		if(c!=null&&c.length>0){
-			for(int i=0;i<c.length;i++){
-				if(c[i].getName().equals("JSESSIONID")){
-					JSESSIONID = c[i].getValue();
-					break;
-				}
-			}
-		}
-		Cart cart = StringUtils.isNotEmpty(key) ? cartDao.find("cart_key", JSESSIONID) : null;
+		Cart cart = StringUtils.isNotEmpty(key) ? cartDao.find("cart_key", key) : null;
 		return cart != null && cart.getMemberId() == null ? cart : null;
 	}
-	public static String getCookieBySet(String name,String set){
 
-		String regex=name+"=(.*?);";
-
-		Pattern pattern = Pattern.compile(regex);
-		Matcher matcher =pattern.matcher(set);
-		if(matcher.find()){
-			return matcher.group();
-		}
-		return null;
-
-	}
 	/**
 	 * 添加购物车SKU
 	 * 
