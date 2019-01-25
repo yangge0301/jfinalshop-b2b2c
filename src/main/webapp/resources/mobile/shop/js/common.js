@@ -21,6 +21,7 @@ var messages = {
 	"shop.dialog.clearConfirm": "您确定要清空吗？"
 };
 
+document.title = "微江宁";
 // UUID
 var uuidChars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("");
 function uuid() {
