@@ -7,11 +7,15 @@ import java.util.*;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.kit.Kv;
+import com.jfinal.kit.LogKit;
 import com.jfinal.kit.StrKit;
+import com.jfinalshop.api.controller.util.HttpClient;
+import com.jfinalshop.api.controller.util.resbean.JsonResult;
 import com.jfinalshop.entity.ProductImage;
 import com.jfinalshop.exception.ResourceNotFoundException;
 import com.jfinalshop.model.*;
 import com.jfinalshop.service.*;
+import com.jfinalshop.shiro.session.RedisManager;
 import com.jfinalshop.util.*;
 import net.hasor.core.Inject;
 
@@ -30,6 +34,7 @@ import com.jfinalshop.shiro.core.SubjectKit;
 import com.jfinalshop.shiro.hasher.Hasher;
 import com.jfinalshop.shiro.hasher.HasherInfo;
 import com.jfinalshop.shiro.hasher.HasherKit;
+import org.jsoup.helper.StringUtil;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -52,6 +57,8 @@ public class RegisterController extends BaseController {
     private SocialUserService socialUserService;
 
     @Inject
+    private RedisManager redisManager;
+    @Inject
     private ProductService productService;
     private static final int NEW_ORDER_SIZE = 3;
     @Inject
@@ -68,6 +75,10 @@ public class RegisterController extends BaseController {
     private ReviewService reviewService;
     @Inject
     private ConsultationService consultationService;
+
+    private static  String appId="wx8ccc40e63fabeebd";
+    private static  String appSecret="0cd97c839191770ecfcab3114e65b0b4";
+    private static  String serverUrl="https://api.mubag.top/";
     /**
      * 检查用户名是否存在
      */
@@ -115,76 +126,6 @@ public class RegisterController extends BaseController {
         setAttr("genders", Member.Gender.values());
         render("/member/register/index.ftl");
     }
-
-//	public void info(HttpServletRequest request){
-//		try{
-//
-//			String account = request.getParameter("account");
-//			String password = request.getParameter("password");
-//
-//			Member member = new Member();
-//			Setting setting = SystemUtils.getSetting();
-//			if (memberService.usernameExists(account)) {
-//				JSONObject obj = new JSONObject();
-//				obj.put("resultCode","2");
-//				obj.put("resultMsg","usernameExist");
-//				renderJson(obj);
-//				return;
-//			}
-//
-//			System.out.println(44);
-//			member.removeAttributeValue();
-//
-//			for (MemberAttribute memberAttribute : memberAttributeService.findList(true, true)) {
-//				String[] values = getParaValues("memberAttribute_" + memberAttribute.getId());
-//				if (!memberAttributeService.isValid(memberAttribute, values)) {
-//					Results.unprocessableEntity(getResponse(), Results.DEFAULT_UNPROCESSABLE_ENTITY_MESSAGE);
-//				}
-//				Object memberAttributeValue = memberAttributeService.toMemberAttributeValue(memberAttribute, values);
-//				member.setAttributeValue(memberAttribute, memberAttributeValue);
-//			}
-//
-//			System.out.println(55);
-//			member.setUsername(StringUtils.lowerCase(account));
-//			member.setEmail(StringUtils.lowerCase(member.getEmail()));
-//			member.setMobile(StringUtils.lowerCase(member.getMobile()));
-//			HasherInfo hasherInfo = HasherKit.hash(password, Hasher.DEFAULT);
-//			member.setPassword(hasherInfo.getHashResult());
-//			member.setHasher(hasherInfo.getHasher().value());
-//			member.setSalt(hasherInfo.getSalt());
-//
-//			System.out.println(66);
-//			member.setPoint(0L);
-//			member.setBalance(BigDecimal.ZERO);
-//			member.setAmount(BigDecimal.ZERO);
-//			member.setIsEnabled(true);
-//			member.setIsLocked(false);
-//			member.setLockDate(null);
-//			member.setLastLoginIp(IpUtil.getIpAddr(getRequest()));
-//			member.setLastLoginDate(new Date());
-//			MemberRank memberRank = memberRankService.findDefault();
-//			if (memberRank != null) {
-//				member.setMemberRankId(memberRank.getId());
-//			}
-//			memberService.save(member);
-//			// 用户注册事件
-//			if (setting.getRegisterPoint() > 0) {
-//				memberService.addPoint(member, setting.getRegisterPoint(), PointLog.Type.reward, null);
-//			}
-//			System.out.println(22);
-//			JSONObject obj = new JSONObject();
-//			obj.put("resultCode","0");
-//			obj.put("resultMsg","成功");
-//			renderJson(obj);
-//		}
-//		catch (Exception e){
-//			e.printStackTrace();
-//			JSONObject obj = new JSONObject();
-//			obj.put("resultCode","3");
-//			obj.put("resultMsg","失败");
-//			renderJson(obj);
-//		}
-//	}
 
     /**
      * "重定向令牌"Cookie名称
@@ -389,6 +330,148 @@ public class RegisterController extends BaseController {
             obj.put("resultMsg","失败");
             renderJson(obj);
         }
+    }
+
+    @ActionKey("/userlogin")
+    public void userlogin(){
+        try{
+            String code = getRequest().getParameter("code");
+            LogKit.info("userlogin==>code="+code);
+            String id = getRequest().getSession().getId();
+            String url = "https://api.weixin.qq.com/sns/jscode2session?appid="+appId+"&secret="+appSecret+"&js_code="+code+"&grant_type=authorization_code";
+            JSONObject obj = HttpClient.getAccessToken(url);
+            LogKit.info("userlogin userinfo==>"+obj.toJSONString());
+            String openId = obj.getString("openid");
+            String session_key = obj.getString("session_key");
+            if((StringUtil.isBlank(openId)||StringUtil.isBlank(session_key))){
+                renderJson(new JsonResult("-1","获取用户信息失败，code错误.",null,null,null));
+            }
+            else{
+                obj.put("openId",openId);
+                obj.put("session_key",session_key);
+                LogKit.info("userlogin userregister==>"+getResponse().getHeader("Set-Cookie"));
+                if(getResponse().getHeader("Set-Cookie")!=null&&getResponse().getHeader("Set-Cookie").contains("csrfToken")){
+                    obj.put("csrfToken", getResponse().getHeader("Set-Cookie").split(";")[0].split("=")[1]);
+                }
+//                redisManager.set(id,obj.toJSONString(),30*60);
+                //注册
+                Member member = memberService.findByUsername(openId);
+                if (member == null) {
+                    member = new Member();
+                    member.removeAttributeValue();
+                    member.setUsername(openId);
+                    member.setEmail(org.apache.commons.lang.StringUtils.lowerCase("1@1.com"));
+                    member.setMobile(org.apache.commons.lang.StringUtils.lowerCase(member.getMobile()));
+                    HasherInfo hasherInfo = HasherKit.hash("3441901P1o", Hasher.DEFAULT);
+                    member.setPassword(hasherInfo.getHashResult());
+                    member.setHasher(hasherInfo.getHasher().value());
+                    member.setSalt(hasherInfo.getSalt());
+                    member.setPoint(0L);
+                    member.setBalance(BigDecimal.ZERO);
+                    member.setAmount(BigDecimal.ZERO);
+                    member.setIsEnabled(true);
+                    member.setIsLocked(false);
+                    member.setLockDate(null);
+                    member.setLastLoginIp(IpUtil.getIpAddr(getRequest()));
+                    member.setLastLoginDate(new Date());
+                    MemberRank memberRank = memberRankService.findDefault();
+                    if (memberRank != null) {
+                        member.setMemberRankId(memberRank.getId());
+                    }
+                    member = memberService.save(member);
+                }
+                if (SubjectKit.login(openId, "3441901P1o", SubjectKit.UserType.MEMBER)) {
+                    member.setLastLoginIp(IpUtil.getIpAddr(getRequest()));
+                    member.setLastLoginDate(new Date());
+                    member.update();
+                }
+                Member m = memberService.getCurrentUser();
+                System.out.println(m);
+//                pluginService.getActiveLoginPlugins(getRequest());
+                renderJson(new JsonResult("1","登录成功",null,obj,id));
+            }
+            return;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        renderText("");
+    }
+
+
+    @Inject
+    private AreaService areaService;
+    @Inject
+    private ReceiverService receiverService;
+
+    /**
+     * 保存
+     */
+    public void saveme() {
+        Receiver receiver = new Receiver();
+        String address = getPara("address");
+        Long areaId = getParaToLong("areaId");
+        String consignee = getPara("consignee");
+        String phone = getPara("phone");
+        String zip_code = getPara("zip_code");
+        Boolean isDefault = getParaToBoolean("isDefault", false);
+        receiver.setPhone(phone);
+        receiver.setAddress(address);
+        receiver.setConsignee(consignee);
+        receiver.setZipCode(zip_code);
+        receiver.setAreaId(areaId);
+        Member currentUser = memberService.getCurrentUser();
+        if(areaId == null||receiver.getConsignee()==null){
+            renderJson("");
+            return;
+        }
+        Area area = areaService.find(areaId);
+        if (area != null) {
+            receiver.setAreaId(area.getId());
+
+            receiver.setAreaName(area.getFullName());
+        }
+        if (Receiver.MAX_RECEIVER_COUNT != null && currentUser.getReceivers().size() >= Receiver.MAX_RECEIVER_COUNT) {
+            setAttr("errorMessage", "超收货地址最大保存数!");
+            render(UNPROCESSABLE_ENTITY_VIEW);
+            return;
+        }
+        receiver.setIsDefault(isDefault);
+        receiver.setMemberId(currentUser.getId());
+        Receiver re = receiverService.save(receiver);
+        renderJson(re);
+    }
+
+
+    /**
+     * 保存
+     */
+    public void defaultaddress() {
+            Member currentUser = memberService.getCurrentUser();
+            Receiver defaultReceiver = receiverService.findDefault(currentUser);
+            renderJson(defaultReceiver);
+    }
+    /**
+     * 获取收货地址
+     */
+    public void addList() {
+        try{
+            Member currentUser = memberService.getCurrentUser();
+            List<Receiver> list = receiverService.findList(currentUser);
+            List<Receiver> list1 = new ArrayList<>();
+            if(list!=null&&list.size()>0){
+                for(Receiver r : list){
+                    r.setCoupId(r.getId()+"");
+                    r.setMembId(r.getMemberId()+"");
+                    list1.add(r);
+                }
+            }
+            renderJson(list1);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     public void products(){

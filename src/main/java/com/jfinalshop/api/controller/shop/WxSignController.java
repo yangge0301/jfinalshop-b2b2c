@@ -4,16 +4,30 @@ package com.jfinalshop.api.controller.shop;
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.core.ActionKey;
 import com.jfinal.core.Controller;
+import com.jfinal.kit.Kv;
 import com.jfinal.kit.LogKit;
 import com.jfinalshop.api.controller.util.HttpClient;
 import com.jfinalshop.api.controller.util.SignUtil;
 import com.jfinalshop.api.controller.util.resbean.JsonResult;
+import com.jfinalshop.model.Member;
+import com.jfinalshop.model.MemberRank;
+import com.jfinalshop.model.PointLog;
+import com.jfinalshop.service.MemberRankService;
+import com.jfinalshop.service.MemberService;
+import com.jfinalshop.service.PluginService;
+import com.jfinalshop.shiro.core.SubjectKit;
+import com.jfinalshop.shiro.hasher.Hasher;
+import com.jfinalshop.shiro.hasher.HasherInfo;
+import com.jfinalshop.shiro.hasher.HasherKit;
 import com.jfinalshop.shiro.session.RedisManager;
+import com.jfinalshop.util.IpUtil;
 import com.jfinalshop.util.StringUtils;
 import net.hasor.core.Inject;
 import org.jsoup.helper.StringUtil;
 
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.util.Date;
 
 
 public class WxSignController  extends Controller {
@@ -21,6 +35,13 @@ public class WxSignController  extends Controller {
     private static  String appSecret="0cd97c839191770ecfcab3114e65b0b4";
     private static  String serverUrl="https://api.mubag.top/";
 
+    @Inject
+    private MemberRankService memberRankService;
+
+    @Inject
+    private MemberService memberService;
+    @Inject
+    private PluginService pluginService;
     @Inject
     private RedisManager redisManager;
     @ActionKey("/wxsign")
@@ -86,37 +107,6 @@ public class WxSignController  extends Controller {
         catch(Exception e){
             e.printStackTrace();
         }
-    }
-    @ActionKey("/userlogin")
-    public void userlogin(){
-        try{
-            String code = getRequest().getParameter("code");
-            LogKit.info("userlogin==>code="+code);
-            String id = getRequest().getSession().getId();
-            String url = "https://api.weixin.qq.com/sns/jscode2session?appid="+appId+"&secret="+appSecret+"&js_code="+code+"&grant_type=authorization_code";
-            JSONObject obj = HttpClient.getAccessToken(url);
-            LogKit.info("userlogin userinfo==>"+obj.toJSONString());
-            String openId = obj.getString("openid");
-            String session_key = obj.getString("session_key");
-            if(StringUtil.isBlank(openId)||StringUtil.isBlank(session_key)){
-                renderJson(new JsonResult("-1","获取用户信息失败，code错误.",null,null,null));
-            }
-            else{
-                obj.put("openId",openId);
-                obj.put("session_key",session_key);
-                redisManager.set(id,obj.toJSONString(),30*60);
-                //注册
-                String registerUrl = serverUrl +"member/register/info?account="+openId+"&password=3441901P1o";
-                String result = HttpClient.reqUrl(registerUrl);
-                LogKit.info("userlogin userregister==>"+result);
-                renderJson(new JsonResult("1","登录成功",null,null,id));
-            }
-            return;
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
-        renderText("");
     }
 
 }
