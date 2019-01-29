@@ -446,6 +446,18 @@ public class RegisterController extends BaseController {
     /**
      * 保存
      */
+    public void defaultCount() {
+        Member currentUser = memberService.getCurrentUser();
+        JSONObject obj = new JSONObject();
+        obj.put("resultCode", "1");
+        obj.put("pendingPaymentOrderCount", orderService.count(null, Order.Status.pendingPayment, null, currentUser, null, null, null, null, null, null, false));
+        obj.put("pendingShipmentOrderCount",orderService.count(null, Order.Status.pendingShipment, null, currentUser, null, null, null, null, null, null, null));
+        obj.put("shippedOrderCount", orderService.count(null, Order.Status.shipped, null, currentUser, null, null, null, null, null, null, null));
+        renderJson(obj);
+    }
+    /**
+     * 默认地址
+     */
     public void defaultaddress() {
             Member currentUser = memberService.getCurrentUser();
             Receiver defaultReceiver = receiverService.findDefault(currentUser);

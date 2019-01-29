@@ -70,7 +70,13 @@ public class CartAPIController extends BaseAPIController {
 	 */
 	public void info() {
 		String cartKey = getPara("cartKey");
-		Cart currentCart = cartService.getCurrent(cartKey);
+		Cart currentCart = null;
+		if(cartKey!=null&&!cartKey.equals("")&&memberService.getCurrentUser()!=null&&memberService.getCurrentUser().getUsername()!=null){
+			currentCart = cartService.getCurrent(cartKey);
+		}
+		else{
+			currentCart = cartService.getCurrent(getRequest());
+		}
 		
 		Map<String, Object> data = new HashMap<>();
 		List<Store> stores = new ArrayList<>();
