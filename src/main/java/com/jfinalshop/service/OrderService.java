@@ -803,7 +803,7 @@ public class OrderService extends BaseService<Order> {
 			if (balance != null && (balance.compareTo(BigDecimal.ZERO) < 0 || balance.compareTo(member.getBalance()) > 0)) {
 				throw new IllegalArgumentException();
 			}
-			if (point != null && (point.compareTo(BigDecimal.ZERO) < 0 || point.compareTo(member.getBalance()) > 0)) {
+			if (point != null && (point.compareTo(BigDecimal.ZERO) < 0 || (point.longValue()-member.getPoint()) > 0)) {
 				throw new IllegalArgumentException();
 			}
 			BigDecimal amountPayable = balance != null ? order.getAmount().subtract(balance) : order.getAmount();

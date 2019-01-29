@@ -676,7 +676,7 @@ public class OrderController extends BaseController {
 			Results.unprocessableEntity(getResponse(), Results.DEFAULT_UNPROCESSABLE_ENTITY_MESSAGE);
 			return;
 		}
-		if (point != null && point.compareTo(currentUser.getBalance()) > 0) {
+		if (point != null && (point.longValue()-currentUser.getPoint()) > 0) {
 			Results.unprocessableEntity(getResponse(), "shop.order.insufficientPoint");
 			return;
 		}
@@ -717,7 +717,7 @@ public class OrderController extends BaseController {
 		Long skuId = getParaToLong("skuId");
 		Integer quantity = getParaToInt("quantity");
 		Long receiverId = getParaToLong("receiverId");
-		Long paymentMethodId = getParaToLong("paymentMethodId");
+		Long paymentMethodId = getParaToLong("paymentMethodId")==null?1L:getParaToLong("paymentMethodId");
 		Long shippingMethodId = getParaToLong("shippingMethodId");
 		BigDecimal balance = new BigDecimal(getPara("balance", "0"));
 		String memo = getPara("memo");
