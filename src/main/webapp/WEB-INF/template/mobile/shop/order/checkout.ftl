@@ -774,25 +774,25 @@
 			<div class="page-body">
 				<div class="form-group">
 					<label for="consignee">${message("Receiver.consignee")}</label>
-					<input id="consignee" name="consignee" class="form-control" type="text" maxlength="200">
+					<input id="consignee" name="receiver.consignee" class="form-control" type="text" maxlength="200">
 				</div>
 				<div class="form-group">
 					<label>${message("Receiver.area")}</label>
 					<div class="input-group">
-						<input id="areaId" name="areaId" type="hidden">
+						<input id="areaId" name="receiver.area_id" type="hidden">
 					</div>
 				</div>
 				<div class="form-group">
 					<label for="address">${message("Receiver.address")}</label>
-					<input id="address" name="address" class="form-control" type="text" maxlength="200">
+					<input id="address" name="receiver.address" class="form-control" type="text" maxlength="200">
 				</div>
 				<div class="form-group">
 					<label for="zipCode">${message("Receiver.zipCode")}</label>
-					<input id="zipCode" name="zipCode" class="form-control" type="text" maxlength="200">
+					<input id="zipCode" name="receiver.zip_code" class="form-control" type="text" maxlength="200">
 				</div>
 				<div class="form-group">
 					<label for="phone">${message("Receiver.phone")}</label>
-					<input id="phone" name="phone" class="form-control" type="text" maxlength="200">
+					<input id="phone" name="receiver.phone" class="form-control" type="text" maxlength="200">
 				</div>
 				<div class="form-group">
 					<label>${message("Receiver.isDefault")}</label>

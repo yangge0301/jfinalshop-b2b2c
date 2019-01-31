@@ -124,9 +124,9 @@ public class OrderController extends BaseController {
 	@ActionKey("/order/save_receiver")
 	public void saveReceiver() {
 		Receiver receiver = getModel(Receiver.class);
-		Long areaId = getParaToLong("areaId");
+		Long areaId = receiver.getAreaId();
 		Boolean isDefault = getParaToBoolean("isDefault", false);
-
+		receiver.setIsDefault(isDefault);
 		Member currentUser = memberService.getCurrentUser();
 		Area area = areaService.find(areaId);
 		receiver.setAreaId(area.getId());
