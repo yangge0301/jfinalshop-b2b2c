@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.jfinalshop.model.*;
+import com.jfinalshop.service.ShippingMethodService;
 import net.hasor.core.Inject;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -20,11 +22,6 @@ import com.jfinalshop.Pageable;
 import com.jfinalshop.Results;
 import com.jfinalshop.Setting;
 import com.jfinalshop.interceptor.MobileInterceptor;
-import com.jfinalshop.model.Member;
-import com.jfinalshop.model.Order;
-import com.jfinalshop.model.OrderItem;
-import com.jfinalshop.model.OrderShipping;
-import com.jfinalshop.model.Store;
 import com.jfinalshop.service.MemberService;
 import com.jfinalshop.service.OrderService;
 import com.jfinalshop.service.OrderShippingService;
@@ -42,6 +39,8 @@ public class OrderController extends BaseController {
 	 */
 	private static final int PAGE_SIZE = 10;
 
+	@Inject
+	private ShippingMethodService shippingMethodService;
 	@Inject
 	private OrderService orderService;
 	@Inject
@@ -183,10 +182,16 @@ public class OrderController extends BaseController {
 			render(UNPROCESSABLE_ENTITY_VIEW);
 			return;
 		}
-
+//		List<ShippingMethod> lists = shippingMethodService.findAll();
+//		if(order.getShippingMethod().getName())
+		System.out.println(order.getStore().getAddress());
 		Setting setting = SystemUtils.getSetting();
+		System.out.println(order.getShippingMethod().getDescription());
 		setAttr("isKuaidi100Enabled", StringUtils.isNotEmpty(setting.getKuaidi100Key()));
 		setAttr("order", order);
+
+		setAttr("orderAddress", order.getStore().getAddress());
+
 		render("/member/order/view.ftl");
 	}
 

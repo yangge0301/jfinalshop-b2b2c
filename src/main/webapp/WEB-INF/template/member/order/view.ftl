@@ -24,7 +24,9 @@ $().ready(function() {
 	var $receive = $("#receive");
 	var $transitStep = $("a.transitStep");
 	
-	[#if flashMessage?has_content]		$.alert("${flashMessage}");	[/#if]
+	[#if flashMessage?has_content]
+		$.alert("${flashMessage}");
+	[/#if]
 	
 	// 订单支付
 	$payment.click(function() {
@@ -214,6 +216,16 @@ $().ready(function() {
 									${order.shippingMethodName}
 								</td>
 							</tr>
+						[/#if]
+						[#if orderAddress?has_content]
+							<tr>
+                                <th>
+									自提地址
+                                </th>
+                                <td>
+									${orderAddress}
+                                </td>
+                            </tr>
 						[/#if]
 						<tr>
 							<th>

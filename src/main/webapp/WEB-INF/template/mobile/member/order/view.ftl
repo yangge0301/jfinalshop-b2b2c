@@ -241,6 +241,11 @@
 						<span class="pull-right">${message("Order.shippingMethod")}: ${(order.shippingMethodName)!"-"}</span>
 					</div>
 				[/#if]
+				[#if orderAddress?has_content]
+					<div class="list-group-item">
+                        <span class=""> 自提地址：${(orderAddress)!"-"}</span>
+                    </div>
+				[/#if]
 				[#if order.invoice??]
 					<div class="list-group-item">
 						${message("Invoice.title")}: ${order.invoice.title}
