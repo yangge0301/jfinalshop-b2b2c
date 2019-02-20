@@ -960,12 +960,12 @@
 									<li>
 										<a href="#parameter" data-toggle="tab">${message("business.product.parameter")}</a>
 									</li>
-									<li>
-										<a href="#attribute" data-toggle="tab">${message("business.product.attribute")}</a>
-									</li>
-									<li>
-										<a href="#specification" data-toggle="tab">${message("business.product.specification")}</a>
-									</li>
+									[#--<li>--]
+										[#--<a href="#attribute" data-toggle="tab">${message("business.product.attribute")}</a>--]
+									[#--</li>--]
+									[#--<li>--]
+										[#--<a href="#specification" data-toggle="tab">${message("business.product.specification")}</a>--]
+									[#--</li>--]
 									<li>
 										<a href="#barcode" data-toggle="tab">商品条码</a>
 									</li>

@@ -242,7 +242,12 @@ function currency(value, showSign, showUnit) {
 							type: settings.type,
 							data: data,
 							dataType: settings.dataType,
-							success: function() {
+							success: function(data) {
+								if(data&&data.message&&data.message=='请求无法处理'){
+
+                                    alert("删除失败，该商品有关联数据，暂不能删除哦~");
+                                    return;
+								}
 								$removeElement = $.isFunction(settings.removeElement) ? settings.removeElement.call(element) : $(settings.removeElement);
 								if ($removeElement != null) {
 									$removeElement.velocity("fadeOut", {
@@ -258,7 +263,10 @@ function currency(value, showSign, showUnit) {
 										settings.complete.call(element, data);
 									}
 								}
-							}
+							},
+							fail:function () {
+								alert("删除失败，该商品有关联数据，暂不能删除哦~");
+                            }
 						});
 					}
 				});
@@ -459,7 +467,19 @@ $().ready(function() {
 		var $editor = $("[data-provide='editor']");
 		
 		$editor.summernote({
-			minHeight: 300
+			minHeight: 300,
+            toolbar: [
+                ["addTags", ["addTags"]],
+                ["style", ["bold", "italic", "underline", "clear"]],
+                ["font", ["strikethrough", "superscript", "subscript"]],
+                ["fontname", ["fontname"]],
+                ['fontsize', ['fontsize']],
+                ["color", ["color"]],
+                ["height", ["height"]],
+                ["para", ["ul", "ol", "paragraph"]],
+                ["insert", ["table", "picture", "hr"]],
+                ["view", ["codeview"]]
+            ]
 		});
 	}
 	

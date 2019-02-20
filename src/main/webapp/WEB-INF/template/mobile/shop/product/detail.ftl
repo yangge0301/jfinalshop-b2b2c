@@ -664,33 +664,7 @@
 		</div>
 	</header>
 	<main>
-		[#if product.parameterValuesConverter?has_content]
-			<div id="parameter" class="parameter">
-				<div class="parameter-header">
-					${message("shop.product.parameter")}
-					<button class="close" type="button">
-						<span>&times;</span>
-					</button>
-				</div>
-				<div id="parameterBodyWrapper" class="parameter-body-wrapper">
-					<div id="parameterBody" class="parameter-body">
-						<table>
-							[#list product.parameterValuesConverter as parameterValue]
-								<tr>
-									<th class="group" colspan="2">${parameterValue.group}</th>
-								</tr>
-								[#list parameterValue.entries as entry]
-									<tr>
-										<th>${entry.name}</th>
-										<td>${entry.value}</td>
-									</tr>
-								[/#list]
-							[/#list]
-						</table>
-					</div>
-				</div>
-			</div>
-		[/#if]
+
 		[#assign defaultSpecificationValueIds = defaultSku.specificationValueIds /]
 		<div id="specification" class="specification">
 			<div class="specification-header">
@@ -805,11 +779,37 @@
 						</section>
 						[#if product.parameterValuesConverter?has_content]
 							<section>
-								<a id="viewParameter" href="javascript:;">
-									${message("shop.product.parameter")}
-									<span class="glyphicon glyphicon-option-horizontal gray"></span>
-								</a>
+								[#--<a id="viewParameter" href="javascript:;">--]
+									[#--${message("shop.product.parameter")}--]
+									[#--<span class="glyphicon glyphicon-option-horizontal gray"></span>--]
+								[#--</a>--]
+								<div id="parameter" class="parameter" style="display: block;z-index:99">
+                                    [#--<div class="parameter-header">--]
+										[#--${message("shop.product.parameter")}--]
+                                        [#--<button class="close" type="button">--]
+                                            [#--<span>&times;</span>--]
+                                        [#--</button>--]
+                                    [#--</div>--]
+                                    <div id="parameterBodyWrapper" class="parameter-body-wrapper">
+                                        <div id="parameterBody" class="parameter-body">
+                                            <table>
+												[#list product.parameterValuesConverter as parameterValue]
+                                                    <tr>
+                                                        <th class="group" colspan="2">${parameterValue.group}</th>
+                                                    </tr>
+													[#list parameterValue.entries as entry]
+														<tr>
+                                                            <th>${entry.name}</th>
+                                                            <td>${entry.value}</td>
+                                                        </tr>
+													[/#list]
+												[/#list]
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
 							</section>
+
 						[/#if]
 						<section>
 							<a id="viewSpecification" href="javascript:;">

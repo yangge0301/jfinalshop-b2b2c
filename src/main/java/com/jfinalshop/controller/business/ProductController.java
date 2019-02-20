@@ -657,30 +657,37 @@ public class ProductController extends BaseController {
 	public void delete() {
 		Long[] ids = getParaValuesToLong("ids");
 		Store currentStore = businessService.getCurrentStore();
-		for (Long id : ids) {
-			Product product = productService.find(id);
-			if (product == null) {
-				Results.unprocessableEntity(getResponse(), Results.DEFAULT_UNPROCESSABLE_ENTITY_MESSAGE);
-				return;
-			}
-			if (!currentStore.equals(product.getStore())) {
-				Results.unprocessableEntity(getResponse(), Results.DEFAULT_UNPROCESSABLE_ENTITY_MESSAGE);
-				return;
-			}
-			
-			// 删除关连表
-			List<Sku> skus = product.getSkus();
-			if (CollectionUtil.isNotEmpty(skus)) {
-				for (Sku sku : skus) {
-					Db.deleteById("stock_log", "sku_id", sku.getId());
-					Db.deleteById("sku_barcode", "sku_id", sku.getId());
+		try{
+			for (Long id : ids) {
+				Product product = productService.find(id);
+				if (product == null) {
+					Results.unprocessableEntity(getResponse(), Results.DEFAULT_UNPROCESSABLE_ENTITY_MESSAGE);
+					return;
 				}
+				if (!currentStore.equals(product.getStore())) {
+					Results.unprocessableEntity(getResponse(), Results.DEFAULT_UNPROCESSABLE_ENTITY_MESSAGE);
+					return;
+				}
+
+				// 删除关连表
+				List<Sku> skus = product.getSkus();
+				if (CollectionUtil.isNotEmpty(skus)) {
+					for (Sku sku : skus) {
+						Db.deleteById("stock_log", "sku_id", sku.getId());
+						Db.deleteById("sku_barcode", "sku_id", sku.getId());
+					}
+				}
+				Db.deleteById("sku", "product_id", id);
+				productService.clear(product);
+				productService.delete(product.getId());
 			}
-			Db.deleteById("sku", "product_id", id);
-			productService.clear(product);
-			productService.delete(product.getId());
+			renderJson(Results.OK);
 		}
-		renderJson(Results.OK);
+		catch (Exception e){
+			e.printStackTrace();
+			renderJson(Results.UNPROCESSABLE_ENTITY);
+		}
+
 	}
 
 	/**
