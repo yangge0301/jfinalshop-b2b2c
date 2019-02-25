@@ -624,6 +624,8 @@
                                 <strong class="text-ellipsis">
 									[#if product.typeName == "general"]
 									${currency(defaultSku.price, true)}
+
+                                    <strong class="" style="font-size:12px;color:#999">销量：<%-product.sales%></strong>
 									[#elseif product.typeName == "exchange"]
                                         <em>${message("Sku.exchangePoint")}:</em>
 									${defaultSku.exchangePoint}

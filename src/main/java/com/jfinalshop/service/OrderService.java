@@ -1321,12 +1321,12 @@ public class OrderService extends BaseService<Order> {
 		if (order.getSettlementAmount().compareTo(BigDecimal.ZERO) > 0) {
 			businessService.addBalance(order.getStore().getBusiness(), order.getSettlementAmount(), BusinessDepositLog.Type.orderSettlement, null);
 		}
-		for (OrderItem orderItem : order.getOrderItems()) {
-			Sku sku = orderItem.getSku();
-			if (sku != null && sku.getProduct() != null) {
-				productService.addSales(sku.getProduct(), orderItem.getQuantity());
-			}
-		}
+//		for (OrderItem orderItem : order.getOrderItems()) {
+//			Sku sku = orderItem.getSku();
+//			if (sku != null && sku.getProduct() != null) {
+//				productService.addSales(sku.getProduct(), orderItem.getQuantity());
+//			}
+//		}
 
 		order.setStatus(Order.Status.completed.ordinal());
 		order.setCompleteDate(new Date());

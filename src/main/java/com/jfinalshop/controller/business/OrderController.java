@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.jfinalshop.service.*;
 import net.hasor.core.Inject;
 
 import org.apache.commons.lang.StringUtils;
@@ -34,14 +35,6 @@ import com.jfinalshop.model.PaymentMethod;
 import com.jfinalshop.model.ShippingMethod;
 import com.jfinalshop.model.Sku;
 import com.jfinalshop.model.Store;
-import com.jfinalshop.service.AreaService;
-import com.jfinalshop.service.BusinessService;
-import com.jfinalshop.service.DeliveryCorpService;
-import com.jfinalshop.service.MemberService;
-import com.jfinalshop.service.OrderService;
-import com.jfinalshop.service.OrderShippingService;
-import com.jfinalshop.service.PaymentMethodService;
-import com.jfinalshop.service.ShippingMethodService;
 import com.jfinalshop.util.SystemUtils;
 
 /**
@@ -68,6 +61,8 @@ public class OrderController extends BaseController {
 	@Inject
 	private BusinessService businessService;
 
+	@Inject
+	private ProductService productService;
 	/**
 	 * 添加属性
 	 */
@@ -421,6 +416,13 @@ public class OrderController extends BaseController {
 			setAttr("errorMessage", "订单锁定中!");
 			render(UNPROCESSABLE_ENTITY_VIEW);
 			return;
+		}
+
+		for (OrderItem orderItem : order.getOrderItems()) {
+			Sku sku = orderItem.getSku();
+			if (sku != null && sku.getProduct() != null) {
+				productService.addSales(sku.getProduct(), orderItem.getQuantity());
+			}
 		}
 		orderService.shipping(order, orderShipping);
 		addFlashMessage(SUCCESS_MESSAGE);
