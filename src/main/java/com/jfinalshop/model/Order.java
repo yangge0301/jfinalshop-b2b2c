@@ -721,7 +721,7 @@ public class Order extends BaseOrder<Order> {
 	 * @return 订单是否允许刪除
 	 */
 	public boolean canDelete() {
-		return Order.Status.canceled.equals(getStatusName()) || Order.Status.failed.equals(getStatusName()) || Order.Status.denied.equals(getStatusName());
+		return Order.Status.pendingPayment.equals(getStatusName())||Order.Status.canceled.equals(getStatusName()) || Order.Status.failed.equals(getStatusName()) || Order.Status.denied.equals(getStatusName());
 	}
 
 	/**

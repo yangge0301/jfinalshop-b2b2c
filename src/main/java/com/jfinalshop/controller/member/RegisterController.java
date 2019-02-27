@@ -11,6 +11,8 @@ import com.jfinal.kit.LogKit;
 import com.jfinal.kit.StrKit;
 import com.jfinalshop.api.controller.util.HttpClient;
 import com.jfinalshop.api.controller.util.resbean.JsonResult;
+import com.jfinalshop.dao.OrderItemDao;
+import com.jfinalshop.dao.OrderLogDao;
 import com.jfinalshop.entity.ProductImage;
 import com.jfinalshop.exception.ResourceNotFoundException;
 import com.jfinalshop.model.*;
@@ -398,12 +400,56 @@ public class RegisterController extends BaseController {
         renderText("");
     }
 
+    @Inject
+    private BusinessService businessService;
+    @Inject
+    private OrderItemDao orderItemDao;
+    @Inject
+    private OrderLogDao orderLogDao;
 
     @Inject
     private AreaService areaService;
     @Inject
     private ReceiverService receiverService;
+    /**
+     * 删除
+     */
+    public void deleteme() {
+        Long[] ids = getParaValuesToLong("ids");
+        Member currentUser = memberService.getCurrentUser();
 
+        if (ids != null) {
+            for (Long id : ids) {
+                Order order = orderService.find(id);
+                if (order!=null&&!orderService.acquireLock(order, currentUser)) {
+                    Results.unprocessableEntity(getResponse(), "business.order.deleteLockedNotAllowed", order.getSn());
+                    return;
+                }
+                if (order!=null&&!order.canDelete()) {
+                    Results.unprocessableEntity(getResponse(), "business.order.deleteStatusNotAllowed", order.getSn());
+                    return;
+                }
+            }
+
+            if (ids != null) {
+                for (Long id : ids) {
+                    OrderLog orderLog = orderLogDao.findOrderLog(id, OrderLog.Type.create);
+                    if(orderLog!=null){
+                        orderLogDao.remove(orderLog);
+                    }
+
+                    List<OrderItem> orderItems = orderItemDao.findOrderLog(id);
+                    if(orderItems!=null&&orderItems.size()>0){
+                        for (OrderItem orderItem: orderItems) {
+                            orderItemDao.remove(orderItem);
+                        }
+                    }
+                }
+            }
+            orderService.delete(ids);
+        }
+        renderJson("{res:success}");
+    }
     /**
      * 保存
      */

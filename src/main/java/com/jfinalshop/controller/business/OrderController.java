@@ -6,6 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.jfinalshop.dao.OrderItemDao;
+import com.jfinalshop.dao.OrderLogDao;
+import com.jfinalshop.model.*;
 import net.hasor.core.Inject;
 
 import org.apache.commons.lang.StringUtils;
@@ -19,21 +22,6 @@ import com.jfinalshop.Pageable;
 import com.jfinalshop.Results;
 import com.jfinalshop.Setting;
 import com.jfinalshop.entity.Invoice;
-import com.jfinalshop.model.Area;
-import com.jfinalshop.model.Business;
-import com.jfinalshop.model.Member;
-import com.jfinalshop.model.Order;
-import com.jfinalshop.model.OrderItem;
-import com.jfinalshop.model.OrderPayment;
-import com.jfinalshop.model.OrderRefunds;
-import com.jfinalshop.model.OrderReturns;
-import com.jfinalshop.model.OrderReturnsItem;
-import com.jfinalshop.model.OrderShipping;
-import com.jfinalshop.model.OrderShippingItem;
-import com.jfinalshop.model.PaymentMethod;
-import com.jfinalshop.model.ShippingMethod;
-import com.jfinalshop.model.Sku;
-import com.jfinalshop.model.Store;
 import com.jfinalshop.service.AreaService;
 import com.jfinalshop.service.BusinessService;
 import com.jfinalshop.service.DeliveryCorpService;
@@ -51,6 +39,10 @@ import com.jfinalshop.util.SystemUtils;
 @ControllerBind(controllerKey = "/business/order")
 public class OrderController extends BaseController {
 
+	@Inject
+	private OrderItemDao orderItemDao;
+	@Inject
+	private OrderLogDao orderLogDao;
 	@Inject
 	private AreaService areaService;
 	@Inject
@@ -586,6 +578,22 @@ public class OrderController extends BaseController {
 				if (!order.canDelete()) {
 					Results.unprocessableEntity(getResponse(), "business.order.deleteStatusNotAllowed", order.getSn());
 					return;
+				}
+			}
+
+			if (ids != null) {
+				for (Long id : ids) {
+					OrderLog orderLog = orderLogDao.findOrderLog(id, OrderLog.Type.create);
+					if(orderLog!=null){
+						orderLogDao.remove(orderLog);
+					}
+
+					List<OrderItem> orderItems = orderItemDao.findOrderLog(id);
+					if(orderItems!=null&&orderItems.size()>0){
+						for (OrderItem orderItem: orderItems) {
+							orderItemDao.remove(orderItem);
+						}
+					}
 				}
 			}
 			orderService.delete(ids);
