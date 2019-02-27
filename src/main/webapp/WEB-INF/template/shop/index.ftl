@@ -250,7 +250,7 @@ $().ready(function() {
 													<img src="${base}/upload/image/blank.gif" data-original="${product.image!setting.defaultThumbnailProductImage}" />
 													<span title="${product.name}">${abbreviate(product.name, 24)}</span>
 													<strong>${currency(product.price, true)}</strong>
-                                                    <strong class="" style="font-size:12px;color:#999">销量：${product.sales}</strong>
+                                                    <strong class="" style="font-size:12px;color:#999">销量:${product.sales}</strong>
 												</a>
 											</li>
 										[/#if]

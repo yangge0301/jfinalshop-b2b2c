@@ -54,7 +54,7 @@
 					</a>
 					<%if (product.type == "general") {%>
 						<strong class="red"><%-currency(product.price, true)%></strong>
-                    	<strong class="" style="font-size:12px;color:#999">销量：${product.sales}</strong>
+                    	<strong class="" style="font-size:12px;color:#999">销量：<%-product.sales%></strong>
 					<%} else if (product.type == "exchange") {%>
 						<span class="small">${message("Sku.exchangePoint")}:</span>
 						<strong class="red"><%-product.defaultSku.exchange_point%></strong>
