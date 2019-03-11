@@ -78,8 +78,8 @@ public class RegisterController extends BaseController {
     @Inject
     private ConsultationService consultationService;
 
-    private static  String appId="wx8ccc40e63fabeebd";
-    private static  String appSecret="0cd97c839191770ecfcab3114e65b0b4";
+    private static  String appId="wx3952700d4b424681";
+    private static  String appSecret="125345e12744f9c5fd9d610676804a19";
     private static  String serverUrl="https://api.mubag.top/";
     /**
      * 检查用户名是否存在
