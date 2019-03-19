@@ -497,59 +497,59 @@
 					[#assign filterAttributes = attributes /]
 				[/@attribute_list]
 				[#if filterProductCategories?has_content || filterBrands?has_content || filterAttributes?has_content]
-                    <div id="filter" class="filter">
-                        <div class="title">${message("shop.product.filter")}</div>
-                        <div class="content">
-							[#assign rows = 0 /]
-							[#if filterProductCategories?has_content]
-								[#assign rows = rows + 1 /]
-                                <dl class="clearfix">
-                                    <dt>${message("shop.product.productCategory")}:</dt>
-									[#list filterProductCategories as filterProductCategory]
-                                        <dd>
-                                            <a href="${base}${filterProductCategory.path}">${filterProductCategory.name}</a>
-                                        </dd>
-									[/#list]
-                                    <dd class="moreOption" title="${message("shop.product.moreOption")}"></dd>
-                                </dl>
-							[/#if]
-							[#if filterBrands?has_content]
-								[#assign rows = rows + 1 /]
-                                <dl class="clearfix">
-                                    <dt>${message("shop.product.brand")}:</dt>
-									[#list filterBrands as filterBrand]
-                                        <dd>
-                                            <a href="javascript:;"[#if filterBrand == brand] class="brand current" title="${message("shop.product.cancel")}"[#else] class="brand"[/#if] brandId="${filterBrand.id}">${filterBrand.name}</a>
-                                        </dd>
-									[/#list]
-                                    <dd class="moreOption" title="${message("shop.product.moreOption")}"></dd>
-                                </dl>
-							[/#if]
-							[#assign hasHiddenAttribute = false /]
-							[#list filterAttributes as filterAttribute]
-								[#assign rows = rows + 1 /]
-                                <dl class="clearfix[#if rows > 3 && !attributeValueMap?keys?seq_contains(filterAttribute)][#assign hasHiddenAttribute = true /] hidden[/#if]">
-                                    <dt>
-                                        <input type="hidden" name="attribute_${filterAttribute.id}"[#if attributeValueMap?keys?seq_contains(filterAttribute)] value="${attributeValueMap.get(filterAttribute)}"[#else] disabled="disabled"[/#if] />
-                                        <span title="${filterAttribute.name}">${abbreviate(filterAttribute.name, 12)}:</span>
-                                    </dt>
-									[#list filterAttribute.optionsConverter as option]
-                                        <dd>
-                                            <a href="javascript:;"[#if attributeValueMap.get(filterAttribute) == option] class="attribute current" title="${message("shop.product.cancel")}"[#else] class="attribute"[/#if]>${option}</a>
-                                        </dd>
-									[/#list]
-                                    <dd class="moreOption" title="${message("shop.product.moreOption")}"></dd>
-                                </dl>
-							[/#list]
-                        </div>
-                        <div id="moreFilter" class="moreFilter">
-							[#if hasHiddenAttribute]
-                                <a href="javascript:;">${message("shop.product.moreFilter")}</a>
-							[#else]
+                    [#--<div id="filter" class="filter">--]
+                        [#--<div class="title">${message("shop.product.filter")}</div>--]
+                        [#--<div class="content">--]
+							[#--[#assign rows = 0 /]--]
+							[#--[#if filterProductCategories?has_content]--]
+								[#--[#assign rows = rows + 1 /]--]
+                                [#--<dl class="clearfix">--]
+                                    [#--<dt>${message("shop.product.productCategory")}:</dt>--]
+									[#--[#list filterProductCategories as filterProductCategory]--]
+                                        [#--<dd>--]
+                                            [#--<a href="${base}${filterProductCategory.path}">${filterProductCategory.name}</a>--]
+                                        [#--</dd>--]
+									[#--[/#list]--]
+                                    [#--<dd class="moreOption" title="${message("shop.product.moreOption")}"></dd>--]
+                                [#--</dl>--]
+							[#--[/#if]--]
+							[#--[#if filterBrands?has_content]--]
+								[#--[#assign rows = rows + 1 /]--]
+                                [#--<dl class="clearfix">--]
+                                    [#--<dt>${message("shop.product.brand")}:</dt>--]
+									[#--[#list filterBrands as filterBrand]--]
+                                        [#--<dd>--]
+                                            [#--<a href="javascript:;"[#if filterBrand == brand] class="brand current" title="${message("shop.product.cancel")}"[#else] class="brand"[/#if] brandId="${filterBrand.id}">${filterBrand.name}</a>--]
+                                        [#--</dd>--]
+									[#--[/#list]--]
+                                    [#--<dd class="moreOption" title="${message("shop.product.moreOption")}"></dd>--]
+                                [#--</dl>--]
+							[#--[/#if]--]
+							[#--[#assign hasHiddenAttribute = false /]--]
+							[#--[#list filterAttributes as filterAttribute]--]
+								[#--[#assign rows = rows + 1 /]--]
+                                [#--<dl class="clearfix[#if rows > 3 && !attributeValueMap?keys?seq_contains(filterAttribute)][#assign hasHiddenAttribute = true /] hidden[/#if]">--]
+                                    [#--<dt>--]
+                                        [#--<input type="hidden" name="attribute_${filterAttribute.id}"[#if attributeValueMap?keys?seq_contains(filterAttribute)] value="${attributeValueMap.get(filterAttribute)}"[#else] disabled="disabled"[/#if] />--]
+                                        [#--<span title="${filterAttribute.name}">${abbreviate(filterAttribute.name, 12)}:</span>--]
+                                    [#--</dt>--]
+									[#--[#list filterAttribute.optionsConverter as option]--]
+                                        [#--<dd>--]
+                                            [#--<a href="javascript:;"[#if attributeValueMap.get(filterAttribute) == option] class="attribute current" title="${message("shop.product.cancel")}"[#else] class="attribute"[/#if]>${option}</a>--]
+                                        [#--</dd>--]
+									[#--[/#list]--]
+                                    [#--<dd class="moreOption" title="${message("shop.product.moreOption")}"></dd>--]
+                                [#--</dl>--]
+							[#--[/#list]--]
+                        [#--</div>--]
+                        [#--<div id="moreFilter" class="moreFilter">--]
+							[#--[#if hasHiddenAttribute]--]
+                                [#--<a href="javascript:;">${message("shop.product.moreFilter")}</a>--]
+							[#--[#else]--]
 
-							[/#if]
-                        </div>
-                    </div>
+							[#--[/#if]--]
+                        [#--</div>--]
+                    [#--</div>--]
 				[/#if]
 			[/#if]
                 <div class="bar">
